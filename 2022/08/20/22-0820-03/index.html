@@ -1,0 +1,926 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#000000">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="[bx]、loop指令[bx]前面day2天学习中，我们了解到了[0]的用法，如下： mov bx,1000H  mov ds,bx	 mov al,[0]  但这里中括号中的0是常量，我们还可放变量，比如：[bx] ;如果ds已经是2000H mov bx,10 mov ax,[bx]		;这个指令就相当于mov ax,2000H:10,也就是把2000H:10这个字型数据给ax ;如果是mov">
+<meta property="og:type" content="article">
+<meta property="og:title" content="汇编Day3">
+<meta property="og:url" content="http://example.com/2022/08/20/22-0820-03/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="[bx]、loop指令[bx]前面day2天学习中，我们了解到了[0]的用法，如下： mov bx,1000H  mov ds,bx	 mov al,[0]  但这里中括号中的0是常量，我们还可放变量，比如：[bx] ;如果ds已经是2000H mov bx,10 mov ax,[bx]		;这个指令就相当于mov ax,2000H:10,也就是把2000H:10这个字型数据给ax ;如果是mov">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-03/image-20220830212722071.png">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-03/image-20220830212728134.png">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-03/image-20220830212735344.png">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-03/image-20220830212744246.png">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-03/image-20220902093058566.png">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-03/image-20220902093112633.png">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-03/image-20220902093157911.png">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-03/image-20220902094335774.png">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-03/image-20220902094608872.png">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-03/image-20220902094810500.png">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-03/image-20220902094927400.png">
+<meta property="article:published_time" content="2022-08-20T13:13:02.000Z">
+<meta property="article:modified_time" content="2022-09-02T01:49:29.192Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="二进制">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/08/20/22-0820-03/image-20220830212722071.png">
+  
+  
+  
+  <title>汇编Day3 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/suofang.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>A_Yu&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="汇编Day3"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-08-20 21:13" pubdate>
+          August 20, 2022 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.2k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          36 mins
+        
+      </span>
+    
+	
+
+  
+
+	
+
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">汇编Day3</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="bx-、loop指令"><a href="#bx-、loop指令" class="headerlink" title="[bx]、loop指令"></a>[bx]、loop指令</h1><h2 id="bx"><a href="#bx" class="headerlink" title="[bx]"></a>[bx]</h2><p>前面day2天学习中，我们了解到了[0]的用法，如下：</p>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">bx</span>,<span class="hljs-number">1000H</span> 
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>,<span class="hljs-built_in">bx</span>	
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>,[<span class="hljs-number">0</span>]</code></pre></div>
+
+<p>但这里中括号中的0是常量，我们还可放变量，比如：[bx]</p>
+<div class="code-wrapper"><pre><code class="hljs X86ASM"><span class="hljs-comment">;如果ds已经是2000H</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">bx</span>,<span class="hljs-number">10</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,[<span class="hljs-built_in">bx</span>]		<span class="hljs-comment">;这个指令就相当于mov ax,2000H:10,也就是把2000H:10这个字型数据给ax</span>
+<span class="hljs-comment">;如果是mov dl,[0]，那么这个是把字节型数据给mov，因为dl只有8位</span></code></pre></div>
+
+<p>inx bx 指令的作用是让bx+1，相当于bx=bx+1或者是bx++</p>
+<h2 id="loop指令"><a href="#loop指令" class="headerlink" title="loop指令"></a>loop指令</h2><p>loop 指令，在汇编里面代表循环，类似于c语言的while、for循环。</p>
+<p>loop 指令的使用格式：<code>loop 标号</code>，CPU 执行 loop 指令时，首先执行 CX = CX-1，然后判断 CX 的值，CX的值如果不为0，就会跳到标号处执行程序，如果为0，就按顺序向下执行。</p>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-comment">;比如：如果要用指令实现2的三次方，可用如下方法</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">2</span>	<span class="hljs-comment">;ax=2</span>
+<span class="hljs-keyword">add</span> <span class="hljs-built_in">ax</span>,<span class="hljs-built_in">ax</span>	<span class="hljs-comment">;ax=2+2=4  </span>
+<span class="hljs-keyword">add</span> <span class="hljs-built_in">ax</span>,<span class="hljs-built_in">ax</span>	<span class="hljs-comment">;ax=4+4=8</span>
+<span class="hljs-comment">;但是这里如果要实现2的12次方呢？？？用上面的方法一直加下去就不太好，这里就用循环实现，用如下代码实现</span>
+<span class="hljs-meta">assume</span> <span class="hljs-built_in">cs</span>:code
+code <span class="hljs-meta">segment</span>    
+	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">2</span>    
+	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">cx</span>,<span class="hljs-number">11</span>    
+<span class="hljs-symbol">	</span>
+<span class="hljs-symbol">s:</span>  <span class="hljs-keyword">add</span> <span class="hljs-built_in">ax</span>,<span class="hljs-built_in">ax</span>    
+	<span class="hljs-keyword">loop</span> s            
+	
+	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">4c00h</span>    
+	<span class="hljs-keyword">int</span> <span class="hljs-number">21h</span>
+code ends
+end</code></pre></div>
+
+<p>对上面2的12次方debug下，-u后我们发现ayu.exe会先执行mov ax,0002，然后再执行mov cx,000B，一直向下执行下去，然后到loop指令的时候，会再跳回到上面的add ax,ax指令</p>
+<img src="/2022/08/20/22-0820-03/image-20220830212722071.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830212722071">
+
+<p>然后我们可以-t来一条条的指令看下</p>
+<img src="/2022/08/20/22-0820-03/image-20220830212728134.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830212728134">
+
+<p>注意，上面的第二条指令<code>mov cx,000B</code>，这里000B实际就是十进制的11，也就是源程序中的<code>mov cx,11</code>，当然mov cx,11也可以写成<code>mov cx,0BH</code>，这里必须是0BH，不能写成BH，在汇编中数据不能以字母开头，所以在前面加个0</p>
+<img src="/2022/08/20/22-0820-03/image-20220830212735344.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830212735344">
+
+<p>cx存放的是程序（机器码）长度（字节数），一共15个字节，也就是十六进制的F</p>
+<img src="/2022/08/20/22-0820-03/image-20220830212744246.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830212744246">
+
+<div class="code-wrapper"><pre><code class="hljs txt">作业:
+编程，用加法计算123*236,结果存在ax中
+123*236就是236个123相乘，即123×123×123×123...
+代码如下：
+code segment
+	mov ax,123
+	mov cx,236
+s:	add ax,ax
+	loop s
+	mov ax,4c00h
+	int 21h
+code ends
+end</code></pre></div>
+
+<h1 id="Debug和汇编编译器处理指令的区别"><a href="#Debug和汇编编译器处理指令的区别" class="headerlink" title="Debug和汇编编译器处理指令的区别"></a>Debug和汇编编译器处理指令的区别</h1><p>用debug输入如下指令</p>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">2000h</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>,<span class="hljs-built_in">ax</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>,[<span class="hljs-number">0</span>]
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">bl</span>,[<span class="hljs-number">1</span>]
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">cl</span>,[<span class="hljs-number">2</span>]
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">dl</span>,[<span class="hljs-number">3</span>]</code></pre></div>
+
+<img src="/2022/08/20/22-0820-03/image-20220902093058566.png" srcset="/img/loading.gif" lazyload class="" title="image-20220902093058566">
+
+<p>然后用编译器编译和debug如下程序</p>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-meta">assume</span> <span class="hljs-built_in">cs</span>:code
+code <span class="hljs-meta">segment</span>
+	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">2000h</span>
+	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>,<span class="hljs-built_in">ax</span>
+	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>,[<span class="hljs-number">0</span>]
+	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">bl</span>,[<span class="hljs-number">1</span>]
+	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">cl</span>,[<span class="hljs-number">2</span>]
+	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">dl</span>,[<span class="hljs-number">3</span>]
+	
+	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">4c00h</span>
+	<span class="hljs-keyword">int</span> <span class="hljs-number">21h</span>
+code ends
+end</code></pre></div>
+
+<img src="/2022/08/20/22-0820-03/image-20220902093112633.png" srcset="/img/loading.gif" lazyload class="" title="image-20220902093112633">
+
+<p>那么，我们如何解决上面的问题呢？？把代码改成如下，添加上段前缀<code>ds:</code>，然后编译器就会把[0]当成地址处理了</p>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-meta">assume</span> <span class="hljs-built_in">cs</span>:code
+code <span class="hljs-meta">segment</span>
+	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">2000h</span>
+	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>,<span class="hljs-built_in">ax</span>
+	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>,<span class="hljs-built_in">ds</span>:[<span class="hljs-number">0</span>]
+	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">bl</span>,<span class="hljs-built_in">ds</span>:[<span class="hljs-number">1</span>]
+	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">cl</span>,<span class="hljs-built_in">ds</span>:[<span class="hljs-number">2</span>]
+	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">dl</span>,<span class="hljs-built_in">ds</span>:[<span class="hljs-number">3</span>]
+	
+	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">4c00h</span>
+	<span class="hljs-keyword">int</span> <span class="hljs-number">21h</span>
+code ends
+end</code></pre></div>
+
+<p>或者用类似如下的形式也可以mov al,<code>[bx]</code>，中括号里面为变量，而不是常量0，如果要用ss段寄存器，那么前面必须有<code>ss:</code>[bx]，而默认中括号前啥都没有就是ds寄存器</p>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-meta">assume</span> <span class="hljs-built_in">cs</span>:code
+code <span class="hljs-meta">segment</span>
+	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">2000h</span>
+	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>,<span class="hljs-built_in">ax</span>
+	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">bx</span>,<span class="hljs-number">0</span>
+	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>,[<span class="hljs-built_in">bx</span>]
+	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>,<span class="hljs-built_in">ss</span>:[<span class="hljs-built_in">bx</span>]
+	
+	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">4c00h</span>
+	<span class="hljs-keyword">int</span> <span class="hljs-number">21h</span>
+code ends
+end</code></pre></div>
+
+<p>注意：我们以后写代码用200:2FF这段空间，这个空间是没有用的，向别的内存空间中写入可能直接会导致死机或者其他的事情。。。</p>
+<img src="/2022/08/20/22-0820-03/image-20220902093157911.png" srcset="/img/loading.gif" lazyload class="" title="image-20220902093157911">
+
+<div class="code-wrapper"><pre><code class="hljs txt">作业:
+将内存ffff:0到fff:c的单元中的数据复制到0:200到0:20c单元中，注意：0:200到0:20c等价于0020:0到0020:c，因为合成后物理地址都一样
+assume cs:code
+code segment
+	mov bx,0
+	mov cx,0CH
+	
+s:	mov ax,0ffffh
+	mov ds,ax
+	mov dx,[bx]
+	
+	mov ax,0020h
+	mov ds,ax
+	mov [bx],dx
+	add bx,2
+	loop s
+	
+	mov ax,4c00h
+	int 21h
+code ends
+end
+;除了上述方法，还可以用es这个段地址寄存器来实现
+assume cs:code
+code segment
+	mov bx,0
+	mov cx,0CH
+	
+	mov ax,0ffffh
+	mov ds,ax
+	
+	mov ax,0020h
+	mov es,ax
+	
+s:	mov dx,[bx]
+	mov es:[bx],dx   ;es不可省略，分号是汇编的注释符号
+	add bx,2
+	loop s
+	
+	mov ax,4c00h
+	int 21h
+code ends
+end</code></pre></div>
+
+<p>上面的程序中是只有一个段的<code>code segment</code>，也就是代码段，但是有的包含多个段，比如，同时包含代码段和数据段，那么数据段肯定要在内存中占用一定的空间，操作系统就会给数据段分配一定的空间，注意：操作系统给程序分配的空间都是安全的，因为操作系统不会让一个程序所用空间和其他程序或操作系统自己空间相冲突</p>
+<p>程序获取所需要的空间有2种方法：</p>
+<ol>
+<li>加载程序的时候为程序分配内存</li>
+<li>在程序执行过程中向系统申请（c语言的malloc）</li>
+</ol>
+<h1 id="Start用法"><a href="#Start用法" class="headerlink" title="Start用法"></a>Start用法</h1><div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-meta">assume</span> <span class="hljs-built_in">cs</span>:code
+code <span class="hljs-meta">segment</span>
+	<span class="hljs-built_in">dw</span> <span class="hljs-number">123h</span>,<span class="hljs-number">0456h</span>,<span class="hljs-number">0abch</span>
+	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">0ffffh</span>
+	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>,<span class="hljs-built_in">ax</span> 
+code ends
+end</code></pre></div>
+
+<p>编译，调试上面的程序，我们发现并不是从mov ax,0ffffh开始执行的，如果想从正常从mov ax,0ffffh开始执行的话，需要加上start</p>
+<img src="/2022/08/20/22-0820-03/image-20220902094335774.png" srcset="/img/loading.gif" lazyload class="" title="image-20220902094335774">
+
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-meta">assume</span> <span class="hljs-built_in">cs</span>:code
+code <span class="hljs-meta">segment</span>
+	<span class="hljs-built_in">dw</span> <span class="hljs-number">123h</span>,<span class="hljs-number">0456h</span>,<span class="hljs-number">0abch</span> <span class="hljs-comment">;定义字型数据，数据之间有逗号隔开</span>
+<span class="hljs-symbol">start:</span>	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">0ffffh</span>  <span class="hljs-comment">;这里的start可以定义成任意名称</span>
+		<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>,<span class="hljs-built_in">ax</span> 
+code ends
+end start</code></pre></div>
+
+<p>重新编译，调试，就是从mov ax,0ffffh正常开始执行了，并且我们发现cs:ip变成了076A:0006，偏移地址ip变成了0006，恰好我们定义了三个字型数据，也就是6个字节</p>
+<img src="/2022/08/20/22-0820-03/image-20220902094608872.png" srcset="/img/loading.gif" lazyload class="" title="image-20220902094608872">
+
+<p>查看076a:0的地址内容，就发现了我们的字型数据</p>
+<img src="/2022/08/20/22-0820-03/image-20220902094810500.png" srcset="/img/loading.gif" lazyload class="" title="image-20220902094810500">
+
+<h1 id="定义栈段"><a href="#定义栈段" class="headerlink" title="定义栈段"></a>定义栈段</h1><div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-meta">assume</span> <span class="hljs-built_in">cs</span>:code,<span class="hljs-built_in">ds</span>:data,<span class="hljs-built_in">ss</span>:stack
+data <span class="hljs-meta">segment</span>
+	<span class="hljs-built_in">dw</span> <span class="hljs-number">0123h</span>,<span class="hljs-number">0456h</span>
+data ends
+
+stack <span class="hljs-meta">segment</span>
+	<span class="hljs-built_in">dw</span> <span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>  <span class="hljs-comment">;栈的内存空间</span>
+stack ends
+
+code <span class="hljs-meta">segment</span>
+<span class="hljs-symbol">	start:</span> 
+	
+		    <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,data
+			<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>,<span class="hljs-built_in">ax</span>
+			<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,stack
+			<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ss</span>,<span class="hljs-built_in">ax</span>
+			<span class="hljs-keyword">mov</span> <span class="hljs-built_in">sp</span>,<span class="hljs-number">10h</span>
+		    <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">0</span>
+		    <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">4c00h</span>
+		    <span class="hljs-keyword">int</span> <span class="hljs-number">21h</span>
+		
+code ends
+end start</code></pre></div>
+
+<div class="code-wrapper"><pre><code class="hljs txt">课后作业：
+1.编程向内存0:200~0:23F依次传送数据0~63(3FH) 备注：只能使用9条指令 包括mov ax,4c00h int 21h
+解答：
+assume cs:code
+code segment
+	mov cx,3Fh
+	mov ax,0
+	mov ds,ax
+	mov bx,0
+
+s:	mov [bx+200],bl
+	inc bl
+	loop s
+	
+	mov ax,4C00h
+	int 21h
+code ends
+end
+
+
+2. 下面程序的功能是将&quot;mov ax,4c00h&quot;之前的指令复制到内存0:200处，补全程序用debug调试，跟踪运行结果
+assume cs:code
+code segment
+    mov ax,__cs___ ;注意复制的是指令，指令在cs寄存器中
+    mov ds,ax
+    mov ax,0020h  ;注意：0:0200等价于0020:0，合成后物理地址一样
+    mov es,ax
+    mov bx,0
+    mov cx,__17h__ ;这里为啥是17h，看下面解析
+s:  mov al,[bx]
+    mov es:[bx],al
+    inc bx
+    loop s
+    
+    mov ax,4c00h
+    int 21h
+code ends
+end  
+
+
+3.编写code段中的代码，将naizi段和madou段中的数据依次相加，将结果存到feiwudidi段
+assume cs:code
+naizi segment
+ db 1,2,3,4,5,6,7,8
+naizi ends
+madou segment
+ db 1,2,3,4,5,6,7,8
+madou ends
+feiwudidi segment
+ db 0,0,0,0,0,0,0,0
+feiwudidi ends
+code segment
+start:   ?
+code ends
+end start
+解答：
+assume cs:code
+naizi segment
+ db 1,2,3,4,5,6,7,8
+naizi ends
+madou segment
+ db 1,2,3,4,5,6,7,8
+madou ends
+feiwudidi segment
+ db 0,0,0,0,0,0,0,0
+feiwudidi ends
+code segment
+start:	mov ax,feiwudidi
+		mov es,ax
+		mov bx,0
+		mov cx,8
+		
+	s:	mov ax,naizi
+		mov ds,ax
+		mov dl,[bx]
+		
+		mov ax,madou
+		mov ds,ax
+		add dl,[bx]
+		
+		mov es:[bx],dl
+		inc bx
+		loop s
+code ends
+end start
+
+
+4.编写code段中的代码，用push指令将a段中的前8个字型数据逆序存储到b段中
+assume cs:code
+a segment
+    dw 1,2,3,4,5,6,7,8,9,0ah,0bh,0ch,0dh,0eh,0fh
+a ends
+b segment
+    dw 0,0,0,0,0,0,0,0
+b ends
+code segment
+    start: ?
+code ends
+end start
+解答：
+assume cs:code
+a segment
+    dw 1,2,3,4,5,6,7,8,9,0ah,0bh,0ch,0dh,0eh,0fh
+a ends
+b segment
+    dw 0,0,0,0,0,0,0,0
+b ends
+code segment
+    start:	mov ax,b
+    		mov ss,ax ;设置栈
+    		mov sp,16 ;设置栈偏移地址 ;10进制的16
+    		
+    		mov ax,a
+    		mov ds,ax
+    		mov bx,0
+    		
+    		mov cx,8  ;控制循环次数
+    	s:	push [bx]  ;入栈
+    		add bx,2
+    		loop s            
+code ends
+end start</code></pre></div>
+
+<p>第2题解析：</p>
+<img src="/2022/08/20/22-0820-03/image-20220902094927400.png" srcset="/img/loading.gif" lazyload class="" title="image-20220902094927400">
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/16%E4%BD%8D%E6%B1%87%E7%BC%96/" class="category-chain-item">16位汇编</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/">#二进制</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/08/20/22-0820-04/" title="汇编Day4">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">汇编Day4</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/08/20/22-0820-02/" title="汇编day2">
+                        <span class="hidden-mobile">汇编day2</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键字</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/image.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>

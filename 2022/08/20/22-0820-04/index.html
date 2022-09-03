@@ -1,0 +1,777 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#000000">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="AND和OR指令and：逻辑与，按位进行与运算，两个1才为1，不然为0 or：逻辑或指令，按位进行计算，有一个1就为1，不然为0 字符串定义assume cs:code  string segment 	db &amp;#x27;ayu&amp;#x27; string ends  code segment start:	mov ax,string code ends end start  然后调试   疑惑：d">
+<meta property="og:type" content="article">
+<meta property="og:title" content="汇编Day4">
+<meta property="og:url" content="http://example.com/2022/08/20/22-0820-04/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="AND和OR指令and：逻辑与，按位进行与运算，两个1才为1，不然为0 or：逻辑或指令，按位进行计算，有一个1就为1，不然为0 字符串定义assume cs:code  string segment 	db &amp;#x27;ayu&amp;#x27; string ends  code segment start:	mov ax,string code ends end start  然后调试   疑惑：d">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-04/image-20220902095749648.png">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-04/image-20220902102015177.png">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-04/image-20220903160907793.png">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-04/image-20220903160916449.png">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-04/image-20220903160925092.png">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-04/image-20220903160955361.png">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-04/image-20220903162344655.png">
+<meta property="article:published_time" content="2022-08-20T13:14:02.000Z">
+<meta property="article:modified_time" content="2022-09-03T08:31:38.185Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="二进制">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/08/20/22-0820-04/image-20220902095749648.png">
+  
+  
+  
+  <title>汇编Day4 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/suofang.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>A_Yu&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="汇编Day4"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-08-20 21:14" pubdate>
+          August 20, 2022 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.9k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          33 mins
+        
+      </span>
+    
+	
+
+  
+
+	
+
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">汇编Day4</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="AND和OR指令"><a href="#AND和OR指令" class="headerlink" title="AND和OR指令"></a>AND和OR指令</h1><p>and：逻辑与，按位进行与运算，两个1才为1，不然为0</p>
+<p>or：逻辑或指令，按位进行计算，有一个1就为1，不然为0</p>
+<h1 id="字符串定义"><a href="#字符串定义" class="headerlink" title="字符串定义"></a>字符串定义</h1><div class="code-wrapper"><pre><code class="hljs livecodeserver">assume cs:code
+
+<span class="hljs-keyword">string</span> <span class="hljs-keyword">segment</span>
+	db <span class="hljs-string">&#x27;ayu&#x27;</span>
+<span class="hljs-keyword">string</span> <span class="hljs-keyword">ends</span>
+
+code <span class="hljs-keyword">segment</span>
+<span class="hljs-built_in">start</span>:	mov ax,<span class="hljs-keyword">string</span>
+code <span class="hljs-keyword">ends</span>
+<span class="hljs-function"><span class="hljs-keyword">end</span> <span class="hljs-title">start</span></span></code></pre></div>
+
+<p>然后调试</p>
+<img src="/2022/08/20/22-0820-04/image-20220902095749648.png" srcset="/img/loading.gif" lazyload class="" title="image-20220902095749648">
+
+<p><strong>疑惑：</strong><code>db &#39;ayu&#39;</code>，到底存储到代码段cs中，还是数据段ds中呢 ？（理论肯定是存在数据段ds中的）</p>
+<p>这里采用mov ax,string来测试，发现mov ax,string就是mov ax,076a，所以显然<code>db &#39;ayu&#39;</code>被存放到了076a，根据上图中ds的起始地址为075a，而cs的起始地址为076b，所以经过分析<code>db &#39;ayu&#39;</code>确实被放到了数据段中</p>
+<h1 id="PSP区"><a href="#PSP区" class="headerlink" title="PSP区"></a>PSP区</h1><p>程序加载后，ds中存放着程序所在内存区的段地址，这个内存区的偏移地址为0，则程序所在的内存区的地址为  ds:0，这个内存区的前256个字节（256对应16进制0100）中存放的是PSP，DOS用来和程序进行通信。从256字节处向后的空间存放的是程序。</p>
+<img src="/2022/08/20/22-0820-04/image-20220902102015177.png" srcset="/img/loading.gif" lazyload class="" title="image-20220902102015177">
+
+<p>注意：上图中为啥不写SA+0100H呢？？？？而是用的SA+10H呢？？？</p>
+<p>正常来说应该是<code>SA+0100H:0</code>那么对应实际物理地址就是<code>SA*16+256 = SA*16+16*16 = 16(SA+16) = 16(DS+16)   </code> (实际地址 = 段地址*16+偏移地址，这里的段地址和偏移地址换算成10进制运算)。而真正CS:IP对应的实际物理地址为<code>CS*16+IP</code>，而偏移地址IP开始为0，也就是<code>CS*16</code>，所以<code>DS+16 = CS</code>，由于这里采用的是10进制运算，16 就是十六进制的10h，所以<code>ds+10h = cs</code></p>
+<p>比如：上面的ds=075a，那么psp的内容就是从075a:0到075a+10h:0，也就是075a:0到076a:0，而真正程序是从076a:0开始的，所以我们查看076a:0就可以看到我们定义的数据<code>db &#39;ayu&#39;</code></p>
+<img src="/2022/08/20/22-0820-04/image-20220903160907793.png" srcset="/img/loading.gif" lazyload class="" title="image-20220903160907793">
+
+<p>但是这里076a:0为啥并不是CS:IP？？？？</p>
+<img src="/2022/08/20/22-0820-04/image-20220903160916449.png" srcset="/img/loading.gif" lazyload class="" title="image-20220903160916449">
+
+<p>可能是因为<code>db &#39;ayu&#39;</code>是数据，但是CS寄存器存放的是指令，也就是说CS:IP指向存放指令的地方，而076a到076b这里面存放的是一些数据，就比如：刚才我们定义的段<code>db &#39;ayu&#39;</code>，类似如下图：</p>
+<img src="/2022/08/20/22-0820-04/image-20220903160925092.png" srcset="/img/loading.gif" lazyload class="" title="image-20220903160925092">
+
+<p>现在我们将程序删除string段改成如下：</p>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-meta">assume</span> <span class="hljs-built_in">cs</span>:code
+code <span class="hljs-meta">segment</span>
+<span class="hljs-symbol">start:</span>	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">0</span>
+code ends
+end start</code></pre></div>
+
+<p>重新debug后，如下：恰好DS和CS差10H，那么上面的猜测可能就是正确的</p>
+<img src="/2022/08/20/22-0820-04/image-20220903160955361.png" srcset="/img/loading.gif" lazyload class="" title="image-20220903160955361">
+
+<h1 id="寄存器SI、DI"><a href="#寄存器SI、DI" class="headerlink" title="寄存器SI、DI"></a>寄存器SI、DI</h1><p>si和di功能和bx差不多的用法，但是不能和bx一样分成两个8位的寄存器</p>
+<p>对于bx，经常的用法为：mov bx,0 或者mov bx,[0]，同理对于si、di也可以这样用：mov si,0 或者 mov si,[0]、mov di,0 或者 mov di,[0] 等</p>
+<h1 id="寻址方式总结"><a href="#寻址方式总结" class="headerlink" title="寻址方式总结"></a>寻址方式总结</h1><ul>
+<li>直接寻址，比如：[0]、[1] </li>
+<li>寄存器间接寻址，比如：[bx]、[si]、[di]、[bp]</li>
+<li>寄存器相对寻址，比如：[bx+1]、[si+2] 等</li>
+<li>基址加变址寻址，比如：[bx+si]、[bx+di]等</li>
+<li>相对基址加变址寻址，比如：[bx+si+1]、[bx+di+2]</li>
+</ul>
+<div class="code-wrapper"><pre><code class="hljs x86asm">作业:
+<span class="hljs-comment">;将naizi、madou、caiji、linhu首字母变成大写</span>
+<span class="hljs-meta">assume</span> <span class="hljs-built_in">cs</span>:code,<span class="hljs-built_in">ds</span>:data
+
+data <span class="hljs-meta">segment</span>
+	<span class="hljs-built_in">db</span> <span class="hljs-string">&#x27;1. naizi........&#x27;</span>
+	<span class="hljs-built_in">db</span> <span class="hljs-string">&#x27;2. madou........&#x27;</span>
+	<span class="hljs-built_in">db</span> <span class="hljs-string">&#x27;3. caiji........&#x27;</span>
+	<span class="hljs-built_in">db</span> <span class="hljs-string">&#x27;4. linhu........&#x27;</span>
+data ends
+
+code <span class="hljs-meta">segment</span>
+<span class="hljs-symbol">start:</span>
+		<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,data
+		<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>,<span class="hljs-built_in">ax</span>
+		<span class="hljs-keyword">mov</span> <span class="hljs-built_in">di</span>,<span class="hljs-number">0</span>
+		<span class="hljs-keyword">mov</span> <span class="hljs-built_in">cx</span>,<span class="hljs-number">4</span>
+<span class="hljs-symbol">	s:</span>	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>,[<span class="hljs-built_in">di</span>+<span class="hljs-number">3</span>]
+		<span class="hljs-keyword">and</span> <span class="hljs-built_in">al</span>,<span class="hljs-number">11011111B</span>  <span class="hljs-comment">;将首字母变成大写</span>
+		<span class="hljs-keyword">mov</span> [<span class="hljs-built_in">di</span>+<span class="hljs-number">3</span>],<span class="hljs-built_in">al</span>
+		<span class="hljs-keyword">add</span> <span class="hljs-built_in">di</span>,<span class="hljs-number">16</span>
+		<span class="hljs-keyword">loop</span> s:
+		<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">4c00h</span>
+		<span class="hljs-keyword">int</span> <span class="hljs-number">21h</span>
+code ends
+end start
+
+
+用两个循环实现把所有字母变成大写
+<span class="hljs-meta">assume</span> <span class="hljs-built_in">cs</span>:code,<span class="hljs-built_in">ds</span>:data
+
+data <span class="hljs-meta">segment</span>
+	<span class="hljs-built_in">db</span> <span class="hljs-string">&#x27;naizi...........&#x27;</span>
+	<span class="hljs-built_in">db</span> <span class="hljs-string">&#x27;madou...........&#x27;</span>
+	<span class="hljs-built_in">db</span> <span class="hljs-string">&#x27;caiji...........&#x27;</span>
+	<span class="hljs-built_in">db</span> <span class="hljs-string">&#x27;linhu...........&#x27;</span>
+data ends
+
+stack <span class="hljs-meta">segment</span>
+	<span class="hljs-built_in">dw</span> <span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>  <span class="hljs-comment">;设置栈用于存放cx</span>
+code <span class="hljs-meta">segment</span>
+<span class="hljs-symbol">start:</span>
+		<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,stack
+		<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ss</span>,<span class="hljs-built_in">ax</span>
+		<span class="hljs-keyword">mov</span> <span class="hljs-built_in">sp</span>,<span class="hljs-number">16</span>
+		<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,data
+		<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>,<span class="hljs-built_in">ax</span>
+		<span class="hljs-keyword">mov</span> <span class="hljs-built_in">bx</span>,<span class="hljs-number">0</span>
+		<span class="hljs-keyword">mov</span> <span class="hljs-built_in">cx</span>,<span class="hljs-number">4</span>
+<span class="hljs-symbol">		</span>
+<span class="hljs-symbol">	s0:</span>	<span class="hljs-keyword">push</span> <span class="hljs-built_in">cx</span>
+    	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">si</span>,<span class="hljs-number">0</span>
+		<span class="hljs-keyword">mov</span> <span class="hljs-built_in">cx</span>,<span class="hljs-number">5</span>
+<span class="hljs-symbol">		</span>
+<span class="hljs-symbol">	s:</span>	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>,[<span class="hljs-built_in">bx</span>+<span class="hljs-built_in">si</span>]
+		<span class="hljs-keyword">and</span> <span class="hljs-built_in">al</span>,<span class="hljs-number">11011111b</span>
+		<span class="hljs-keyword">mov</span> [<span class="hljs-built_in">bx</span>+<span class="hljs-built_in">si</span>],<span class="hljs-built_in">al</span>
+		<span class="hljs-keyword">inc</span> <span class="hljs-built_in">si</span>
+		<span class="hljs-keyword">loop</span> s
+		<span class="hljs-keyword">add</span> <span class="hljs-built_in">bx</span>,<span class="hljs-number">16</span>
+		<span class="hljs-keyword">pop</span> <span class="hljs-built_in">cx</span>
+		<span class="hljs-keyword">loop</span> s0
+		
+		<span class="hljs-keyword">loop</span> s
+		<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>
+		
+code ends
+end start</code></pre></div>
+
+<h1 id="ptr"><a href="#ptr" class="headerlink" title="ptr"></a>ptr</h1><p>下面的指令中，寄存器指明了指令进行的是字操作：</p>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">1</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">bx</span>,<span class="hljs-built_in">ds</span>:[<span class="hljs-number">0</span>]     
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>,<span class="hljs-built_in">ax</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>:[<span class="hljs-number">0</span>],<span class="hljs-built_in">ax</span>
+<span class="hljs-keyword">inc</span> <span class="hljs-built_in">ax</span>
+<span class="hljs-keyword">add</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">1000</span></code></pre></div>
+
+<p>下面的指令中，寄存器指明了指令进行的是字节操作（因为是al）：</p>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>,<span class="hljs-number">1</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>,<span class="hljs-built_in">bl</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>,<span class="hljs-built_in">ds</span>:[<span class="hljs-number">0</span>]
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>:[<span class="hljs-number">0</span>],<span class="hljs-built_in">al</span>
+<span class="hljs-keyword">inc</span> <span class="hljs-built_in">al</span>
+<span class="hljs-keyword">add</span> <span class="hljs-built_in">al</span>,<span class="hljs-number">100</span></code></pre></div>
+
+<p>在没有寄存器名存在的情况下，既都是在内存，得用操作符 X ptr 指明内存单元的长度，X在汇编指令中可以为byte，word或者DWORD。要不然内存是片连续的区域，操作就乱了</p>
+<p>例如：</p>
+<p>下面的指令中，用word ptr 指明了指令访问的内存单元是一个字单元：</p>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">word</span> <span class="hljs-built_in">ptr</span> <span class="hljs-built_in">ds</span>:[<span class="hljs-number">0</span>],<span class="hljs-number">1</span>
+<span class="hljs-keyword">inc</span> <span class="hljs-built_in">word</span> <span class="hljs-built_in">ptr</span> [<span class="hljs-built_in">bx</span>]
+<span class="hljs-keyword">inc</span> <span class="hljs-built_in">word</span> <span class="hljs-built_in">ptr</span> <span class="hljs-built_in">ds</span>:[<span class="hljs-number">0</span>]
+<span class="hljs-keyword">add</span> <span class="hljs-built_in">word</span> <span class="hljs-built_in">ptr</span> [<span class="hljs-built_in">bx</span>],<span class="hljs-number">2</span></code></pre></div>
+
+<p>下面的指令中，用byte ptr 指明了指令访问的内存单元是一个字节单元：</p>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">byte</span> <span class="hljs-built_in">ptr</span> <span class="hljs-built_in">ds</span>:[<span class="hljs-number">0</span>],<span class="hljs-number">1</span>
+<span class="hljs-keyword">inc</span> <span class="hljs-built_in">byte</span> <span class="hljs-built_in">ptr</span> [<span class="hljs-built_in">bx</span>]
+<span class="hljs-keyword">inc</span> <span class="hljs-built_in">byte</span> <span class="hljs-built_in">ptr</span> <span class="hljs-built_in">ds</span>:[<span class="hljs-number">0</span>]
+<span class="hljs-keyword">add</span> <span class="hljs-built_in">byte</span> <span class="hljs-built_in">ptr</span> [<span class="hljs-built_in">bx</span>],<span class="hljs-number">2</span></code></pre></div>
+
+<p>在没有寄存器参与的内存单元访问指令中，用word prt 或byte ptr 显性地指明所要访问的内存单元的长度是很必要的。否则，CPU无法得知所要访问的单元，还是字节单元。假如我们用Debug查看内存的结果如下：</p>
+<p>2000：1000 FF FF FF FF FF FF ……</p>
+<p>那么指令：<br>mov ax,2000H<br>mov ds,ax<br>mov byte ptr [1000H],1<br>将使内存中的内容变为：<br>2000: 1000 01 FF FF FF FF FF ……</p>
+<p>而指令：<br>mov ax,2000H<br>mov ds,ax<br>mov word ptr [1000H],1<br>将使内存中的内容变为：<br>2000：1000 01 00 FF FF FF FF ……</p>
+<h1 id="综合应用"><a href="#综合应用" class="headerlink" title="综合应用"></a>综合应用</h1><div class="code-wrapper"><pre><code class="hljs autoit">关于公司的一条记录如下：
+公司名称：<span class="hljs-built_in">DEC</span>
+公司姓名：naizi
+排名：<span class="hljs-number">250</span>
+收入：<span class="hljs-number">20</span>
+著名产品：pos</code></pre></div>
+
+<img src="/2022/08/20/22-0820-04/image-20220903162344655.png" srcset="/img/loading.gif" lazyload class="" title="image-20220903162344655">
+
+<p>现在进行如下操作：<br>修改排名为100<br>收入为50<br>产品变成amd</p>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-built_in">seg</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>,<span class="hljs-built_in">ax</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">bx</span>,<span class="hljs-number">60h</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">word</span> <span class="hljs-built_in">ptr</span> [<span class="hljs-built_in">bx</span>+<span class="hljs-number">8</span>],<span class="hljs-number">100</span> 		 <span class="hljs-comment">;该指令也可写成mov word ptr [bx].8,100 </span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">word</span> <span class="hljs-built_in">ptr</span> [<span class="hljs-built_in">bx</span>+<span class="hljs-number">10</span>],<span class="hljs-number">50</span>
+
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">si</span>,<span class="hljs-number">0</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">byte</span> <span class="hljs-built_in">ptr</span> [<span class="hljs-built_in">bx</span>+<span class="hljs-number">12</span>+<span class="hljs-built_in">si</span>],<span class="hljs-string">&#x27;A&#x27;</span>		 <span class="hljs-comment">;该指令也可写成mov byte ptr [bx][si].12,&#x27;A&#x27; 或写成mov byte ptr [bx].12[si],&#x27;A&#x27;</span>
+<span class="hljs-keyword">inc</span> <span class="hljs-built_in">si</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">byte</span> <span class="hljs-built_in">ptr</span> [<span class="hljs-built_in">bx</span>+<span class="hljs-number">12</span>+<span class="hljs-built_in">si</span>],<span class="hljs-string">&#x27;M&#x27;</span>
+<span class="hljs-keyword">inc</span> <span class="hljs-built_in">si</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">byte</span> <span class="hljs-built_in">ptr</span> [<span class="hljs-built_in">bx</span>+<span class="hljs-number">12</span>+<span class="hljs-built_in">si</span>],<span class="hljs-string">&#x27;D&#x27;</span></code></pre></div>
+
+<h1 id="div除法指令"><a href="#div除法指令" class="headerlink" title="div除法指令"></a>div除法指令</h1><p>除法：有8位和16位两种，在一个寄存器或者内存单元中</p>
+<p>被除数：如果除数为8位，被除数为16位，默认放在ax中，如果除数为16位，被除数一定为32位，在dx和ax中存放，dx存放高16位，ax存放低16位（注意：被除数一定比除数值大，除数是16位，则被除数一定是32位）</p>
+<p>结果存放：如果除数为8位，则AL存放除法操作的商，AH存放除法操作的余数；如果除数是16位，则AX存放除法的商，DX存放余数</p>
+<p>div byte ptr ds:[0] 的含义：由于在这里div后面是byte字节，也就是除数是8位，那么被除数一定为16位，AL存放ax÷(ds×16+0) 的商，AH存放ax÷(ds×16+0)的余数</p>
+<p>div word ptr ds:[0] 的含义：由于在这里div后面是word字，也就是除数为16位，那么被除数一定为32位，AX存放的是 (dx×10000H+ax)÷(ds×16+0)的商，DX存放的是 (dx×10000H+ax)÷(ds×16+0)的余数</p>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-comment">;计算100001/100</span>
+<span class="hljs-comment">;100001大于65535，所以用ax加dx两个寄存器联合存放，100001转化成16进制为186A1H</span>
+
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">dx</span>,<span class="hljs-number">1</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">86A1H</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">bx</span>,<span class="hljs-number">100</span>
+<span class="hljs-keyword">div</span> <span class="hljs-built_in">bx</span>
+<span class="hljs-comment">;ax=商，dx=余数</span></code></pre></div>
+
+<h1 id="伪指令-db-、dw-、dd"><a href="#伪指令-db-、dw-、dd" class="headerlink" title="伪指令 db 、dw 、dd"></a>伪指令 db 、dw 、dd</h1><p>dd 定义两个字型数据：double word</p>
+<p>dup指令：进行数据重复</p>
+<p>db 3 dup(0) 相当于 db 0,0,0</p>
+<p>db 3 dup(0,1,2) 相当于 db 0,1,2,0,1,2,0,1,2</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/16%E4%BD%8D%E6%B1%87%E7%BC%96/" class="category-chain-item">16位汇编</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/">#二进制</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/08/21/22-0821-01/" title="转载：CPU的熔断幽灵">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">转载：CPU的熔断幽灵</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/08/20/22-0820-03/" title="汇编Day3">
+                        <span class="hidden-mobile">汇编Day3</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键字</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/image.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
