@@ -16,12 +16,12 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="[bx]、loop指令[bx]前面day2天学习中，我们了解到了[0]的用法，如下： mov bx,1000H  mov ds,bx	 mov al,[0]  但这里中括号中的0是常量，我们还可放变量，比如：[bx] ;如果ds已经是2000H mov bx,10 mov ax,[bx]		;这个指令就相当于mov ax,2000H:10,也就是把2000H:10这个字型数据给ax ;如果是mov">
+    <meta name="description" content="[bx]、loop指令  [bx] 前面day2天学习中，我们了解到了[0]的用法，如下： mov bx,1000H  mov ds,bx	 mov al,[0] 但这里中括号中的0是常量，我们还可放变量，比如：[bx] ;如果ds已经是2000H mov bx,10 mov ax,[bx]		;这个指令就相当于mov ax,2000H:10,也就是把2000H:10这个字型数据给ax ;如果是">
 <meta property="og:type" content="article">
 <meta property="og:title" content="汇编Day3">
 <meta property="og:url" content="http://example.com/2022/08/20/22-0820-03/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="[bx]、loop指令[bx]前面day2天学习中，我们了解到了[0]的用法，如下： mov bx,1000H  mov ds,bx	 mov al,[0]  但这里中括号中的0是常量，我们还可放变量，比如：[bx] ;如果ds已经是2000H mov bx,10 mov ax,[bx]		;这个指令就相当于mov ax,2000H:10,也就是把2000H:10这个字型数据给ax ;如果是mov">
+<meta property="og:description" content="[bx]、loop指令  [bx] 前面day2天学习中，我们了解到了[0]的用法，如下： mov bx,1000H  mov ds,bx	 mov al,[0] 但这里中括号中的0是常量，我们还可放变量，比如：[bx] ;如果ds已经是2000H mov bx,10 mov ax,[bx]		;这个指令就相当于mov ax,2000H:10,也就是把2000H:10这个字型数据给ax ;如果是">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/2022/08/20/22-0820-03/image-20220830212722071.png">
 <meta property="og:image" content="http://example.com/2022/08/20/22-0820-03/image-20220830212728134.png">
@@ -283,19 +283,20 @@
             
               <div class="markdown-body">
                 
-                <h1 id="bx-、loop指令"><a href="#bx-、loop指令" class="headerlink" title="[bx]、loop指令"></a>[bx]、loop指令</h1><h2 id="bx"><a href="#bx" class="headerlink" title="[bx]"></a>[bx]</h2><p>前面day2天学习中，我们了解到了[0]的用法，如下：</p>
+                <h1 id="bx-loop指令"><a class="markdownIt-Anchor" href="#bx-loop指令"></a> [bx]、loop指令</h1>
+<h2 id="bx"><a class="markdownIt-Anchor" href="#bx"></a> [bx]</h2>
+<p>前面day2天学习中，我们了解到了[0]的用法，如下：</p>
 <div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">bx</span>,<span class="hljs-number">1000H</span> 
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>,<span class="hljs-built_in">bx</span>	
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>,[<span class="hljs-number">0</span>]</code></pre></div>
-
 <p>但这里中括号中的0是常量，我们还可放变量，比如：[bx]</p>
 <div class="code-wrapper"><pre><code class="hljs X86ASM"><span class="hljs-comment">;如果ds已经是2000H</span>
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">bx</span>,<span class="hljs-number">10</span>
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,[<span class="hljs-built_in">bx</span>]		<span class="hljs-comment">;这个指令就相当于mov ax,2000H:10,也就是把2000H:10这个字型数据给ax</span>
 <span class="hljs-comment">;如果是mov dl,[0]，那么这个是把字节型数据给mov，因为dl只有8位</span></code></pre></div>
-
 <p>inx bx 指令的作用是让bx+1，相当于bx=bx+1或者是bx++</p>
-<h2 id="loop指令"><a href="#loop指令" class="headerlink" title="loop指令"></a>loop指令</h2><p>loop 指令，在汇编里面代表循环，类似于c语言的while、for循环。</p>
+<h2 id="loop指令"><a class="markdownIt-Anchor" href="#loop指令"></a> loop指令</h2>
+<p>loop 指令，在汇编里面代表循环，类似于c语言的while、for循环。</p>
 <p>loop 指令的使用格式：<code>loop 标号</code>，CPU 执行 loop 指令时，首先执行 CX = CX-1，然后判断 CX 的值，CX的值如果不为0，就会跳到标号处执行程序，如果为0，就按顺序向下执行。</p>
 <div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-comment">;比如：如果要用指令实现2的三次方，可用如下方法</span>
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">2</span>	<span class="hljs-comment">;ax=2</span>
@@ -314,19 +315,14 @@ code <span class="hljs-meta">segment</span>
 	<span class="hljs-keyword">int</span> <span class="hljs-number">21h</span>
 code ends
 end</code></pre></div>
-
 <p>对上面2的12次方debug下，-u后我们发现ayu.exe会先执行mov ax,0002，然后再执行mov cx,000B，一直向下执行下去，然后到loop指令的时候，会再跳回到上面的add ax,ax指令</p>
 <img src="/2022/08/20/22-0820-03/image-20220830212722071.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830212722071">
-
 <p>然后我们可以-t来一条条的指令看下</p>
 <img src="/2022/08/20/22-0820-03/image-20220830212728134.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830212728134">
-
 <p>注意，上面的第二条指令<code>mov cx,000B</code>，这里000B实际就是十进制的11，也就是源程序中的<code>mov cx,11</code>，当然mov cx,11也可以写成<code>mov cx,0BH</code>，这里必须是0BH，不能写成BH，在汇编中数据不能以字母开头，所以在前面加个0</p>
 <img src="/2022/08/20/22-0820-03/image-20220830212735344.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830212735344">
-
 <p>cx存放的是程序（机器码）长度（字节数），一共15个字节，也就是十六进制的F</p>
 <img src="/2022/08/20/22-0820-03/image-20220830212744246.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830212744246">
-
 <div class="code-wrapper"><pre><code class="hljs txt">作业:
 编程，用加法计算123*236,结果存在ax中
 123*236就是236个123相乘，即123×123×123×123...
@@ -340,17 +336,15 @@ s:	add ax,ax
 	int 21h
 code ends
 end</code></pre></div>
-
-<h1 id="Debug和汇编编译器处理指令的区别"><a href="#Debug和汇编编译器处理指令的区别" class="headerlink" title="Debug和汇编编译器处理指令的区别"></a>Debug和汇编编译器处理指令的区别</h1><p>用debug输入如下指令</p>
+<h1 id="debug和汇编编译器处理指令的区别"><a class="markdownIt-Anchor" href="#debug和汇编编译器处理指令的区别"></a> Debug和汇编编译器处理指令的区别</h1>
+<p>用debug输入如下指令</p>
 <div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">2000h</span>
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>,<span class="hljs-built_in">ax</span>
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>,[<span class="hljs-number">0</span>]
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">bl</span>,[<span class="hljs-number">1</span>]
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">cl</span>,[<span class="hljs-number">2</span>]
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">dl</span>,[<span class="hljs-number">3</span>]</code></pre></div>
-
 <img src="/2022/08/20/22-0820-03/image-20220902093058566.png" srcset="/img/loading.gif" lazyload class="" title="image-20220902093058566">
-
 <p>然后用编译器编译和debug如下程序</p>
 <div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-meta">assume</span> <span class="hljs-built_in">cs</span>:code
 code <span class="hljs-meta">segment</span>
@@ -365,9 +359,7 @@ code <span class="hljs-meta">segment</span>
 	<span class="hljs-keyword">int</span> <span class="hljs-number">21h</span>
 code ends
 end</code></pre></div>
-
 <img src="/2022/08/20/22-0820-03/image-20220902093112633.png" srcset="/img/loading.gif" lazyload class="" title="image-20220902093112633">
-
 <p>那么，我们如何解决上面的问题呢？？把代码改成如下，添加上段前缀<code>ds:</code>，然后编译器就会把[0]当成地址处理了</p>
 <div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-meta">assume</span> <span class="hljs-built_in">cs</span>:code
 code <span class="hljs-meta">segment</span>
@@ -382,7 +374,6 @@ code <span class="hljs-meta">segment</span>
 	<span class="hljs-keyword">int</span> <span class="hljs-number">21h</span>
 code ends
 end</code></pre></div>
-
 <p>或者用类似如下的形式也可以mov al,<code>[bx]</code>，中括号里面为变量，而不是常量0，如果要用ss段寄存器，那么前面必须有<code>ss:</code>[bx]，而默认中括号前啥都没有就是ds寄存器</p>
 <div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-meta">assume</span> <span class="hljs-built_in">cs</span>:code
 code <span class="hljs-meta">segment</span>
@@ -396,10 +387,8 @@ code <span class="hljs-meta">segment</span>
 	<span class="hljs-keyword">int</span> <span class="hljs-number">21h</span>
 code ends
 end</code></pre></div>
-
 <p>注意：我们以后写代码用200:2FF这段空间，这个空间是没有用的，向别的内存空间中写入可能直接会导致死机或者其他的事情。。。</p>
 <img src="/2022/08/20/22-0820-03/image-20220902093157911.png" srcset="/img/loading.gif" lazyload class="" title="image-20220902093157911">
-
 <div class="code-wrapper"><pre><code class="hljs txt">作业:
 将内存ffff:0到fff:c的单元中的数据复制到0:200到0:20c单元中，注意：0:200到0:20c等价于0020:0到0020:c，因为合成后物理地址都一样
 assume cs:code
@@ -442,24 +431,22 @@ s:	mov dx,[bx]
 	int 21h
 code ends
 end</code></pre></div>
-
 <p>上面的程序中是只有一个段的<code>code segment</code>，也就是代码段，但是有的包含多个段，比如，同时包含代码段和数据段，那么数据段肯定要在内存中占用一定的空间，操作系统就会给数据段分配一定的空间，注意：操作系统给程序分配的空间都是安全的，因为操作系统不会让一个程序所用空间和其他程序或操作系统自己空间相冲突</p>
 <p>程序获取所需要的空间有2种方法：</p>
 <ol>
 <li>加载程序的时候为程序分配内存</li>
 <li>在程序执行过程中向系统申请（c语言的malloc）</li>
 </ol>
-<h1 id="Start用法"><a href="#Start用法" class="headerlink" title="Start用法"></a>Start用法</h1><div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-meta">assume</span> <span class="hljs-built_in">cs</span>:code
+<h1 id="start用法"><a class="markdownIt-Anchor" href="#start用法"></a> Start用法</h1>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-meta">assume</span> <span class="hljs-built_in">cs</span>:code
 code <span class="hljs-meta">segment</span>
 	<span class="hljs-built_in">dw</span> <span class="hljs-number">123h</span>,<span class="hljs-number">0456h</span>,<span class="hljs-number">0abch</span>
 	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">0ffffh</span>
 	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>,<span class="hljs-built_in">ax</span> 
 code ends
 end</code></pre></div>
-
 <p>编译，调试上面的程序，我们发现并不是从mov ax,0ffffh开始执行的，如果想从正常从mov ax,0ffffh开始执行的话，需要加上start</p>
 <img src="/2022/08/20/22-0820-03/image-20220902094335774.png" srcset="/img/loading.gif" lazyload class="" title="image-20220902094335774">
-
 <div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-meta">assume</span> <span class="hljs-built_in">cs</span>:code
 code <span class="hljs-meta">segment</span>
 	<span class="hljs-built_in">dw</span> <span class="hljs-number">123h</span>,<span class="hljs-number">0456h</span>,<span class="hljs-number">0abch</span> <span class="hljs-comment">;定义字型数据，数据之间有逗号隔开</span>
@@ -467,14 +454,12 @@ code <span class="hljs-meta">segment</span>
 		<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>,<span class="hljs-built_in">ax</span> 
 code ends
 end start</code></pre></div>
-
 <p>重新编译，调试，就是从mov ax,0ffffh正常开始执行了，并且我们发现cs:ip变成了076A:0006，偏移地址ip变成了0006，恰好我们定义了三个字型数据，也就是6个字节</p>
 <img src="/2022/08/20/22-0820-03/image-20220902094608872.png" srcset="/img/loading.gif" lazyload class="" title="image-20220902094608872">
-
 <p>查看076a:0的地址内容，就发现了我们的字型数据</p>
 <img src="/2022/08/20/22-0820-03/image-20220902094810500.png" srcset="/img/loading.gif" lazyload class="" title="image-20220902094810500">
-
-<h1 id="定义栈段"><a href="#定义栈段" class="headerlink" title="定义栈段"></a>定义栈段</h1><div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-meta">assume</span> <span class="hljs-built_in">cs</span>:code,<span class="hljs-built_in">ds</span>:data,<span class="hljs-built_in">ss</span>:stack
+<h1 id="定义栈段"><a class="markdownIt-Anchor" href="#定义栈段"></a> 定义栈段</h1>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-meta">assume</span> <span class="hljs-built_in">cs</span>:code,<span class="hljs-built_in">ds</span>:data,<span class="hljs-built_in">ss</span>:stack
 data <span class="hljs-meta">segment</span>
 	<span class="hljs-built_in">dw</span> <span class="hljs-number">0123h</span>,<span class="hljs-number">0456h</span>
 data ends
@@ -497,7 +482,6 @@ code <span class="hljs-meta">segment</span>
 		
 code ends
 end start</code></pre></div>
-
 <div class="code-wrapper"><pre><code class="hljs txt">课后作业：
 1.编程向内存0:200~0:23F依次传送数据0~63(3FH) 备注：只能使用9条指令 包括mov ax,4c00h int 21h
 解答：
@@ -620,7 +604,6 @@ code segment
     		loop s            
 code ends
 end start</code></pre></div>
-
 <p>第2题解析：</p>
 <img src="/2022/08/20/22-0820-03/image-20220902094927400.png" srcset="/img/loading.gif" lazyload class="" title="image-20220902094927400">
 

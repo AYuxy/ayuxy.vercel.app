@@ -16,12 +16,12 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="进制基础 bit（比特） &#x3D; 一个bit是一个0或1，叫做一个二进制位 byte（字节）&#x3D;  1byte 是 8 个比特 16进制 &#x3D; 4个2进制  汇编语言组成 汇编指令：由CPU执行，是机器码的助记符，有对应的机器码 伪指令：由编译器执行，没有对应的机器码，计算机不执行 其它符号：比如：+－*&#x2F; 由编译器识别执行，没有对应机器码  CPU组成一个典型的CPU大概由运算器、控制器、寄存器构成。外">
+    <meta name="description" content="进制基础  bit（比特） &#x3D; 一个bit是一个0或1，叫做一个二进制位 byte（字节）&#x3D;  1byte 是 8 个比特 16进制 &#x3D; 4个2进制   汇编语言组成  汇编指令：由CPU执行，是机器码的助记符，有对应的机器码 伪指令：由编译器执行，没有对应的机器码，计算机不执行 其它符号：比如：+－*&#x2F; 由编译器识别执行，没有对应机器码   CPU组成 一个典型的CPU大概由运算器、控制器、寄">
 <meta property="og:type" content="article">
 <meta property="og:title" content="汇编Day1">
 <meta property="og:url" content="http://example.com/2022/08/20/22-0820-01/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="进制基础 bit（比特） &#x3D; 一个bit是一个0或1，叫做一个二进制位 byte（字节）&#x3D;  1byte 是 8 个比特 16进制 &#x3D; 4个2进制  汇编语言组成 汇编指令：由CPU执行，是机器码的助记符，有对应的机器码 伪指令：由编译器执行，没有对应的机器码，计算机不执行 其它符号：比如：+－*&#x2F; 由编译器识别执行，没有对应机器码  CPU组成一个典型的CPU大概由运算器、控制器、寄存器构成。外">
+<meta property="og:description" content="进制基础  bit（比特） &#x3D; 一个bit是一个0或1，叫做一个二进制位 byte（字节）&#x3D;  1byte 是 8 个比特 16进制 &#x3D; 4个2进制   汇编语言组成  汇编指令：由CPU执行，是机器码的助记符，有对应的机器码 伪指令：由编译器执行，没有对应的机器码，计算机不执行 其它符号：比如：+－*&#x2F; 由编译器识别执行，没有对应机器码   CPU组成 一个典型的CPU大概由运算器、控制器、寄">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/2022/08/20/22-0820-01/image-20220829104830861.png">
 <meta property="og:image" content="http://example.com/2022/08/20/22-0820-01/image-20220829104840678.png">
@@ -313,51 +313,60 @@
             
               <div class="markdown-body">
                 
-                <h1 id="进制基础"><a href="#进制基础" class="headerlink" title="进制基础"></a>进制基础</h1><ul>
+                <h1 id="进制基础"><a class="markdownIt-Anchor" href="#进制基础"></a> 进制基础</h1>
+<ul>
 <li>bit（比特） = 一个bit是一个0或1，叫做一个二进制位</li>
 <li>byte（字节）=  1byte 是 8 个比特</li>
 <li>16进制 = 4个2进制</li>
 </ul>
-<h1 id="汇编语言组成"><a href="#汇编语言组成" class="headerlink" title="汇编语言组成"></a>汇编语言组成</h1><ul>
+<h1 id="汇编语言组成"><a class="markdownIt-Anchor" href="#汇编语言组成"></a> 汇编语言组成</h1>
+<ul>
 <li>汇编指令：由CPU执行，是机器码的助记符，有对应的机器码</li>
 <li>伪指令：由编译器执行，没有对应的机器码，计算机不执行</li>
 <li>其它符号：比如：+－*/ 由编译器识别执行，没有对应机器码</li>
 </ul>
-<h1 id="CPU组成"><a href="#CPU组成" class="headerlink" title="CPU组成"></a>CPU组成</h1><p>一个典型的CPU大概由运算器、控制器、寄存器构成。外部总线实现CPU和主板上其他器件的联系，内部总线实现CPU内部各个部件的链接</p>
-<h1 id="寄存器、存储器、内存的区别"><a href="#寄存器、存储器、内存的区别" class="headerlink" title="寄存器、存储器、内存的区别"></a>寄存器、存储器、内存的区别</h1><ul>
+<h1 id="cpu组成"><a class="markdownIt-Anchor" href="#cpu组成"></a> CPU组成</h1>
+<p>一个典型的CPU大概由运算器、控制器、寄存器构成。外部总线实现CPU和主板上其他器件的联系，内部总线实现CPU内部各个部件的链接</p>
+<h1 id="寄存器-存储器-内存的区别"><a class="markdownIt-Anchor" href="#寄存器-存储器-内存的区别"></a> 寄存器、存储器、内存的区别</h1>
+<ul>
 <li>寄存器：是cpu组成部分，作用是将寄存器内的数据执行算术及逻辑运算，是操作数据的地方（当然也可以存储数据和指令）</li>
 <li>存储器：在cpu外，一般指的是硬盘、U盘等可以在切断电源后保存资料的设备，是存放数据的地方。</li>
-<li>更通俗的解释如下：（参考自知乎）<ul>
-<li>解释一：<ul>
+<li>更通俗的解释如下：（参考自知乎）
+<ul>
+<li>解释一：
+<ul>
 <li>寄存器就是你的口袋。身上只有那么几个，只装最常用或者马上要用的东西。</li>
 <li>内存就是你的背包。有时候拿点什么放到口袋里，有时候从口袋里拿出点东西放在背包里。</li>
 <li>辅存（外存）就是你家里的抽屉。可以放很多东西，但存取不方便。</li>
 </ul>
 </li>
-<li>解释二：如果把被储存的东西比作能量<ul>
+<li>解释二：如果把被储存的东西比作能量
+<ul>
 <li>寄存器就是 ATP，可以随时拿来用，性能高，但数量有限；</li>
 <li>内存就是葡萄糖，性能一般，但是存量可以比较多；</li>
 <li>外存（比如硬盘）就是脂肪，容量可以非常大，性能很差，要先转化为葡萄糖（存进内存），然后转化为 ATP（放到寄存器）才能直接利用（存取）。</li>
 </ul>
 </li>
-<li>解释三：按最简单的数据的存储和操作距离来理解它们的区别：<ul>
-<li>CPU（数据的操作）&lt;====&gt;缓存（数据的存储）&lt;=====&gt;寄存器（指令等存储）&lt;====&gt;内存（需要等待的所有数据的存储）&lt;====&gt;外部存储器（硬盘、光盘等）</li>
+<li>解释三：按最简单的数据的存储和操作距离来理解它们的区别：
+<ul>
+<li>CPU（数据的操作）&lt;<mark><mark>&gt;缓存（数据的存储）&lt;</mark></mark>=&gt;寄存器（指令等存储）&lt;<mark><mark>&gt;内存（需要等待的所有数据的存储）&lt;</mark></mark>&gt;外部存储器（硬盘、光盘等）</li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
-<h1 id="8086-CPU"><a href="#8086-CPU" class="headerlink" title="8086 CPU"></a>8086 CPU</h1><p>8086 CPU （Intel 8086 是一个由Intel于1978年所设计的16位微处理器芯片，是x86架构的鼻祖）有14个16位寄存器 AX、BX、CX、DX、SI、DI、SP、BP、IP、CS、SS、DS、ES、PSW，其中AX，BX，CX，DX 这4个通常用来存放一般性数据，被称为通用寄存器</p>
+<h1 id="8086-cpu"><a class="markdownIt-Anchor" href="#8086-cpu"></a> 8086 CPU</h1>
+<p>8086 CPU （Intel 8086 是一个由Intel于1978年所设计的16位微处理器芯片，是x86架构的鼻祖）有14个16位寄存器 AX、BX、CX、DX、SI、DI、SP、BP、IP、CS、SS、DS、ES、PSW，其中AX，BX，CX，DX 这4个通常用来存放一般性数据，被称为通用寄存器</p>
 <p>注意：8086 CPU 的上一代，也就是8086 CPU 的老爸实际是8位的，当然8086是16位的兼容8位的，所以为了兼容上一代的CPU， AX 寄存器（16位）可以分为两个<code>独立</code>的8位寄存器 AH，AL。同理，BX可分为BH、BL。CX分为CH、CL。DX分为DH、DL。</p>
 <p>8086 cpu可以一次处理2种尺寸数据：<code>字节(byte)和字(word) ，一个字等于两个字节</code></p>
-<h1 id="简单汇编指令"><a href="#简单汇编指令" class="headerlink" title="简单汇编指令"></a>简单汇编指令</h1><div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">18</span>    <span class="hljs-comment">;将18送入寄存器AX    AX = 18</span>
+<h1 id="简单汇编指令"><a class="markdownIt-Anchor" href="#简单汇编指令"></a> 简单汇编指令</h1>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">18</span>    <span class="hljs-comment">;将18送入寄存器AX    AX = 18</span>
 <span class="hljs-keyword">mov</span> <span class="hljs-number">ah</span>,<span class="hljs-number">88</span>    <span class="hljs-comment">;将88送入寄存器AH中   AH=88</span>
 <span class="hljs-keyword">add</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">8</span>     <span class="hljs-comment">;AX = AX+8</span>
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-built_in">bx</span>    <span class="hljs-comment">;AX的值 = BX</span>
 <span class="hljs-keyword">add</span> <span class="hljs-built_in">ax</span>,<span class="hljs-built_in">bx</span>    <span class="hljs-comment">;ax = ax+bx</span>
 
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-built_in">bl</span>	 <span class="hljs-comment">;这条指令是不正确的，ax是16位寄存器，bl是8位的，前后必须保持一致</span></code></pre></div>
-
 <p>作业：</p>
 <div class="code-wrapper"><pre><code class="hljs x86asm">程序段中的指令     指令执行后<span class="hljs-built_in">AX</span>中的值    指令执行后<span class="hljs-built_in">BX</span>中的值
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">4E20H</span>      <span class="hljs-number">4E20H</span>                   <span class="hljs-number">0000H</span>
@@ -373,36 +382,33 @@
 <span class="hljs-keyword">add</span> <span class="hljs-built_in">ax</span>,<span class="hljs-built_in">bx</span>		<span class="hljs-comment">;也就是16进制ax=6226+2000=8626</span>
 <span class="hljs-keyword">add</span> <span class="hljs-built_in">ax</span>,<span class="hljs-built_in">bx</span>		<span class="hljs-comment">;也就是ax=8226+8226=1 044C</span>
 注意：这里最后？计算出来的结果为1044C，但是由于<span class="hljs-built_in">AX</span>是<span class="hljs-number">16</span>位寄存器，所以最前面的<span class="hljs-number">1</span>溢出了，得到的？值为044C</code></pre></div>
-
-<h1 id="8086-CPU寻址能力"><a href="#8086-CPU寻址能力" class="headerlink" title="8086 CPU寻址能力"></a>8086 CPU寻址能力</h1><p>8086有20根总线，可以传送20位地址，每个地址都可以存放0或1，寻址能力即<code>2^20=1048576 bit</code>，即寻址能力为1M，cpu和内存之间通过20条地址总线相连接，可以传送20位地址，寻址能力达到1MB。但是16寄存器寻址能力是2的16次方，也就是65536bit，只有64KB，这显然是不合适的</p>
+<h1 id="8086-cpu寻址能力"><a class="markdownIt-Anchor" href="#8086-cpu寻址能力"></a> 8086 CPU寻址能力</h1>
+<p>8086有20根总线，可以传送20位地址，每个地址都可以存放0或1，寻址能力即<code>2^20=1048576 bit</code>，即寻址能力为1M，cpu和内存之间通过20条地址总线相连接，可以传送20位地址，寻址能力达到1MB。但是16寄存器寻址能力是2的16次方，也就是65536bit，只有64KB，这显然是不合适的</p>
 <p>那么内部寄存器为16位，那么如何来寻找20位地址？？采用地址合成（两个16位进行地址合成得到20位）</p>
 <img src="/2022/08/20/22-0820-01/image-20220829104830861.png" srcset="/img/loading.gif" lazyload class="" title="image-20220829104830861">
-
 <p>例如，1230和00C8进行合成，步骤如下：</p>
 <img src="/2022/08/20/22-0820-01/image-20220829104840678.png" srcset="/img/loading.gif" lazyload class="" title="image-20220829104840678">
-
 <p>寻址123c8H的内存单元  地址加法器采用段地址 x 16 + 偏移地址的方法合成<code>物理地址</code>，其实就是用一个基础地址加上一个偏移地址</p>
 <p>注意：</p>
 <ul>
 <li>这里的段地址×16，段地址是1230，这是十六进制，但是16是十进制，所以我们把1230转为十进制，也就是4656，然后再用4656×16=74496，而76696转为十六进制就是12300</li>
 <li>或者这样想也行，段地址*16相当于这个 “16进制数” 左移1位，后面补个0，1230就变成了12300</li>
 </ul>
-<h2 id="段地址和偏移地址的理解"><a href="#段地址和偏移地址的理解" class="headerlink" title="段地址和偏移地址的理解"></a>段地址和偏移地址的理解</h2><blockquote>
+<h2 id="段地址和偏移地址的理解"><a class="markdownIt-Anchor" href="#段地址和偏移地址的理解"></a> 段地址和偏移地址的理解</h2>
+<blockquote>
 <p>转载：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_18360881/article/details/107225697">https://blog.csdn.net/qq_18360881/article/details/107225697</a></p>
 </blockquote>
 <p>如果让你去一个地方，这个地方叫野猪窝（哈哈，这是个地名），那你知道怎么走吗？如果你不知道地址，你是不是会把中国遍历一下。也挺好，你可能会找到若干个野猪窝。如果我告诉你，这个地方在陕西省西安市蓝田县汤峪镇。你是不是很快就能找到目标?</p>
 <p>先别急，让我们一步一步来，假设你的定位范围是整个地球，首先我告诉你在中国，那么你就可以过滤掉美国，日本，英国等一系列国家，从而在我们中国内部进行检索。这时我又告诉你在陕西省，那么你离目标是不是又近了一步？然后是西安市、蓝田县······一步一步的，你就找到了这个地方。</p>
 <p>在上面的介绍中，中国可以认为是一级段地址，通过他可以过滤掉一系列其他国家，进行下一级行政单位（省份）的确定，陕西省是中国的偏移地址，进入中国范围后，可以通过陕西省过滤掉我国的其他省份，同样陕西省也是他下一级行政单位（西安市）的段地址，依次递推。这是不是就明了许多了？</p>
 <p>我们将这个概念再带回计算机上，假设你现在有1024字节的内存，你将他们分为四个段，每个段有256个字节。把这四个段分别编号为A，B，C，D。当你想要唯一的定位一个字节时，你应当先找到他所在的段地址，然后就可以排除其他三个段地址了。这样你的检索范围就会大大缩小。比如说你要检索的数据在C段，那你就可以只检索C段内的256个字节，如果再告诉你偏移地址，比如说是第123个字节，那么就很容易定位了。</p>
-<h2 id="物理地址-段地址-16-偏移地址的含义"><a href="#物理地址-段地址-16-偏移地址的含义" class="headerlink" title="物理地址=段地址*16+偏移地址的含义"></a>物理地址=段地址*16+偏移地址的含义</h2><blockquote>
+<h2 id="物理地址段地址16偏移地址的含义"><a class="markdownIt-Anchor" href="#物理地址段地址16偏移地址的含义"></a> 物理地址=段地址*16+偏移地址的含义</h2>
+<blockquote>
 <p>转载：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/443067188">https://zhuanlan.zhihu.com/p/443067188</a></p>
 </blockquote>
 <p>“段地址 x 16 + 偏移地址 = 物理地址” 的本质含义是：CPU在访问内存时，用<strong>基础地址</strong>（段地址 x 16）和基于基础地址的<strong>偏移地址</strong>相加，给出内存单元的物理地址。</p>
 <p>比如：</p>
 <img src="/2022/08/20/22-0820-01/image-20220830093931526.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830093931526">
-
-
-
 <p>此时 你从家出发前往图书馆，你询问我如何前往，我可以告诉你两种方式：</p>
 <ol>
 <li>从家出发，走2326m到达图书馆。这2326m就可以看作图书馆的物理地址。</li>
@@ -415,12 +421,12 @@
 <p>此时我们为以上描述增加一些限制条件，比如，只能通过纸条来传递信息</p>
 <p>你问我去图书馆怎么走，显然我需要一个可以容纳4位数据的纸条，才能写下2326这个数据。</p>
 <img src="/2022/08/20/22-0820-01/image-20220830094506657.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830094506657">
-
 <p>可是不巧的是， 我没有能容纳4位数据的纸条，仅有两张可以容纳3位数据的纸条。那么我只能以这种方式告诉你</p>
 <img src="/2022/08/20/22-0820-01/image-20220830094948537.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830094948537">
-
-<p>在第一张纸上写上 232（段地址），在第二张纸上写上006（偏移地址）。假设我们事先对这种情况有过约定：<br>你得到两张纸后做这样的运算：232（段地址）×10+006（偏移地址）=2326（物理地址）</p>
-<h2 id="段的最大长度"><a href="#段的最大长度" class="headerlink" title="段的最大长度"></a>段的最大长度</h2><p>一个段中每个内存单元的地址表示为 段地址:偏移地址</p>
+<p>在第一张纸上写上 232（段地址），在第二张纸上写上006（偏移地址）。假设我们事先对这种情况有过约定：<br />
+你得到两张纸后做这样的运算：232（段地址）×10+006（偏移地址）=2326（物理地址）</p>
+<h2 id="段的最大长度"><a class="markdownIt-Anchor" href="#段的最大长度"></a> 段的最大长度</h2>
+<p>一个段中每个内存单元的地址表示为 段地址:偏移地址</p>
 <p>其中，段的长度是偏移地址可以取的数值规定的，在8086cpu中，偏移地址使用一个16位的二进制数表示，其表示范围是（0000H:0FFFFH），总共有2^16(2的16次方)=64K个不同的取值，一个内存单元使用1个偏移地址，故一个段的大小是64K</p>
 <div class="code-wrapper"><pre><code class="hljs makefile"><span class="hljs-section">作业:</span>
 1.给定段地址为0001H，仅通过变化偏移地址寻址，CPU的寻址范围为____0010H___到___1000F_____。
@@ -431,70 +437,52 @@
 1. 由于CPU的范围是“段地址×16”+偏移寻址，由于偏移寻址是16位，那么最大就是FFFF，最小就是0啦，所以最小范围就是0001H×16，最大就是0001H×16后再加FFFF
 2. 这里和第1题恰好反过来了，这里知道物理地址是20000H，所以先减去FFFF得到1 0001，再把10001转为十进制再÷16得到4096，再把4096转为十六进制就是1000H，但是1000H如果是段地址，那么进一位（×16），也就是10000H，但是应该是1001H才行，所以前面的段地址最小应该是1001H
 最大为2000H</code></pre></div>
-
-
-
-<h2 id="8086-CPU读取指令过程"><a href="#8086-CPU读取指令过程" class="headerlink" title="8086 CPU读取指令过程"></a>8086 CPU读取指令过程</h2><p>段地址实际就是由段寄存器提供，8086 CPU有4个段寄存器：CS 、DS、SS 、ES </p>
+<h2 id="8086-cpu读取指令过程"><a class="markdownIt-Anchor" href="#8086-cpu读取指令过程"></a> 8086 CPU读取指令过程</h2>
+<p>段地址实际就是由段寄存器提供，8086 CPU有4个段寄存器：CS 、DS、SS 、ES</p>
 <p>其中CS和IP它们指示了CPU当前要读取的地址，CS叫代码段寄存器，IP为指令指针寄存器，比如：在<code>任意时刻</code>，8086 CPU将从CS中的内容×16+IP的内容单元处开始读取一条指令（可以将CS理解为段地址、IP理解为偏移地址）</p>
 <p>如下图：B8、23、01这些都是机器码，后面的20000、20001、20002这些是内存地址，后面是B8、23、01机器码对应的汇编指令（注意：<code>每个内存地址对应一个存储单元，每个存储单元大小为1字节</code>，恰好这里B8、23、01这些十六进制都是1个字节）</p>
 <img src="/2022/08/20/22-0820-01/image-20220830100304478.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830100304478">
-
 <p>8086 PC读取和执行指令的相关部件以及过程如下：</p>
 <p>步骤一：</p>
 <img src="/2022/08/20/22-0820-01/image-20220830100330281.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830100330281">
-
 <p>步骤二：</p>
 <img src="/2022/08/20/22-0820-01/image-20220830100750071.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830100750071">
-
 <p>步骤三：</p>
 <img src="/2022/08/20/22-0820-01/image-20220830100801500.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830100801500">
-
 <p>步骤四：</p>
 <img src="/2022/08/20/22-0820-01/image-20220830100809487.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830100809487">
-
 <p>步骤五：</p>
 <img src="/2022/08/20/22-0820-01/image-20220830100826437.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830100826437">
-
 <p>步骤六：</p>
 <img src="/2022/08/20/22-0820-01/image-20220830100835114.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830100835114">
-
 <p>步骤七：</p>
 <img src="/2022/08/20/22-0820-01/image-20220830100846225.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830100846225">
-
 <p>步骤八：</p>
 <img src="/2022/08/20/22-0820-01/image-20220830100854359.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830100854359">
-
 <p>步骤九：</p>
 <img src="/2022/08/20/22-0820-01/image-20220830101101510.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830101101510">
-
 <p>步骤十：</p>
 <img src="/2022/08/20/22-0820-01/image-20220830101110907.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830101110907">
-
 <p>步骤十一：</p>
 <img src="/2022/08/20/22-0820-01/image-20220830101121777.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830101121777">
-
 <p>步骤十二：</p>
 <img src="/2022/08/20/22-0820-01/image-20220830101129951.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830101129951">
-
 <p>步骤十三：</p>
 <img src="/2022/08/20/22-0820-01/image-20220830101136970.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830101136970">
-
 <p>步骤十四：</p>
 <img src="/2022/08/20/22-0820-01/image-20220830101145687.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830101145687">
-
 <p>步骤十五：</p>
 <img src="/2022/08/20/22-0820-01/image-20220830101154735.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830101154735">
-
 <p>步骤十六：</p>
 <img src="/2022/08/20/22-0820-01/image-20220830101201719.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830101201719">
-
 <p>经过上面的步骤，可总结CPU执行指令的步骤如下：</p>
 <ol>
 <li>从CS:IP指向的内存单元读取指令，读取的指令进入指令缓冲器</li>
 <li>IP = IP+读取的指令的长度，指向下一条指令</li>
 <li>执行指令，执行完成转到步骤1，重复这个过程</li>
 </ol>
-<h2 id="如何修改CS-IP的值"><a href="#如何修改CS-IP的值" class="headerlink" title="如何修改CS:IP的值"></a>如何修改CS:IP的值</h2><p>8086 CPU加电启动或复位后，CS和IP的值被设置为CS=FFFFH、IP=0000H，开机后执行的第一条指令的内存地址就是 CS=FFFFH、IP=0000H    </p>
+<h2 id="如何修改csip的值"><a class="markdownIt-Anchor" href="#如何修改csip的值"></a> 如何修改CS:IP的值</h2>
+<p>8086 CPU加电启动或复位后，CS和IP的值被设置为CS=FFFFH、IP=0000H，开机后执行的第一条指令的内存地址就是 CS=FFFFH、IP=0000H</p>
 <p>如何要同时修改CS:IP的值，那么可以通过jmp（跳转）指令来实现，比如：<code>jmp 0fffh:0100h</code>，把CS修改为0fffh，IP改为0100h</p>
 <p>如果仅仅修改IP的值，jmp 某个寄存器，比如：<code>mov ax,0fffh,jmp ax</code>，可以将这个分开理解，<code>mov ax,0fffh</code>就是ax=0fffh，后面的<code>jmp ax</code>可以理解为<code>mov ip,ax</code>，也就是ip=ax=0fffh，这样ip就成了0fffh，为啥修改ip的值要这么麻烦呢？？？因为语法就这么规定的。。。</p>
 <div class="code-wrapper"><pre><code class="hljs txt">作业：
@@ -509,65 +497,47 @@ sub ax,ax  读取sub ax，bx 修改ip+2   执行
 jmp ax     读取jmp ax ，修改ip+2  执行
 注意：jmp ax，这里由于sub ax，ax后，ax为0，也就是jmp 0，所以还会修改ip，ip还会修改1次
 所以ip一共修改了4次</code></pre></div>
-
-<h1 id="Debug调试方法"><a href="#Debug调试方法" class="headerlink" title="Debug调试方法"></a>Debug调试方法</h1><blockquote>
+<h1 id="debug调试方法"><a class="markdownIt-Anchor" href="#debug调试方法"></a> Debug调试方法</h1>
+<blockquote>
 <p>注意：这里要在windows 2003中使用，win10版本太高，无法直接使用</p>
 </blockquote>
 <p>cmd下直接输入debug即可</p>
 <img src="/2022/08/20/22-0820-01/image-20220830104037882.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830104037882">
-
 <p>-r 查看和改变寄存器内容</p>
 <img src="/2022/08/20/22-0820-01/image-20220830104056968.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830104056968">
-
 <p>-d 以数据方式显示寄存器的内容</p>
 <img src="/2022/08/20/22-0820-01/image-20220830104104567.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830104104567">
-
 <p>-u 以汇编指令的方式显示寄存器的内容</p>
 <img src="/2022/08/20/22-0820-01/image-20220830104509769.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830104509769">
-
 <p>-t 执行一条机器指令</p>
 <img src="/2022/08/20/22-0820-01/image-20220830104519704.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830104519704">
-
 <p>-a 用汇编形式写入指令，这里是向0AEF:100这个地址写入mov ax,100（两次回车退出）</p>
 <img src="/2022/08/20/22-0820-01/image-20220830104528150.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830104528150">
-
 <p>然后-r查看寄存器的内容如下，AX的值是0，我们现在是想把ax值变成100，如果后面执行-t的话，下图中绿色划线的指令mov [96C7],AL，我们只需要让其-t执行mov ax,100即可把ax的值由0变成100</p>
 <img src="/2022/08/20/22-0820-01/image-20220830105122544.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830105122544">
-
 <p>所以我们需要修改IP的值，把IP的值修改成100即可，这样段地址（CS）：偏移地址（IP） = 0AEF：0100，这个地址也就对应-a写入时的地址</p>
 <p>通过-r ip修改ip的值，修改后，再次-r查看寄存器内容，指向的就是ax,100</p>
 <img src="/2022/08/20/22-0820-01/image-20220830172405342.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830172405342">
-
 <p>然后-t执行后，ax的值就改成了100</p>
 <img src="/2022/08/20/22-0820-01/image-20220830172414669.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830172414669">
-
 <p>-d 0aef:0170从0aef:0170开始查看数据</p>
 <img src="/2022/08/20/22-0820-01/image-20220830172421247.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830172421247">
-
 <p>如果要查看0aef:0170到0aef:0177之间的数据，如下划红线的数据：</p>
 <img src="/2022/08/20/22-0820-01/image-20220830172429001.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830172429001">
-
 <p>使用 -d 0aef:0170 0177</p>
 <img src="/2022/08/20/22-0820-01/image-20220830172436745.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830172436745">
-
 <p>-e修改数据内容，比如：修改0aef:1000开始的数据，没修改前，数据46,EB,EB，修改成00,11,22</p>
 <img src="/2022/08/20/22-0820-01/image-20220830172444557.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830172444557">
-
 <p>修改后如下：</p>
 <img src="/2022/08/20/22-0820-01/image-20220830172451282.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830172451282">
-
 <p>也可以按字符串修改</p>
 <img src="/2022/08/20/22-0820-01/image-20220830172459440.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830172459440">
-
 <p>修改后如下：</p>
 <img src="/2022/08/20/22-0820-01/image-20220830172505840.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830172505840">
-
 <p>也可以通过-a写入数据，比如通过-a向1000:0这个地方写入mov ax,bx，然后查看</p>
 <img src="/2022/08/20/22-0820-01/image-20220830172512107.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830172512107">
-
 <p>通过-u查看更明显</p>
 <img src="/2022/08/20/22-0820-01/image-20220830172518360.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830172518360">
-
 <div class="code-wrapper"><pre><code class="hljs makefile"><span class="hljs-section">作业:</span>
 查看内存中的内容，PC主板上的ROM上有一个生成日期，在内存FFF00-FFFFFH的某几个单元中，请找到这个生产日期并且试图改变他
 
@@ -579,7 +549,6 @@ fff00=fff0*10+0；
 所以，查看内存的指定物理地址的数据，就直接使用命令，
 d fff0:0 ff
 即可得到该内存中fff00-fffff的数据。</code></pre></div>
-
 <img src="/2022/08/20/22-0820-01/image-20220830191832791.png" srcset="/img/loading.gif" lazyload class="" title="image-20220830191832791">
 
                 
