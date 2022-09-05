@@ -1,0 +1,705 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#000000">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="转载： https:&#x2F;&#x2F;blog.csdn.net&#x2F;xuanyuan_fsx&#x2F;article&#x2F;details&#x2F;106052513   自我介绍 我叫阿Q，是CPU一号车间里的员工，我所在的这个CPU足足有8个核，就有8个车间，干起活来杠杠滴。 我所在的一号车间里，除了负责执行指令的我，还有负责取指令的小A，负责分析指令的小胖和负责结果回写的老K。  CPU的每个车间都有一堆箱子，人们把这些箱子叫">
+<meta property="og:type" content="article">
+<meta property="og:title" content="转载：CPU的熔断幽灵">
+<meta property="og:url" content="http://example.com/2022/08/21/22-0821-06/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="转载： https:&#x2F;&#x2F;blog.csdn.net&#x2F;xuanyuan_fsx&#x2F;article&#x2F;details&#x2F;106052513   自我介绍 我叫阿Q，是CPU一号车间里的员工，我所在的这个CPU足足有8个核，就有8个车间，干起活来杠杠滴。 我所在的一号车间里，除了负责执行指令的我，还有负责取指令的小A，负责分析指令的小胖和负责结果回写的老K。  CPU的每个车间都有一堆箱子，人们把这些箱子叫">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-06/image-20220821125419547.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-06/image-20220821125541494.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-06/image-20220821125634033.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-06/image-20220821130113626.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-06/image-20220821131713172.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-06/image-20220821133410193.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-06/image-20220821133444813.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-06/image-20220821133557943.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-06/image-20220821134224810.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-06/image-20220821134335630.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-06/image-20220821135249703.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-06/image-20220821135655565.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-06/image-20220821140235996.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-06/image-20220821140404348.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-06/image-20220821140529860.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-06/image-20220821140718910.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-06/image-20220821140925900.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-06/image-20220821140943193.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-06/image-20220821141014291.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-06/image-20220821142034063.png">
+<meta property="article:published_time" content="2022-08-21T02:56:44.000Z">
+<meta property="article:modified_time" content="2022-08-31T12:04:30.094Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="二进制">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/08/21/22-0821-06/image-20220821125419547.png">
+  
+  
+  
+  <title>转载：CPU的熔断幽灵 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/suofang.css">
+<link rel="stylesheet" href="/css/font.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>A_Yu&#39;s BLOG</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="转载：CPU的熔断幽灵"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-08-21 10:56" pubdate>
+          August 21, 2022 am
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          42 mins
+        
+      </span>
+    
+	
+
+  
+
+	
+
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">转载：CPU的熔断幽灵</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>转载：<br />
+<a target="_blank" rel="noopener" href="https://blog.csdn.net/xuanyuan_fsx/article/details/106052513">https://blog.csdn.net/xuanyuan_fsx/article/details/106052513</a></p>
+</blockquote>
+<h1 id="自我介绍"><a class="markdownIt-Anchor" href="#自我介绍"></a> 自我介绍</h1>
+<p>我叫阿Q，是CPU一号车间里的员工，我所在的这个CPU足足有8个核，就有8个车间，干起活来杠杠滴。</p>
+<p>我所在的一号车间里，除了负责执行指令的我，还有负责取指令的小A，负责分析指令的小胖和负责结果回写的老K。</p>
+<img src="/2022/08/21/22-0821-06/image-20220821125419547.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821125419547">
+<p>CPU的每个车间都有一堆箱子，人们把这些箱子叫做<code>寄存器</code>，我所在的一号车间也不例外，我们每天的工作就是不断执行指令，然后折腾这些箱子，往里面存东西取东西。</p>
+<p>由于我们四个人的出色工作，一号车间业绩突出，在年会上还多次获得了最佳CPU核心奖呢。</p>
+<h1 id="缓存"><a class="markdownIt-Anchor" href="#缓存"></a> 缓存</h1>
+<p>我们每天都需要跟<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E5%86%85%E5%AD%98&amp;spm=1001.2101.3001.7020">内存</a>打交道，不过由于内存这家伙实在太慢了，我们浪费了很多时间等待他给我们数据传输。</p>
+<img src="/2022/08/21/22-0821-06/image-20220821125541494.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821125541494">
+<p>终于有一天，上面给我们下了命令，说竞争对手CPU的速度快赶上我们了，让我们想办法提升工作效率。这一下可难倒了我们，我们平时干活绝没有偷懒，要怪只能怪内存那家伙，是他拖了我们后腿。</p>
+<p>一天晚上，我们哥四个在一起聚餐，讨论起上面的这道命令来，大家都纷纷叹气。</p>
+<p>就在一筹莫展之际，老K提出了一个想法：“兄弟们，我发现了一个现象，<strong>咱们和内存打交道的时候，如果访问了某个地址的数据，它周围的数据随后也大概率会被访问到</strong>”，说到这里，老K停顿了一下。</p>
+<img src="/2022/08/21/22-0821-06/image-20220821125634033.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821125634033">
+<p>我一边听一边想着，小A倒是先开口：“然后呢？你想表达什么意思？”</p>
+<p>老K继续说道：“咱每次数据都找内存要，太慢了，我寻思在咱们车间划一块区域，结合我发现的那个现象，以后让内存一次性把目标区域附近的数据一起给我们，我们存在这块区域，后面在需要用到的时候就先去这里找，找不到再去找内存要，岂不省事？”</p>
+<p>听老K这么一描述，感觉靠谱，我也赶紧附和：“好办法！你们看啊，这内存老是拖咱后退，但是这家伙一时半会也快不起来，要不咱先用这招试试，看看能不能加快一点工作效率，给上面也有个交代。”</p>
+<p>说干就干，我们很快就付诸实践了，我们还给这技术取了个名字叫<code>缓存</code>，效果居然出奇的好，后来为了进一步优化，我们还把缓存分为了两块，一块离<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E5%AF%84%E5%AD%98%E5%99%A8&amp;spm=1001.2101.3001.7020">寄存器</a>很近叫一级缓存，剩下的叫二级缓存。一级缓存中进一步分了指令缓存和数据缓存两块。</p>
+<img src="/2022/08/21/22-0821-06/image-20220821130113626.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821130113626">
+<p>我们车间的工作效率那是飞速提升，但不知道是谁走漏了风声，其他几个车间也知道了这项技术，纷纷效仿。</p>
+<p>这天，为了业绩，我们决定再加第三级缓存，这次把空间弄大点，不过咱们车间地盘有点局促，放不下，我们偷偷给上面领导反馈了这事儿，想让领导帮我们协调一下。</p>
+<p>领导倒是同意了，不过告诉我们他得一碗水端平，平衡各车间的利益。但是咱厂里空间也有限，不可能给每个车间都分配那么大的空间，于是决定由厂里统一安排一块大的区域，让各个车间来共享。没有办法，我们也只好同意了。</p>
+<img src="/2022/08/21/22-0821-06/image-20220821131713172.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821131713172">
+<p>现在，我们用上了三级缓存技术，内存那家伙拖后腿的现象缓解了不少，相当部分时间我们都能从这三级缓存里面找到我们需要的数据。</p>
+<h1 id="乱序执行"><a class="markdownIt-Anchor" href="#乱序执行"></a> 乱序执行</h1>
+<p>随着技术的发展，咱们CPU工厂的工作性能也是不断攀升，慢慢的，我们几个又开始闲下来了，因为我们实在太快了，尽管有了缓存，但我们还是有了不少闲暇时间。</p>
+<p>这天我还是像往常一样，小A取指令去了，我们知道这得要点时间，于是我和小胖还有老K我们仨斗起了地主。</p>
+<img src="/2022/08/21/22-0821-06/image-20220821133410193.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821133410193">
+<p>打了好几把，小A才气喘吁吁的回来，“小胖，该你去指令分析了，你起来让我来打几把”。小胖赶紧起身干活，换上了小A上桌。</p>
+<p>就这样我们几个轮流工作，一直保持着三个人的斗地主牌桌。</p>
+<p>没想到的是，没过多久，厂里领导过来视察了，正好撞见我们几个打牌，狠狠的训斥了我们一顿。</p>
+<img src="/2022/08/21/22-0821-06/image-20220821133444813.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821133444813">
+<p>“你们几个上班时间玩得挺嗨啊”，领导的脸拉的老长。</p>
+<p>“领导，我们没有偷懒，这取指令、译码、执行、回写几个步骤都得分步执行，但是我们工作太快，存储器跟不上我们，我们等得无聊打发时间嘛”，我上前解释到。</p>
+<p>“干等着你们也可以提前做一些后面的准备工作嘛，不要浪费时间，让生产效率更上一层楼”，领导说完就离开了，留下我们几个面面相觑。</p>
+<p>不过领导的一番话倒是如一记重锤敲在我的头上，对啊，我们有这打牌的时间不如提前把后续指令的准备工作先做了，肯定能提升不少效率呢！</p>
+<p>我开始组织兄弟几个商讨方案，“兄弟们，我们最主要的时间都浪费在等待内存数据上了，如果我们能在等待的时间里把后续指令需要的数据提前准备到缓存中来，那可就节约不少时间了，不用每次都等那么久。”</p>
+<img src="/2022/08/21/22-0821-06/image-20220821133557943.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821133557943">
+<p>老K听后很赞赏我的思路，并补充到：“<strong>不仅是准备工作，像有些指令，比如加法，如果参与加法的数据不依赖前面指令的结果，咱们完全可以提前把这加法指令执行了嘛，把结果保存在缓存中，等真正轮到这条指令执行的时候，再把缓存中的结果写到内存中，这不也是节约了时间吗</strong>”</p>
+<p>大家开始头脑风暴起来，原来可以做的事情还这么多，之前光想着等靠要，现在要主动出击了，因为打乱了顺序提前会执行后面的指令，我们把这个技术叫做<code>乱序执行</code>.</p>
+<p>“这次大家要保密哦，不能让隔壁车间知道咱们的这次讨论内容”，会议结束前，我提醒大家。</p>
+<h1 id="分支预测"><a class="markdownIt-Anchor" href="#分支预测"></a> 分支预测</h1>
+<p>按照这次会议讨论的结果，咱们第二天准备实行，不过刚一开始，就遇到了麻烦。</p>
+<p>按照计划，我们在空闲时间里，会提前把后续要执行的指令能做的工作先做了，但麻烦的是我们遇到了一条判断指令，因为不知道最终结果是true还是false，我们没法知道后续是应该执行分支A的指令还是分支B的指令。不敢轻举妄动，怕一会做了无用功。</p>
+<img src="/2022/08/21/22-0821-06/image-20220821134224810.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821134224810">
+<p>大家只好放弃了提前做准备工作的想法，还是一步步来。</p>
+<p>不过很快我们发现，我们经常执行到这个判断指令，而且每次结果都是去执行A分支，从没有去过B分支。</p>
+<img src="/2022/08/21/22-0821-06/image-20220821134335630.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821134335630">
+<p>于是我们几个又商量，发明了一种叫<code>分支预测</code>的技术，<strong>遇到分支跳转时，按照之前的经验，如果某个分支经常被执行，那后续再去这个分支的概率一定很大，那这样咱们预测后面会去到这个分支，就提前把这个分支后面指令能做的工作先做了</strong>。</p>
+<p>果然，用上了<code>分支预测</code>和<code>乱序执行</code>后，我们车间的效率又狠狠的提升了一把，在工厂的集体大会上又一次表扬了我们，并且把我们的先进技术向全厂推广。</p>
+<p>自从我们车间用上了<code>乱序执行</code>和<code>分支预测</code>后，生产效率那是大大提升，领导不仅在全厂的员工大会表扬了我们，还把这两项技术向全厂推广，在我们8个CPU核心车间都铺开了，性能甩开竞争对手CPU几条街。</p>
+<p>可是，就在我们还沉醉在取得的成绩时，不知不觉我们竟埋下了灾难的种子······</p>
+<img src="/2022/08/21/22-0821-06/image-20220821135249703.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821135249703">
+<p>事情还得从不久前的一个晚上说起。</p>
+<h1 id="神秘代码"><a class="markdownIt-Anchor" href="#神秘代码"></a> 神秘代码</h1>
+<p>这天晚上，我们一号车间遇到了这样一段代码：</p>
+<div class="code-wrapper"><pre><code class="hljs angelscript"><span class="hljs-built_in">uint8</span>_t <span class="hljs-built_in">array</span>1[<span class="hljs-number">160</span>] = &#123;<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>,<span class="hljs-number">7</span>,<span class="hljs-number">8</span>,<span class="hljs-number">9</span>,<span class="hljs-number">10</span>,<span class="hljs-number">11</span>,<span class="hljs-number">12</span>,<span class="hljs-number">13</span>,<span class="hljs-number">14</span>,<span class="hljs-number">15</span>,<span class="hljs-number">16</span>&#125;;
+<span class="hljs-built_in">uint8</span>_t <span class="hljs-built_in">array</span>2[<span class="hljs-number">256</span> * <span class="hljs-number">512</span>];
+<span class="hljs-built_in">uint8</span>_t temp = <span class="hljs-number">0</span>;
+
+<span class="hljs-built_in">void</span> bad_guy(<span class="hljs-built_in">int</span> x) &#123;
+	<span class="hljs-keyword">if</span> (x &lt; <span class="hljs-number">16</span>) &#123;
+		temp &amp;= <span class="hljs-built_in">array</span>2[<span class="hljs-built_in">array</span>1[x] * <span class="hljs-number">512</span>];
+	&#125;
+&#125;</code></pre></div>
+<p>不到一会儿功夫，我们就执行了这个<code>bad_guy()</code>函数很多次，这不，又来了。</p>
+<p>负责取指令的小A向内存那家伙打了一通电话，让内存把参数x的内容传输过来，我们知道，以内存那蜗牛的速度，估计得让我们好等。</p>
+<p>这时，负责指令译码的小胖忍不住说了：“你们看，我们这都执行这个函数好多次了，每次的参数x都是小于16的，这一次估计也差不多，要不咱们启动<code>分支预测</code>功能，先把小于16分支里的指令先提前做一些？大家看怎么样”</p>
+<img src="/2022/08/21/22-0821-06/image-20220821135655565.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821135655565">
+<p>我和负责数据回写的老K互相看了一眼，都点头表示同意。</p>
+<p>于是，就在等待的间隙，我们又给内存那家伙打了电话，让他把<code>array1[x]</code>的内容也传过来。</p>
+<p>等了一会儿，数据总算传了过来：</p>
+<div class="code-wrapper"><pre><code class="hljs apache"><span class="hljs-attribute">x</span>: <span class="hljs-number">2</span>
+<span class="hljs-attribute">array1</span>[x]: <span class="hljs-number">3</span></code></pre></div>
+<p>拿到结果之后，我们开始一边执行<code>x&lt;16</code>的比较指令，一边继续打电话给内存索要<code>array2[3]</code>的内容。</p>
+<p>比较指令执行的结果不出所料，果然是<code>true</code>，接下来就要走入我们预测的分支，而我们提前已经将需要的数据准备到缓存中，省去了不少时间。</p>
+<p>就这样，我们成功的预测了后续的路线，我们真是一群机智的小伙伴。</p>
+<img src="/2022/08/21/22-0821-06/image-20220821140235996.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821140235996">
+<h1 id="遭遇滑铁卢"><a class="markdownIt-Anchor" href="#遭遇滑铁卢"></a> 遭遇滑铁卢</h1>
+<p>天有不测风云，不久，事情发生了变化。</p>
+<p>“呀！比较结果是<code>false</code>，这一次的x比16大了”，我执行完结果后发现和我们预期的有了出入。</p>
+<p>小A闻讯而来，“额，咱们提前执行了不该执行的指令不会有问题吧？”</p>
+<img src="/2022/08/21/22-0821-06/image-20220821140404348.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821140404348">
+<p>老K安慰道：“没事儿，咱们只是提前把数据读到了我们的缓存中，没问题的，放心好啦”</p>
+<p>我想了想也对，大不了我们提前做的准备工作白费了，没有多想就继续去执行&gt;16的分支指令了。</p>
+<p>随后，同样的事情也时有发生，渐渐的我们就习惯了。</p>
+<h1 id="灾难降临"><a class="markdownIt-Anchor" href="#灾难降临"></a> 灾难降临</h1>
+<p>夜越来越深，我们都有点犯困了，突然，领导来了一通电话，让我们放下手里的工作火速去他办公室。</p>
+<p>我们几个不敢耽误，赶紧出发。</p>
+<p>来到领导的办公室，里面多了两个陌生人，其中一个还被绑着，领导眉头紧锁，气氛很是紧张。</p>
+<img src="/2022/08/21/22-0821-06/image-20220821140529860.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821140529860">
+<p>“阿Q啊，你知不知道你们新发明的<code>乱序执行</code>和<code>分支预测</code>技术闯了大祸了？”</p>
+<p>我们几个一听傻眼了，“领导，这是从何说起啊？”</p>
+<p>领导从椅子上站了起来，指着旁边的陌生人说到：“给你们介绍一下，这是操作系统那边过来的安全员，让他告诉你们从何说起吧！”</p>
+<p>这位安全员向大家点了点头，指着被捆绑那人说道：“大家好，我们抓到这个线程在读取系统内核空间的数据，经过我们的初审，他交代了是通过你们CPU的<code>乱序执行</code>和<code>分支预测</code>功能实现的这一目的。”</p>
+<p>我和小A几个一听都是满脸问号，我们这两个提升工作效率的技术怎么就能泄漏系统内核数据呢？</p>
+<img src="/2022/08/21/22-0821-06/image-20220821140718910.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821140718910">
+<h1 id="真相大白"><a class="markdownIt-Anchor" href="#真相大白"></a> 真相大白</h1>
+<p>安全员显然看出了我们的疑惑，指着被捆绑的那个线程说道：“你把之前交代的再说一遍”</p>
+<p>“几位大爷，你们之前是不是遇到了分支预测失败的情况？”，那人抬头看着我们。</p>
+<p>“有啊，跟这有什么关系？失败了很正常嘛，既然是预测那就不能100%打包票能预测正确啊”，我回答道。</p>
+<p>“<strong>您说的没错，不过如果这个失败是我故意策划的呢？</strong>”</p>
+<img src="/2022/08/21/22-0821-06/image-20220821140925900.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821140925900">
+<p>听他这么一说，我的心一下悬了起来，“纳尼，你干的？”</p>
+<p>“是的，就是我，我先故意给你连续多次小于16的参数，误导你们，误以为后面的参数还是小于16的，然后突然来一个特意构造的大于16的参数，你们果然上钩了，预测失败，提前执行了一些本不该执行的指令。”</p>
+<p>“那又如何呢？我们只是把后面需要的数据提前准备到了缓存中，并没有进一步做什么啊”，我还是不太明白。</p>
+<p>“<strong>这就够了！</strong>”</p>
+<p>“你小子都被捆上了，就别吊胃口了，一次把话说清楚”，一旁急性子的老K忍不住了。</p>
+<img src="/2022/08/21/22-0821-06/image-20220821140943193.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821140943193">
+<p>“好好好，我这就交代。你们把数据提前准备到了缓存中，我后面去访问这部分数据的时候，发现比访问其他内存快了很多”</p>
+<p>“那可不，我们的缓存技术可不是吹牛的！哎等等，怎么又扯到缓存上去了？”，老K继续问道。</p>
+<p>那人继续说道：“<strong>如果我想知道某个地址单元内的值，我就以它作为数组的偏移，去访问一片内存区域。利用你们会提前预测执行而且会把数据缓存的机制。你们虽然预测失败了，但对应的那一块数据已经在缓存中了，接着，我依次去访问那一片内存，看看谁的访问时间明显比其他部分短，那就知道哪一块被缓存了，再接着反推就能知道作为偏移的数值是多少了</strong>，按照这个思路我可以知道每一个地址单元的内容”</p>
+<img src="/2022/08/21/22-0821-06/image-20220821141014291.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821141014291">
+<p>我们几个一边听着一边想着，琢磨了好一会儿总算弄清楚了这家伙的套路，老K气得火冒三丈，差点就想动手修理那人。</p>
+<p>“好你个家伙，倒是挺聪明的，可惜都不用在正途上！好好的加速优化机制竟然成为了你们的帮凶”，我心中也有一团火气。</p>
+<h1 id="亡羊补牢"><a class="markdownIt-Anchor" href="#亡羊补牢"></a> 亡羊补牢</h1>
+<p>事情的真相总算弄清楚了，我们几个此刻已经汗流浃背。</p>
+<p>经过和安全员的协商，操作系统那边推出了全新的<code>KPTI</code>技术来解决这个问题，也就是<code>内核页表隔离</code>。</p>
+<img src="/2022/08/21/22-0821-06/image-20220821142034063.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821142034063">
+<p>以前的时候，线程执行在用户态和内核态时用的是同一本地址翻译手册，也就是人们说的<code>页表</code>，通过这本手册，我们CPU就能通过虚拟地址找到真实的内存页面。</p>
+<p>现在好了，让线程运行在用户态和内核态时使用不同的手册，用户态线程的手册中，内核地址空间部分是一片空白，来一招釜底抽薪！</p>
+<p>本以为我们可以回去了，没想到领导却给我们出了难题，“这祸是你们闯下的，人家操作系统那边虽然做了保护，你们是不是也该拿出点办法来呢，要不然以后我们CPU还怎么抬得起头来？”</p>
+<p class="note note-secondary">
+    本文描述的是两年前爆发的大名鼎鼎的CPU的熔断与幽灵漏洞。<br/>
+    乱序执行与分支预测是现代处理器普遍采用的优化机制。和传统软件漏洞不同，硬件级别的漏洞影响更大更深也更难以修复。<br/>
+    通过判断内存的访问速度来获知是否有被缓存，这类技术有一个专门的术语叫侧信道，即通过一些场外信息来分析得出重要结论，进而达成正常途径无法达成的目的
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/">#二进制</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/08/21/22-0821-05/" title="x86保护模式day5">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">x86保护模式day5</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/08/21/22-0821-01/" title="x86保护模式day1">
+                        <span class="hidden-mobile">x86保护模式day1</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键字</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/image.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>

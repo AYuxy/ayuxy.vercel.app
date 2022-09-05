@@ -764,7 +764,7 @@ html {
 html,
 body {
   height: 100%;
-  font-family: var(--font-family-sans-serif);
+  font-family: Microsoft Jhenghei;
   overflow-wrap: break-word;
 }
 body {
@@ -829,9 +829,9 @@ i.iconfont {
   --color-mode: "light";
   --body-bg-color: #eee;
   --board-bg-color: #fff;
-  --text-color: #3c4858;
+  --text-color: #000000;
   --sec-text-color: #718096;
-  --post-text-color: #2c3e50;
+  --post-text-color: #000000;
   --post-heading-color: #1a202c;
   --post-link-color: #0366d6;
   --link-hover-color: #30a9de;
@@ -1310,7 +1310,7 @@ figure.highlight td.code > pre {
 .markdown-body {
   font-size: 1rem;
   line-height: 1.6;
-  font-family: var(--font-family-sans-serif);
+  font-family: Microsoft Jhenghei;
   margin-bottom: 2rem;
   color: var(--post-text-color);
 }
@@ -1391,7 +1391,7 @@ figure.highlight td.code > pre {
   max-width: 100%;
   margin: 1.5rem auto;
   display: block;
-  box-shadow: 0 5px 11px 0 rgba(0,0,0,0.18), 0 4px 15px 0 rgba(0,0,0,0.15);
+box-shadow
   border-radius: 4px;
   background-color: transparent;
 }
@@ -1428,8 +1428,8 @@ hr,
 .post-content,
 post-custom {
   box-sizing: border-box;
-  padding-left: 8%;
-  padding-right: 8%;
+  padding-left: 9%;
+  padding-right: 9%;
 }
 @media (max-width: 767px) {
   .post-content,
@@ -1951,7 +1951,7 @@ input[type=checkbox] {
 }
 .category .category-item,
 .category .category-subitem {
-  font-weight: bold;
+  font-weight: normal;
   display: flex;
   align-items: center;
 }

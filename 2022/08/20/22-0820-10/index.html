@@ -1,0 +1,960 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#000000">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="DOS中断例程 实际之前我们已经接触过dos中断例程，如下： mov ax,4c00h int 21h 而 mov  ax,4c00h 也就是 mov ah,4ch mov al,00h mov ah,4ch mov al,0 int 21h		;表示使用int 21h中断例程的4ch子程序，功能为程序返回，ah传递参数 作业： assume cs:code,ds:data  data segm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="汇编day10">
+<meta property="og:url" content="http://example.com/2022/08/20/22-0820-10/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="DOS中断例程 实际之前我们已经接触过dos中断例程，如下： mov ax,4c00h int 21h 而 mov  ax,4c00h 也就是 mov ah,4ch mov al,00h mov ah,4ch mov al,0 int 21h		;表示使用int 21h中断例程的4ch子程序，功能为程序返回，ah传递参数 作业： assume cs:code,ds:data  data segm">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-10/image-20220904162736276.png">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-10/image-20220904162855237.png">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-10/image-20220904162902231.png">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-10/image-20220904163032978.png">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-10/image-20220904163101938.png">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-10/image-20220904163423875.png">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-10/image-20220904163459454.png">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-10/image-20220904163505204-16622805054141-16622805063062.png">
+<meta property="article:published_time" content="2022-08-20T15:10:04.000Z">
+<meta property="article:modified_time" content="2022-09-04T08:35:52.634Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="二进制">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/08/20/22-0820-10/image-20220904162736276.png">
+  
+  
+  
+  <title>汇编day10 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/suofang.css">
+<link rel="stylesheet" href="/css/font.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>A_Yu&#39;s BLOG</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="汇编day10"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-08-20 23:10" pubdate>
+          August 20, 2022 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.7k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          48 mins
+        
+      </span>
+    
+	
+
+  
+
+	
+
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">汇编day10</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="dos中断例程"><a class="markdownIt-Anchor" href="#dos中断例程"></a> DOS中断例程</h1>
+<p>实际之前我们已经接触过dos中断例程，如下：</p>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">4c00h</span>
+<span class="hljs-keyword">int</span> <span class="hljs-number">21h</span></code></pre></div>
+<p>而 mov  ax,4c00h 也就是 mov ah,4ch mov al,00h</p>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-number">ah</span>,<span class="hljs-number">4ch</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>,<span class="hljs-number">0</span>
+<span class="hljs-keyword">int</span> <span class="hljs-number">21h</span>		<span class="hljs-comment">;表示使用int 21h中断例程的4ch子程序，功能为程序返回，ah传递参数</span></code></pre></div>
+<p>作业：</p>
+<div class="code-wrapper"><pre><code class="hljs txt">assume cs:code,ds:data
+
+data segment
+	db &#x27;Welcome to naizishaozhi&#x27;,&#x27;$&#x27;	;这里的$表示字符串结束的标志
+data ends
+
+code segment
+	start:
+		
+		mov ah,2	;调用2号子程序，来设置光标
+		;设置参数
+		mov bh,0	;设显存置第0页
+		mov dh,5	;设置第5行
+		mov dl,12	;设置第12列
+		int 10h		;设置完参数后调用10h中断例程
+		
+		
+		mov ax,data		
+		mov ds,ax
+		mov dx,0	;ds:dx，指向data段字符串的首地址
+		mov ah,9	;调用号子程序，功能是在光标处显示字符串
+		int 21h		;注意:调用21h中断例程时候，该例程是以dx为偏移的，所以在前面把dx设置为0
+		
+		mov ax,4c00h
+		int 21h
+code ends
+end start</code></pre></div>
+<p>编译上述程序，指向后如下：</p>
+<img src="/2022/08/20/22-0820-10/image-20220904162736276.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904162736276">
+<h1 id="端口"><a class="markdownIt-Anchor" href="#端口"></a> 端口</h1>
+<p>CPU 是一块芯片，通过地址线、数据线、控制线和其他电子器件链接，那么我们在键盘上按下 ‘A’ ，CPU如何获取到我们键盘上按下的 ‘A’ 呢 ？？</p>
+<p>在电脑的主板上有很多接口，如下，这些接口上有很多芯片，这些芯片上还有一些寄存器，比如：笔记本上的插键盘的usb接口，这个接口上就有芯片，芯片上就有寄存器。</p>
+<img src="/2022/08/20/22-0820-10/image-20220904162855237.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904162855237">
+<p>比如：我们在键盘上按下 ‘A’ ，由于键盘上肯定也有芯片，芯片上就有寄存器，那么当我们在键盘上按下 ’ A’ 的时候，就会把 ‘A’ 存放到键盘芯片上的寄存器中，然后通过 “端口” 把A发送给CPU，实际这里端口就是键盘和电脑连接的usb接口上的寄存器，每个端口都有一个编号，类似于内存的地址。CPU通过端口地址来定位端口，端口的范围是64KB，即 0~65535</p>
+<img src="/2022/08/20/22-0820-10/image-20220904162902231.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904162902231">
+<p>注意：对端口的读写不能使用 mov push pop 等内存指令，端口的读写有2条：In（读）和 out（写）</p>
+<p>比如：访问60号端口的内容</p>
+<div class="code-wrapper"><pre><code class="hljs txt">In al,60h	;这里必须是al或者ax，这个是固定的格式，访问8位端口用al，访问16位端口用ax</code></pre></div>
+<p>具体如下：</p>
+<p>CPU要读取60h号端口的内容，那么CPU通过地址总线将60h这个地址信息发送出去，找到60h端口，然后通过控制线告诉这个端口要执行In读命令，那么芯片所在的60h端口会把数据通过地址线直接放到CPU的寄存器中</p>
+<p>比如：对0~255（8位）以内的端口进行读写时，这里以20h端口为例</p>
+<div class="code-wrapper"><pre><code class="hljs txt">in al,20h	
+out 20h,al</code></pre></div>
+<p>比如：对256~65535（16位）进行读写，端口号放dx中，这里的端口号为3f8h（10进制的1016）为例</p>
+<div class="code-wrapper"><pre><code class="hljs txt">mov dx,3f8h
+in al,dx
+out dx,al</code></pre></div>
+<h1 id="cmos-ram-芯片简称cmos"><a class="markdownIt-Anchor" href="#cmos-ram-芯片简称cmos"></a> CMOS RAM 芯片（简称CMOS）</h1>
+<ol>
+<li>
+<p>CMOS芯片是电脑主板上的一块可读写的RAM芯片，因为可读写的特性，所以在电脑主板上用来保存BIOS设置完电脑硬件参数后的数据，这个芯片仅仅是用来存放数据的。</p>
+</li>
+<li>
+<p>CMOS芯片包含一个实时钟（用来显示当前时间）和一个有128个存储单元的RAM存储器</p>
+</li>
+<li>
+<p>128个字节的RAM中内部实时钟占用0~0dh单元用，来保存时间信息，其余大部分单元用于保存系统配置信息，供系统启动时BIOS程序读取</p>
+</li>
+<li>
+<p>CMOS RAM 存储的具体时间信息如下：</p>
+<p>年、月、日、时、分、秒，这六个信息长度都为1个字节，存放单元为：秒:0   分:2   时:4  日: 7   月:8   年:9</p>
+<p>这些时间数据都是以BCD码的方式存放</p>
+<p>BCD码是以4位二进制数表示十进制数码的编码方法，如下所示：</p>
+<div class="code-wrapper"><pre><code class="hljs tap">十进制数码:     <span class="hljs-number"> 0 </span>     <span class="hljs-number"> 1 </span>    <span class="hljs-number"> 2 </span>    <span class="hljs-number"> 3 </span>    <span class="hljs-number"> 4 </span>   <span class="hljs-number"> 5 </span>     <span class="hljs-number"> 6 </span>     <span class="hljs-number"> 7 </span>     <span class="hljs-number"> 8 </span>     9
+对应的BCD码:  <span class="hljs-number"> 0000 </span>  <span class="hljs-number"> 0001 </span> <span class="hljs-number"> 0010 </span> <span class="hljs-number"> 0011 </span> <span class="hljs-number"> 0100 </span> <span class="hljs-number"> 0101 </span> <span class="hljs-number"> 0110 </span>  <span class="hljs-number"> 0111 </span>  <span class="hljs-number"> 1000 </span>   1001</code></pre></div>
+<p>比如：数值26，用BCD码表示为: 0010 0110</p>
+<div class="code-wrapper"><pre><code class="hljs txt">;作业：编程在屏幕中间显示当前的月份
+;分析：当前日期为6月，我们拿到的数据实际是bcd码，也就是0000 0110，然后我们右移四位，拿到4个高位数据0000，然后and指令拿到低4位0110，然后把高位和低位分别+30h，拿到对应的ascii码，然后写入显存，显示出来对应月份
+assume cs:code,ds:data
+
+data segment
+	db &#x27;Welcome to naizishaozhi&#x27;,&#x27;$&#x27;
+data ends
+
+code segment
+	start:
+		mov al,8
+		out 70h,al
+		in al,71h
+		
+		mov ah,al
+		mov cl,4
+		shr ah,cl	;拿到月份高位（十位）
+		and al,00001111b	;拿到月份的低位（个位）
+		;加上30H显示对应的ASCII码
+		add ah,30H
+		add al,30H
+		
+		mov bx,0b800h
+		mov es,bx
+		mov byte ptr es:[160*12+40*2],ah
+		mov byte ptr es:[160*12+40*2+1],11001100b
+		mov byte ptr es:[160*12+40*2+2],al
+		mov byte ptr es:[160*12+40*2+3],11001100b
+		
+		
+		mov ax,4c00h
+		int 21h
+code ends
+end start</code></pre></div>
+<p>编译运行上述程序后，结果如下：</p>
+<img src="/2022/08/20/22-0820-10/image-20220904163032978.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904163032978">
+</li>
+<li>
+<p>该芯片有电池供电，所以关机后内部的时钟依然可以正常工作，RAM中信息不丢失</p>
+</li>
+<li>
+<p>该芯片有两个端口：70h和71h，CPU通过这两个端口来读写CMOS RAM</p>
+</li>
+<li>
+<p>70h为地址端口，存放要访问的CMOS RAM单元的地址；71h为数据端口，存放从选定的CMOS RAM单元中读取的数据，或要写入其中的数据。</p>
+<p>比如：要读取cmos 2号单元的内容</p>
+<div class="code-wrapper"><pre><code class="hljs txt">out 70h,2	;①将2送入端口70h
+in al,71h	;②从端口71h读出2号单元的内容</code></pre></div>
+<p>具体内容如下：</p>
+<div class="code-wrapper"><pre><code class="hljs txt">assume cs:code
+code segment
+	start:
+		mov al,2
+		out 70h,al
+		in al,71h
+		
+		mov ax,4c00h
+		int 21h
+code ends
+end start</code></pre></div>
+<p>调式上述程序如下：</p>
+<img src="/2022/08/20/22-0820-10/image-20220904163101938.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904163101938">
+<p>执行完 in al,71 指令后，al由 02 变成了 48，而2号单元对应的是分钟，此时恰好是48分</p>
+</li>
+</ol>
+<h1 id="shl-shr指令"><a class="markdownIt-Anchor" href="#shl-shr指令"></a> shl、shr指令</h1>
+<p>shl（l=left 逻辑左移指令）和 shr（r=right 逻辑右移指令）</p>
+<h2 id="shl"><a class="markdownIt-Anchor" href="#shl"></a> shl</h2>
+<p>shl：将一个寄存器或内存单元中的数据向左移位，将<code>最后移出</code>的一位写入CF中，最低位用0补位</p>
+<p>例如：</p>
+<div class="code-wrapper"><pre><code class="hljs txt">mov al,01001000b
+shl al,1	;从右向左移1位
+执行上面指令后
+al=10010000 CF=0
+然后再次执行 sh1 al,1 指令，执行后结果如下：
+al=00100000 CF=1</code></pre></div>
+<p>如果一次移动多位，位数大于1时，必须将移动位数放在cl中</p>
+<p>比如：我们向左移动5位，如下</p>
+<div class="code-wrapper"><pre><code class="hljs txt">mov al,01010001b
+mov cl,5
+shl al,cl</code></pre></div>
+<h2 id="shr"><a class="markdownIt-Anchor" href="#shr"></a> shr</h2>
+<p>shr：将一个寄存器或内存单元中的数据向右移，将<code>最后移出</code>的一位写入CF中，最高位用0补位</p>
+<div class="code-wrapper"><pre><code class="hljs txt">mov al,01001001b
+shr al,1
+;执行后al=00100100b cf=1</code></pre></div>
+<h1 id="外中断"><a class="markdownIt-Anchor" href="#外中断"></a> 外中断</h1>
+<p>外中断分为可屏蔽和不可屏蔽，CPU通过标志寄存器的IF位来判断是可屏蔽还是不可屏蔽，可屏蔽可以不响应（当然也可以响应）。如果不可屏蔽，则必须响应。IF=0为可屏蔽中断，IF=1为可屏蔽中断</p>
+<p>可屏蔽外中断流程：</p>
+<ol>
+<li>中断后，取中断类型码 n（是为了定位中断例程的入口地址）</li>
+<li>标志寄存器入栈，设置 IF=0 TF=0（pushf）</li>
+<li>cs、ip入栈</li>
+<li>ip=n*4，cs=nx4+2</li>
+</ol>
+<p>不可屏蔽中断流程：</p>
+<ol>
+<li>标志寄存器入栈，IF=0 TF=0（不可屏蔽中断类型码固定是2，不需要取中断类型码）</li>
+<li>cs、ip入栈</li>
+<li>ip=n*4，cs=nx4+2</li>
+</ol>
+<p>理解可屏蔽中断和不可屏蔽中断：比如，我们在键盘上按下按键，就属于可屏蔽中断，有时候会显示，有时候不显示</p>
+<img src="/2022/08/20/22-0820-10/image-20220904163423875.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904163423875">
+<p>键盘处理过程如下：</p>
+<ol>
+<li>
+<p>键盘上的每个键相当于一个开关，键盘中有一个芯片对键盘上的每一个键的开关状态进行扫描（判断我们到底有没有按这个按键）</p>
+</li>
+<li>
+<p>按下一个键，开关接通，该芯片产生一个扫描码，扫描码就说明了你按的是哪个键，扫描码会送到接口芯片的寄存器中，外设都是通过端口来读取数据的，键盘的端口地址为60h</p>
+</li>
+<li>
+<p>按下一个键产生的扫描码又称为通码，松开一个键产生扫描码称为断码。扫描码为一个字节。通码的第7位为0，断码的第7位为1</p>
+<p>比如：g键的通码为 22h （对应二进制为 00100010 ），断码只需要将通码二进制第7位变为1即可，即 10100010 ，对应十六进制为a2h</p>
+</li>
+<li>
+<p>键盘的输入到达60h端口，相关芯片给CPU发出了中断类型码为9的可屏蔽中断信息，CPU检测到该信息后，如果这时IF=1,则响应，去执行int 9中断例程</p>
+</li>
+<li>
+<p>BIOS提供了int 9中断例程用来进行基本的键盘输入处理</p>
+<p>int 9 中断例程进行基本的键盘输入处理大致如下：</p>
+<ol>
+<li>读出60h端口中的扫描码</li>
+<li>如果是字符键的扫描码，将该扫描码和对应的ASCII码送入内存的BIOS键盘缓冲区，如果是控制键比如CTRL和CAPSLOCK，则将其转变为状态字节（用二进制记录控制键和切换键状态的字节），写入内存中存储状态的字节单元</li>
+<li>对键盘系统进行相关控制</li>
+</ol>
+</li>
+</ol>
+<p>BIOS键盘缓冲区用于存放 int 9 中断例程所接收的键盘输入内存区，该内存区可以存储15个键盘输入，用一个字单元存放扫描码和ASCII码，高位字节存放扫描码，低位存放ASCII码</p>
+<p>如果我们在键盘上按的是控制键，那么会存储在内存单</p>
+<div class="code-wrapper"><pre><code class="hljs txt">;显示0040:17存储的字节内容，该部分代码主要做演示用
+assume cs:code,ss:stack
+
+stack segment stack
+	db 128 dup (0)
+stack ends
+
+code segment
+	start:
+		mov bx,stack
+		mov ss,bx
+		mov sp,128
+		
+		mov bx,0b800h
+		mov es,bx
+		mov bx,40H
+		mov ds,bx
+		
+		mov si,17H
+s:	 	mov di,160*10+40*2
+		mov al,ds:[si]
+		call show_s
+		jmp s
+		
+
+show_s:	push cx
+		push ax
+		push ds
+		push es
+		push si
+		push di
+		mov cx,8
+show:	mov dx,0
+		shl al,1
+		adc dx,30H
+		mov es:[di],dl
+		add di,2	
+		loop show 
+		pop di
+		pop si
+		pop es
+		pop ds
+		pop ax
+		pop cx
+		ret
+		
+		mov ax,4c00h  		;ah=4c al=00
+		int 21h
+		
+code ends
+end start</code></pre></div>
+<p>编译上述程序，如下：</p>
+<img src="/2022/08/20/22-0820-10/image-20220904163459454.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904163459454">
+<p>当我们按下shift键时，如下：</p>
+<img src="/2022/08/20/22-0820-10/image-20220904163505204-16622805054141-16622805063062.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904163505204">
+<p>这8个0表示的含义如下：</p>
+<ul>
+<li>字节第0位：键盘右边的shift状态，1表示按下</li>
+<li>字节第1位：键盘左边的shift状态，1表示按下</li>
+<li>字节第2位：键盘Ctrl状态，1表示按下</li>
+<li>字节第3位：键盘Alt状态，1表示按下</li>
+<li>字节第4位：键盘ScrollLock状态，置为1表示Scroll灯亮</li>
+<li>字节第5位：键盘NumLock状态，置为1表示小键盘已开启</li>
+<li>字节第6位：键盘CapsLock状态，置为1表示输入大写字母</li>
+<li>字节第7位：键盘Insert状态，置为1表示处于删除状态</li>
+</ul>
+<h1 id="作业"><a class="markdownIt-Anchor" href="#作业"></a> 作业</h1>
+<p>作业：编写程序覆盖int 9程序，按照自己意图来处理键盘的输入，比如在屏幕中间依次显示a~z，在显示的过程中，按下Esc键改变显示的颜色</p>
+<p>思路：</p>
+<ol>
+<li>重写 int 9 中断例程，把原来的 int 9 中断例程覆盖掉 ，重写的内容如下大致如下</li>
+<li>首先要判断我们按下的按键是不是ESC按键，需要先从60h端口读取出从键盘输入的内容（扫描码）（ in,al ）</li>
+<li>ESC属于字符键，然后会将扫描码和对应的ASCII码送入内存的BIOS键盘缓冲区，然后对键盘系统进行相关控制（通过调用BIOS原来的 int 9 中断例程来实现 ）</li>
+<li>由于上面第3步中要调用原来的 int 9 例程，所以我们要调用没有覆盖前的 int 9 中断例程，就需要保存原来 int 9 中断例程的入口地址（原来 int 9 中断例程入口地址 CS : IP = 9×4 : 9×4+2），将入口地址 CS:IP 保存到 0:200、0:202 这里，用data段保存段地址和偏移地址</li>
+<li>然后标志寄存器入栈 IF =0、TF=0（pushf）</li>
+<li>然后CS:IP入栈、跳转到CS:IP（call dword ptr ds[0]）</li>
+</ol>
+<div class="code-wrapper"><pre><code class="hljs txt">;请将代码编写完成
+assume cs:code,ss:stack
+
+stack segment stack
+	db 128 dup (0)
+stack ends
+
+data segment
+	dw 0,0		;存放段地址和偏移地址
+data ends
+
+code segment
+	start:
+		mov ax,stack
+		mov ss,ax
+		mov sp,128
+		
+		mov ax,data
+		mov ds,ax
+		
+		;将原来的int 9中断例程入口地址进行保存，方便之后使用
+		mov ax,0
+		mov es,ax
+		
+		push es:[9*4]
+		pop ds:[0]
+		push es:[9*4+2]
+		pop ds:[2]
+		
+		;覆盖原来的int 9，在中断向量表中设置我们新的int 9中断例程的入口地址
+		mov es:[9*4],offset myint9
+		mov es:[9*4+2],cs
+		
+		
+		mov ax,0b800h
+		mov es,ax
+		mov ah,&#x27;a&#x27;
+	s:	mov es:[160*12+40*2],ah
+		call sleep
+		inc ah
+		cmp ah,&#x27;z&#x27;
+		jna s
+		
+		;把原来的int9入口地址恢复
+		mov ax,0
+		mov es,ax
+		
+		push ds:[0]
+		pop es:[9*4]
+		push ds:[2]
+		pop es:[9*4+2]
+		
+		mov ax,4c00h
+		int 21h
+		
+	
+sleep:	push ax
+		push dx
+		mov dx,10h	;循环1000 0000h次
+		mov ax,0
+	s1:	sub ax,1
+		sbb dx,0
+		cmp ax,0
+		jne s1
+		cmp dx,0
+		jne s1
+		pop dx
+		pop ax
+		ret
+
+myint9:
+	push ax
+	push bx
+	push es
+	
+	in al,60h	;读取60h端口扫描码
+	pushf
+	call dword ptr ds:[0]
+	cmp al,01h	;判断是不是esc键
+	jne myint9end
+	mov ax,0b800h
+	mov es,ax
+	inc byte ptr es:[160*120+40*2+1]
+	iret
+	
+myint9end:
+	pop es
+	pop bx
+	pop ax
+	iret
+
+code ends
+end start</code></pre></div>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/16%E4%BD%8D%E6%B1%87%E7%BC%96/" class="category-chain-item">16位汇编</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/">#二进制</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/08/20/22-0820-11/" title="汇编day11">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">汇编day11</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/08/20/22-0820-09/" title="汇编day9">
+                        <span class="hidden-mobile">汇编day9</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键字</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/image.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>

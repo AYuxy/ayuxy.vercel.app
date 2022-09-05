@@ -1,0 +1,671 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#000000">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="CPU三种工作模式   实模式：最早的PC机，没有windows系统，一开机就是dos窗口，缺陷就是不安全，程序可以随意访问任何的物理地址   保护模式：32位cpu带有保护模式，特权级 ，0~3，0为最高特权，是内核代码所运行的级别，3是最低权限，为用户程序的运行级别 PC加载操作系统的过程：开机—&gt;加电自检—&gt;从磁盘中寻找boot引导程序去加载内核—&gt;如果装的是window">
+<meta property="og:type" content="article">
+<meta property="og:title" content="汇编day8">
+<meta property="og:url" content="http://example.com/2022/08/20/22-0820-08/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="CPU三种工作模式   实模式：最早的PC机，没有windows系统，一开机就是dos窗口，缺陷就是不安全，程序可以随意访问任何的物理地址   保护模式：32位cpu带有保护模式，特权级 ，0~3，0为最高特权，是内核代码所运行的级别，3是最低权限，为用户程序的运行级别 PC加载操作系统的过程：开机—&gt;加电自检—&gt;从磁盘中寻找boot引导程序去加载内核—&gt;如果装的是window">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-08/image-20220904154211857.png">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-08/image-20220904154522947.png">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-08/image-20220904154621695.png">
+<meta property="og:image" content="http://example.com/2022/08/20/22-0820-08/image-20220904154640150.png">
+<meta property="article:published_time" content="2022-08-20T14:55:59.000Z">
+<meta property="article:modified_time" content="2022-09-04T07:54:39.595Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="二进制">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/08/20/22-0820-08/image-20220904154211857.png">
+  
+  
+  
+  <title>汇编day8 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/suofang.css">
+<link rel="stylesheet" href="/css/font.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>A_Yu&#39;s BLOG</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="汇编day8"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-08-20 22:55" pubdate>
+          August 20, 2022 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.7k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          14 mins
+        
+      </span>
+    
+	
+
+  
+
+	
+
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">汇编day8</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="cpu三种工作模式"><a class="markdownIt-Anchor" href="#cpu三种工作模式"></a> CPU三种工作模式</h1>
+<ul>
+<li>
+<p>实模式：最早的PC机，没有windows系统，一开机就是dos窗口，缺陷就是不安全，程序可以随意访问任何的物理地址</p>
+</li>
+<li>
+<p>保护模式：32位cpu带有保护模式，特权级 ，0~3，0为最高特权，是内核代码所运行的级别，3是最低权限，为用户程序的运行级别</p>
+<p>PC加载操作系统的过程：开机—&gt;加电自检—&gt;从磁盘中寻找boot引导程序去加载内核—&gt;如果装的是windows系统（多任务系统），将由它把CPU切换到保护模式下运行</p>
+</li>
+<li>
+<p>虚拟8086（dos）：比如：我们电脑中日常用的dos窗口、前面常用的dosbox都是虚拟出来的</p>
+</li>
+</ul>
+<h1 id="中断"><a class="markdownIt-Anchor" href="#中断"></a> 中断</h1>
+<p>中断分为内中断和外中断</p>
+<h2 id="内中断"><a class="markdownIt-Anchor" href="#内中断"></a> 内中断</h2>
+<p>内中断：发生了需要CPU立刻要去处理的信息。CPU发生中断的情况也是不同的，会产生了4种不同的中断信息，那就需要进行不同的处理，如下：</p>
+<ul>
+<li>
+<p>除法错误（除法溢出）</p>
+<img src="/2022/08/20/22-0820-08/image-20220904154211857.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904154211857">
+</li>
+<li>
+<p>单步调试，我们在前面的学习中经常用到dosbox单步调试（-t命令）</p>
+</li>
+<li>
+<p>执行into指令</p>
+</li>
+<li>
+<p>执行int指令</p>
+</li>
+</ul>
+<h2 id="中断类型码"><a class="markdownIt-Anchor" href="#中断类型码"></a> 中断类型码</h2>
+<p>中断类型码：CPU在接受到中断信息后，需要判断是啥类型的中断，中断类型码就标识了它是啥中断类型</p>
+<ul>
+<li>除法错误—&gt;中断类型码 0</li>
+<li>单步执行—&gt;中断类型码 1</li>
+<li>执行into指令—&gt;中断类型码 4</li>
+<li>执行int指令（int n）—&gt;中断类型码 n</li>
+</ul>
+<h2 id="中断向量表"><a class="markdownIt-Anchor" href="#中断向量表"></a> 中断向量表</h2>
+<p>中断向量表：通过中断类型码作为表项号去定位中断向量表的表项，从而获得程序的入口地址，对于8086机器，中断向量表指定存放在内存地址0000:0000到0000:03FF之间（一共124个单元）</p>
+<p>中断向量表大致如下：</p>
+<img src="/2022/08/20/22-0820-08/image-20220904154522947.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904154522947">
+<p>中断向量表的一个表项占4个字节（2个字)，高位地址存放段地址，低位地址存放偏移地址，比如：0号表项的中断处理程序的入口地址为 CS:IP = 0020:0100，那么0号表项具体如下：</p>
+<img src="/2022/08/20/22-0820-08/image-20220904154621695.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904154621695">
+<p>作业：现在问：2号中断源处理程序的入口地址是啥？？？？</p>
+<p>解答：</p>
+<img src="/2022/08/20/22-0820-08/image-20220904154640150.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904154640150">
+<p>2号中断源处理程序的入口地址CS:IP = 0070:0008</p>
+<h2 id="中断过程"><a class="markdownIt-Anchor" href="#中断过程"></a> 中断过程</h2>
+<p>用中断类型码找到中断向量（中断向量表中的表项），用它设置CS:IP，这个称为中断过程，由CPU硬件自动完成</p>
+<p>整个中断的过程大致如下：<br />
+CPU收到中断信息—&gt;要对中断信息做处理—&gt;首先将引发中断过程—&gt;硬件完成自动完成中断过程—&gt;CS:IP会指向中断处理程序的入口，CPU就会执行这个中断处理程序</p>
+<p>注意：程序执行完中断处理程序后，肯定还要回到原程序继续往后执行，所以硬件肯定会把执行中断前的CS:IP的值保存起来（通过将CS和IP入栈来进行保存），然后执行完中断处理程序后，再将CS:IP指向之前的CS:IP，使程序继续向下执行</p>
+<p>中断过程6部区：</p>
+<ol>
+<li>取得中断类型码N</li>
+<li>标志寄存器的值入栈</li>
+<li>设置标志寄存器的第8位TF和第9位EF的值，将这两个值改为0</li>
+<li>CS入栈</li>
+<li>IP入栈</li>
+<li>从内存地址中找到中断类型码<code>N*4</code>和<code>N*4+2</code>的两个字单元中，读取中断处理程序的入口地址，设置IP和CS</li>
+</ol>
+<h2 id="iret指令"><a class="markdownIt-Anchor" href="#iret指令"></a> IRET指令</h2>
+<p>IRET指令：中断返回，中断服务程序的最后⼀条指令。IRET指令将推⼊堆栈的段地址和偏移地址弹出，使程序返回到原来发⽣中断的地⽅。其作⽤是从中断中恢复中断前的状态。</p>
+<p>IRET作用大致相当于如下3条指令的功能：</p>
+<div class="code-wrapper"><pre><code class="hljs txt">POP IP
+POP CS
+POPF</code></pre></div>
+<h2 id="外中断"><a class="markdownIt-Anchor" href="#外中断"></a> 外中断</h2>
+<p>外中断 ：来自于 CPU 外部，CPU 检测到发送过来的中断信息，引发中断过程，处理外设的输入</p>
+<p>主板和接口板上装有各种接口芯片，这些外设接口芯片里面有一些寄存器，CPU是把这些寄存器当作<strong>端口</strong>来访问。外设的输入不直接送入内存和CPU，而是送入相关接口芯片端口里面，cpu向外设的输出也是先送到端口，再由端口的相关芯片送到外设。（<strong>cpu通过端口和外部设备进行联系</strong>）</p>
+<p>外中断源分为2种：</p>
+<ul>
+<li>
+<p>可屏蔽中断，CPU可以不鸟你的外中断，搭不搭理你要看标志寄存器IF位的设置，IF=1要搭理你，IF=0不鸟你，不响应（几乎所有的外设引发的外中断都是可屏蔽中断）</p>
+<p>如果IF=1，那么中断步骤如下：</p>
+<ol>
+<li>取得中断类型码</li>
+<li>标志寄存器入栈 pushf</li>
+<li>TF=0 IF=0</li>
+<li>CS IP入栈</li>
+<li>设置cs和ip指向处理中断的程序</li>
+</ol>
+</li>
+<li>
+<p>不可屏蔽中断。中断类型码固定是2，见到这个，CPU必须要引发中断过程</p>
+</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/16%E4%BD%8D%E6%B1%87%E7%BC%96/" class="category-chain-item">16位汇编</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/">#二进制</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/08/20/22-0820-09/" title="汇编day9">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">汇编day9</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/08/20/22-0820-07/" title="汇编Day7">
+                        <span class="hidden-mobile">汇编Day7</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键字</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/image.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>

@@ -16,43 +16,44 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="转载： https:&#x2F;&#x2F;blog.csdn.net&#x2F;xuanyuan_fsx&#x2F;article&#x2F;details&#x2F;106052513   自我介绍 我叫阿Q，是CPU一号车间里的员工，我所在的这个CPU足足有8个核，就有8个车间，干起活来杠杠滴。 我所在的一号车间里，除了负责执行指令的我，还有负责取指令的小A，负责分析指令的小胖和负责结果回写的老K。  CPU的每个车间都有一堆箱子，人们把这些箱子叫">
+    <meta name="description" content="段的划分 程序把数据和指令集中起来，在前面学习8086汇编时，我们经常划分数据段（用来存放全局变量等）、代码段（用来存放指令），但是我们虽然进行了划分，但并没有改变内存上的物理性质。  程序的重定位 程序具体在内存中的哪个位置，并不能由我们来决定，在我们双击程序 A ，程序 A 加载到内存的位置是随机的（内存中哪里有空闲的地址，就会被加载到哪里） 我们在学8086汇编的时候，访问内存地址都是用的">
 <meta property="og:type" content="article">
-<meta property="og:title" content="转载：CPU的熔断幽灵">
+<meta property="og:title" content="x86保护模式day1">
 <meta property="og:url" content="http://example.com/2022/08/21/22-0821-01/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="转载： https:&#x2F;&#x2F;blog.csdn.net&#x2F;xuanyuan_fsx&#x2F;article&#x2F;details&#x2F;106052513   自我介绍 我叫阿Q，是CPU一号车间里的员工，我所在的这个CPU足足有8个核，就有8个车间，干起活来杠杠滴。 我所在的一号车间里，除了负责执行指令的我，还有负责取指令的小A，负责分析指令的小胖和负责结果回写的老K。  CPU的每个车间都有一堆箱子，人们把这些箱子叫">
+<meta property="og:description" content="段的划分 程序把数据和指令集中起来，在前面学习8086汇编时，我们经常划分数据段（用来存放全局变量等）、代码段（用来存放指令），但是我们虽然进行了划分，但并没有改变内存上的物理性质。  程序的重定位 程序具体在内存中的哪个位置，并不能由我们来决定，在我们双击程序 A ，程序 A 加载到内存的位置是随机的（内存中哪里有空闲的地址，就会被加载到哪里） 我们在学8086汇编的时候，访问内存地址都是用的">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220821125419547.png">
-<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220821125541494.png">
-<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220821125634033.png">
-<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220821130113626.png">
-<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220821131713172.png">
-<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220821133410193.png">
-<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220821133444813.png">
-<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220821133557943.png">
-<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220821134224810.png">
-<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220821134335630.png">
-<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220821135249703.png">
-<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220821135655565.png">
-<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220821140235996.png">
-<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220821140404348.png">
-<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220821140529860.png">
-<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220821140718910.png">
-<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220821140925900.png">
-<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220821140943193.png">
-<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220821141014291.png">
-<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220821142034063.png">
-<meta property="article:published_time" content="2022-08-21T02:56:44.000Z">
-<meta property="article:modified_time" content="2022-08-31T12:04:30.094Z">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220904223124317.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220904223135781.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220904223217946.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220904223222590.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220904223230078.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220904223237799.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220904223244526.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220904223250813.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220904223454290.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220904223747531.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220904224459198.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220904224506479.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220904224513051.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220904224519933.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220904224525637.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220904224531927.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220904224537949.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220904224551771.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220904224614036.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220904224624236.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-01/image-20220904224635725.png">
+<meta property="article:published_time" content="2022-08-20T17:22:48.000Z">
+<meta property="article:modified_time" content="2022-09-04T14:47:26.905Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="二进制">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/2022/08/21/22-0821-01/image-20220821125419547.png">
+<meta name="twitter:image" content="http://example.com/2022/08/21/22-0821-01/image-20220904223124317.png">
   
   
   
-  <title>转载：CPU的熔断幽灵 - Hexo</title>
+  <title>x86保护模式day1 - Hexo</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -88,6 +89,8 @@
 
   
 <link rel="stylesheet" href="/css/suofang.css">
+<link rel="stylesheet" href="/css/font.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
 
 
 
@@ -120,7 +123,7 @@
   <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
-      <strong>A_Yu&#39;s Blog</strong>
+      <strong>A_Yu&#39;s BLOG</strong>
     </a>
 
     <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
@@ -209,7 +212,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="转载：CPU的熔断幽灵"></span>
+            <span id="subtitle" data-typed-text="x86保护模式day1"></span>
           
         </div>
 
@@ -220,7 +223,7 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-08-21 10:56" pubdate>
+        <time datetime="2022-08-21 01:22" pubdate>
           August 21, 2022 am
         </time>
       </span>
@@ -232,7 +235,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          5k words
+          4k words
         
       </span>
     
@@ -243,7 +246,7 @@
         
         
         
-          42 mins
+          34 mins
         
       </span>
     
@@ -287,140 +290,139 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">转载：CPU的熔断幽灵</h1>
+            <h1 style="display: none">x86保护模式day1</h1>
             
             
               <div class="markdown-body">
                 
-                <blockquote>
-<p>转载：<br />
-<a target="_blank" rel="noopener" href="https://blog.csdn.net/xuanyuan_fsx/article/details/106052513">https://blog.csdn.net/xuanyuan_fsx/article/details/106052513</a></p>
-</blockquote>
-<h1 id="自我介绍"><a class="markdownIt-Anchor" href="#自我介绍"></a> 自我介绍</h1>
-<p>我叫阿Q，是CPU一号车间里的员工，我所在的这个CPU足足有8个核，就有8个车间，干起活来杠杠滴。</p>
-<p>我所在的一号车间里，除了负责执行指令的我，还有负责取指令的小A，负责分析指令的小胖和负责结果回写的老K。</p>
-<img src="/2022/08/21/22-0821-01/image-20220821125419547.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821125419547">
-<p>CPU的每个车间都有一堆箱子，人们把这些箱子叫做<code>寄存器</code>，我所在的一号车间也不例外，我们每天的工作就是不断执行指令，然后折腾这些箱子，往里面存东西取东西。</p>
-<p>由于我们四个人的出色工作，一号车间业绩突出，在年会上还多次获得了最佳CPU核心奖呢。</p>
-<h1 id="缓存"><a class="markdownIt-Anchor" href="#缓存"></a> 缓存</h1>
-<p>我们每天都需要跟<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E5%86%85%E5%AD%98&amp;spm=1001.2101.3001.7020">内存</a>打交道，不过由于内存这家伙实在太慢了，我们浪费了很多时间等待他给我们数据传输。</p>
-<img src="/2022/08/21/22-0821-01/image-20220821125541494.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821125541494">
-<p>终于有一天，上面给我们下了命令，说竞争对手CPU的速度快赶上我们了，让我们想办法提升工作效率。这一下可难倒了我们，我们平时干活绝没有偷懒，要怪只能怪内存那家伙，是他拖了我们后腿。</p>
-<p>一天晚上，我们哥四个在一起聚餐，讨论起上面的这道命令来，大家都纷纷叹气。</p>
-<p>就在一筹莫展之际，老K提出了一个想法：“兄弟们，我发现了一个现象，<strong>咱们和内存打交道的时候，如果访问了某个地址的数据，它周围的数据随后也大概率会被访问到</strong>”，说到这里，老K停顿了一下。</p>
-<img src="/2022/08/21/22-0821-01/image-20220821125634033.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821125634033">
-<p>我一边听一边想着，小A倒是先开口：“然后呢？你想表达什么意思？”</p>
-<p>老K继续说道：“咱每次数据都找内存要，太慢了，我寻思在咱们车间划一块区域，结合我发现的那个现象，以后让内存一次性把目标区域附近的数据一起给我们，我们存在这块区域，后面在需要用到的时候就先去这里找，找不到再去找内存要，岂不省事？”</p>
-<p>听老K这么一描述，感觉靠谱，我也赶紧附和：“好办法！你们看啊，这内存老是拖咱后退，但是这家伙一时半会也快不起来，要不咱先用这招试试，看看能不能加快一点工作效率，给上面也有个交代。”</p>
-<p>说干就干，我们很快就付诸实践了，我们还给这技术取了个名字叫<code>缓存</code>，效果居然出奇的好，后来为了进一步优化，我们还把缓存分为了两块，一块离<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E5%AF%84%E5%AD%98%E5%99%A8&amp;spm=1001.2101.3001.7020">寄存器</a>很近叫一级缓存，剩下的叫二级缓存。一级缓存中进一步分了指令缓存和数据缓存两块。</p>
-<img src="/2022/08/21/22-0821-01/image-20220821130113626.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821130113626">
-<p>我们车间的工作效率那是飞速提升，但不知道是谁走漏了风声，其他几个车间也知道了这项技术，纷纷效仿。</p>
-<p>这天，为了业绩，我们决定再加第三级缓存，这次把空间弄大点，不过咱们车间地盘有点局促，放不下，我们偷偷给上面领导反馈了这事儿，想让领导帮我们协调一下。</p>
-<p>领导倒是同意了，不过告诉我们他得一碗水端平，平衡各车间的利益。但是咱厂里空间也有限，不可能给每个车间都分配那么大的空间，于是决定由厂里统一安排一块大的区域，让各个车间来共享。没有办法，我们也只好同意了。</p>
-<img src="/2022/08/21/22-0821-01/image-20220821131713172.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821131713172">
-<p>现在，我们用上了三级缓存技术，内存那家伙拖后腿的现象缓解了不少，相当部分时间我们都能从这三级缓存里面找到我们需要的数据。</p>
-<h1 id="乱序执行"><a class="markdownIt-Anchor" href="#乱序执行"></a> 乱序执行</h1>
-<p>随着技术的发展，咱们CPU工厂的工作性能也是不断攀升，慢慢的，我们几个又开始闲下来了，因为我们实在太快了，尽管有了缓存，但我们还是有了不少闲暇时间。</p>
-<p>这天我还是像往常一样，小A取指令去了，我们知道这得要点时间，于是我和小胖还有老K我们仨斗起了地主。</p>
-<img src="/2022/08/21/22-0821-01/image-20220821133410193.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821133410193">
-<p>打了好几把，小A才气喘吁吁的回来，“小胖，该你去指令分析了，你起来让我来打几把”。小胖赶紧起身干活，换上了小A上桌。</p>
-<p>就这样我们几个轮流工作，一直保持着三个人的斗地主牌桌。</p>
-<p>没想到的是，没过多久，厂里领导过来视察了，正好撞见我们几个打牌，狠狠的训斥了我们一顿。</p>
-<img src="/2022/08/21/22-0821-01/image-20220821133444813.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821133444813">
-<p>“你们几个上班时间玩得挺嗨啊”，领导的脸拉的老长。</p>
-<p>“领导，我们没有偷懒，这取指令、译码、执行、回写几个步骤都得分步执行，但是我们工作太快，存储器跟不上我们，我们等得无聊打发时间嘛”，我上前解释到。</p>
-<p>“干等着你们也可以提前做一些后面的准备工作嘛，不要浪费时间，让生产效率更上一层楼”，领导说完就离开了，留下我们几个面面相觑。</p>
-<p>不过领导的一番话倒是如一记重锤敲在我的头上，对啊，我们有这打牌的时间不如提前把后续指令的准备工作先做了，肯定能提升不少效率呢！</p>
-<p>我开始组织兄弟几个商讨方案，“兄弟们，我们最主要的时间都浪费在等待内存数据上了，如果我们能在等待的时间里把后续指令需要的数据提前准备到缓存中来，那可就节约不少时间了，不用每次都等那么久。”</p>
-<img src="/2022/08/21/22-0821-01/image-20220821133557943.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821133557943">
-<p>老K听后很赞赏我的思路，并补充到：“<strong>不仅是准备工作，像有些指令，比如加法，如果参与加法的数据不依赖前面指令的结果，咱们完全可以提前把这加法指令执行了嘛，把结果保存在缓存中，等真正轮到这条指令执行的时候，再把缓存中的结果写到内存中，这不也是节约了时间吗</strong>”</p>
-<p>大家开始头脑风暴起来，原来可以做的事情还这么多，之前光想着等靠要，现在要主动出击了，因为打乱了顺序提前会执行后面的指令，我们把这个技术叫做<code>乱序执行</code>.</p>
-<p>“这次大家要保密哦，不能让隔壁车间知道咱们的这次讨论内容”，会议结束前，我提醒大家。</p>
-<h1 id="分支预测"><a class="markdownIt-Anchor" href="#分支预测"></a> 分支预测</h1>
-<p>按照这次会议讨论的结果，咱们第二天准备实行，不过刚一开始，就遇到了麻烦。</p>
-<p>按照计划，我们在空闲时间里，会提前把后续要执行的指令能做的工作先做了，但麻烦的是我们遇到了一条判断指令，因为不知道最终结果是true还是false，我们没法知道后续是应该执行分支A的指令还是分支B的指令。不敢轻举妄动，怕一会做了无用功。</p>
-<img src="/2022/08/21/22-0821-01/image-20220821134224810.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821134224810">
-<p>大家只好放弃了提前做准备工作的想法，还是一步步来。</p>
-<p>不过很快我们发现，我们经常执行到这个判断指令，而且每次结果都是去执行A分支，从没有去过B分支。</p>
-<img src="/2022/08/21/22-0821-01/image-20220821134335630.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821134335630">
-<p>于是我们几个又商量，发明了一种叫<code>分支预测</code>的技术，<strong>遇到分支跳转时，按照之前的经验，如果某个分支经常被执行，那后续再去这个分支的概率一定很大，那这样咱们预测后面会去到这个分支，就提前把这个分支后面指令能做的工作先做了</strong>。</p>
-<p>果然，用上了<code>分支预测</code>和<code>乱序执行</code>后，我们车间的效率又狠狠的提升了一把，在工厂的集体大会上又一次表扬了我们，并且把我们的先进技术向全厂推广。</p>
-<p>自从我们车间用上了<code>乱序执行</code>和<code>分支预测</code>后，生产效率那是大大提升，领导不仅在全厂的员工大会表扬了我们，还把这两项技术向全厂推广，在我们8个CPU核心车间都铺开了，性能甩开竞争对手CPU几条街。</p>
-<p>可是，就在我们还沉醉在取得的成绩时，不知不觉我们竟埋下了灾难的种子······</p>
-<img src="/2022/08/21/22-0821-01/image-20220821135249703.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821135249703">
-<p>事情还得从不久前的一个晚上说起。</p>
-<h1 id="神秘代码"><a class="markdownIt-Anchor" href="#神秘代码"></a> 神秘代码</h1>
-<p>这天晚上，我们一号车间遇到了这样一段代码：</p>
-<div class="code-wrapper"><pre><code class="hljs angelscript"><span class="hljs-built_in">uint8</span>_t <span class="hljs-built_in">array</span>1[<span class="hljs-number">160</span>] = &#123;<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>,<span class="hljs-number">7</span>,<span class="hljs-number">8</span>,<span class="hljs-number">9</span>,<span class="hljs-number">10</span>,<span class="hljs-number">11</span>,<span class="hljs-number">12</span>,<span class="hljs-number">13</span>,<span class="hljs-number">14</span>,<span class="hljs-number">15</span>,<span class="hljs-number">16</span>&#125;;
-<span class="hljs-built_in">uint8</span>_t <span class="hljs-built_in">array</span>2[<span class="hljs-number">256</span> * <span class="hljs-number">512</span>];
-<span class="hljs-built_in">uint8</span>_t temp = <span class="hljs-number">0</span>;
+                <h1 id="段的划分"><a class="markdownIt-Anchor" href="#段的划分"></a> 段的划分</h1>
+<p>程序把数据和指令集中起来，在前面学习8086汇编时，我们经常划分数据段（用来存放全局变量等）、代码段（用来存放指令），但是我们虽然进行了划分，但并没有改变内存上的物理性质。</p>
+<h1 id="程序的重定位"><a class="markdownIt-Anchor" href="#程序的重定位"></a> 程序的重定位</h1>
+<p>程序具体在内存中的哪个位置，并不能由我们来决定，在我们双击程序 A ，程序 A 加载到内存的位置是随机的（内存中哪里有空闲的地址，就会被加载到哪里）</p>
+<p>我们在学8086汇编的时候，访问内存地址都是用的偏移地址来访问。那么，我们为啥不用物理地址来访问呢 ？？？</p>
+<p>假设，程序加载到内存后的地址是从0开始的，并且代码段有条指令要求访问物理地址为4的数据，进而得到了FF</p>
+<img src="/2022/08/21/22-0821-01/image-20220904223124317.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904223124317">
+<p>但是，由于程序加载到内存后的位置是随机的，那么如果程序加载到内存后是从1000开始的，但代码段中的指令是不变的，所以如果还是取物理地址为4的数据，那么肯定无法得到FF，而应该取1004地址的数据，这就是用物理地址来访问的弊端，而我们只需要把代码段设置成CS，程序里面直接用偏移地址（IP）即可</p>
+<img src="/2022/08/21/22-0821-01/image-20220904223135781.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904223135781">
+<p>汇编中用 reg 表示寄存器，即 reg 也就是 ax、bx、bx、dx、sp、bp、si 、di 。用 sreg 表示段寄存器，即 sreg 也就是 ds、ss、cs、es</p>
+<h1 id="nasm安装使用"><a class="markdownIt-Anchor" href="#nasm安装使用"></a> NASM安装使用</h1>
+<p>安装nasm（编译后的exe可编译在linux和windows上），直接下一步即可</p>
+<p>安装后可以手动编译和自动编译，笔记中只记录自动编译方法：</p>
+<div class="code-wrapper"><pre><code class="hljs txt">cmd /k pushd &quot;$(CURRENT_DIRECTORY)&quot; &amp; D:\nasm\nasm.exe -f bin  &quot;$(FULL_CURRENT_PATH)&quot; -o &quot;$(NAME_PART).bin&quot; &amp; PAUSE &amp; EXIT</code></pre></div>
+<img src="/2022/08/21/22-0821-01/image-20220904223217946.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904223217946">
+<img src="/2022/08/21/22-0821-01/image-20220904223222590.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904223222590">
+<p>然后运行nasm</p>
+<img src="/2022/08/21/22-0821-01/image-20220904223230078.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904223230078">
+<p>即可得到编译后的bin文件</p>
+<img src="/2022/08/21/22-0821-01/image-20220904223237799.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904223237799">
+<p>然后查看二进制bin文件，并且转为16进制（因为16进制更方便观看）</p>
+<img src="/2022/08/21/22-0821-01/image-20220904223244526.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904223244526">
+<p>转为16进制形式后如下：</p>
+<img src="/2022/08/21/22-0821-01/image-20220904223250813.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904223250813">
+<p>注意这里为啥有一些点，因为这里是一个字节来对应的，比如：16进制的69对应的ascii码就是i，但表示汉字需要两个字节，所以一些无法表示出来的就用点来表示</p>
+<h1 id="计算机启动过程"><a class="markdownIt-Anchor" href="#计算机启动过程"></a> 计算机启动过程</h1>
+<p>每种操作系统都对管理的程序提出了种种格式的要求，比如，windows的PE、linux的elf。如果在windows上的程序格式不是PE，那么就会提示不是有效的windows程序，那么我们如何绕过这个限制呢 ？？？</p>
+<p>我们要了解计算机的启动过程大致是啥样的 ？？？如下：</p>
+<div class="code-wrapper"><pre><code class="hljs txt">1. 通电
+2. 读取ROM里面的BIOS，用来检查硬件
+3. 硬件检查通过
+4. BIOS根据指定的顺序，检查引导设备的第一扇区（即主引导扇区），加载在内存地址 0x7C00
+5. 主引导记录把操作权交给操作系统（注意：操作系统放在硬盘的活动分区内）</code></pre></div>
+<h2 id="三种启动过程"><a class="markdownIt-Anchor" href="#三种启动过程"></a> 三种启动过程</h2>
+<p>计算机有三种启动过程：</p>
+<ol>
+<li>
+<p>冷启动（加电）：指计算机在没有加电的状态下初始加电，一般原则是，先开外设电源，后开主机电源，因为主机的运行需要非常稳定的电源，为了防止外设启动引起电源波动影响主机运行，应该先把外设电源接通，同时应避免主机启动后，在同一电源线上再启动其他电器设备，如：电视，冰箱，空调等家电设备。</p>
+</li>
+<li>
+<p>热启动：计算机在DOS状态下运行时，同时按下 “ctrl”、“alt”、“del” 三个键,计算机会重新启动，这种启动方式是在不断电状态下进行计算机的程序启动，所以也叫做热启动。</p>
+</li>
+<li>
+<p>复位启动（复位）：指在计算机停止响应后（死机），甚至连键盘都不能响应时采用的一种热启动方式，一般在主机面板上都有一个复位按钮开关，轻轻按一下即可，计算机会重新加载硬盘等所有硬件以及系统的各种软件，当然它的威胁不亚于热启动。</p>
+</li>
+</ol>
+<h2 id="处理器"><a class="markdownIt-Anchor" href="#处理器"></a> 处理器</h2>
+<ul>
+<li>CPU有很多引脚，其中有一个是专门用来接受复位信号的，当计算机启动时，会执行硬件初始化，将CPU内部所有寄存器的内容初始化到一个预知的状态。</li>
+<li>对于 8086 CPU 而言，如果接受到复位信号，会使 CS 代码段寄存器置为 0xFFFF，其他所有寄存器的内容都置为 0x000（注意：8086之后的CPU没有延续这样的设计）</li>
+<li>处理器的作用主要还是取指令、执行指令</li>
+</ul>
+<h2 id="内存"><a class="markdownIt-Anchor" href="#内存"></a> 内存</h2>
+<p>内存有两种</p>
+<ul>
+<li>
+<p>一种是主内存，如：内存条，在断电后，内存条保存的内容全部消失。刚开机的时候，内存条中啥数据也没有，所以CPU不可能从内存条中取指令。</p>
+</li>
+<li>
+<p>另一种只读内存（ROM），只读内存实际就是一块单独的内部存储器，比如：我们常说的BIOS，断电后，里面的数据不会消失，开机后，CPU就是从这里面取指令</p>
+<p>补充BIOS的概念和功能：BIOS是一组固化到计算机内主板上一个ROM芯片上的程序，它保存着计算机最重要的基本输入输出的程序、开机后自检程序和系统自启动程序，它可从CMOS中读写系统设置的具体信息</p>
+<p>读取ROM里面的BIOS来检测硬件过程如下：</p>
+<img src="/2022/08/21/22-0821-01/image-20220904223454290.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904223454290">
+</li>
+</ul>
+<h1 id="硬盘"><a class="markdownIt-Anchor" href="#硬盘"></a> 硬盘</h1>
+<p>结构如下：</p>
+<img src="/2022/08/21/22-0821-01/image-20220904223747531.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904223747531">
+<p>主引导扇区：（更多相关：<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E4%B8%BB%E5%BC%95%E5%AF%BC%E6%89%87%E5%8C%BA/7612621?fr=aladdin%EF%BC%89">https://baike.baidu.com/item/主引导扇区/7612621?fr=aladdin）</a></p>
+<p>硬件第一个扇区就是主引导扇区（位置为 0面 0道 1扇区，包括硬盘主引导记录和分区表），开机启动并检测完硬件后，BIOS将读取硬盘主引导扇区内容把它加载到内存地址 0x0000 : 0x7C00（ 对应的物理地址为0x07C00 ），然后用 jmp 跳转指令跳转到这个地址，CS : IP 将会从0x07C00 这个物理地址开始执行汇编指令（实际0x07C00这个物理地址就是主引导记录的内存地址），而主引导记录会把操作系统的引导扇区调入内存加以执行，这样就把操作权交给了操作系统</p>
+<p>我们如果修改主引导扇区，就会导致无法加载操作系统</p>
+<h1 id="虚拟机"><a class="markdownIt-Anchor" href="#虚拟机"></a> 虚拟机</h1>
+<p>虚拟机也是需要存储器的（类似于机械硬盘等），但在虚拟机并不需要真正的磁盘，而是用一个文件（如：vhd格式文件、vmdk格式文件）当作虚拟磁盘</p>
+<p>Oracle VM VirtualBox 对应的磁盘就是 vhd 格式文件，这里我们主要以 vhd 格式文件来学习</p>
+<p>在读取磁盘的时候，会从 0 面 0道 1 扇区开始读取，读取完后，再读取 0 面 0道 2 扇区，当0道上所有的扇区全部读取完后，然后会读取 0 面 1 道 1扇区，然后再读取0 面 1 道 2扇区 ，以此类推，读取完道后，再读取面</p>
+<p>vhd文件里一开始的512个字节对应真正硬盘的 0面 0 道 1扇区，也就是对应主引导扇区，第二个512个字节对应物理硬盘的 0面 0道 2扇区，第三个512个字节对应物理硬盘的 0面 0道 3扇区，假设只有3个扇区，然后下一个512个字节就会读取下一个道，那么第四个512个字节对应物 理硬盘的 0面 1道 1扇区，以此类推</p>
+<div class="code-wrapper"><pre><code class="hljs txt">;向显存中写入数据naizigege,编译后的文件为ayu.bin
+mov ax,0xb800
+mov ds,ax
+mov byte [0x00],&#x27;n&#x27;
+mov byte [0x02],&#x27;a&#x27;
+mov byte [0x04],&#x27;i&#x27;
+mov byte [0x06],&#x27;z&#x27;
+mov byte [0x08],&#x27;i&#x27;
+mov byte [0x0a],&#x27;g&#x27;
+mov byte [0x0c],&#x27;e&#x27;
+mov byte [0x0e],&#x27;g&#x27;
+mov byte [0x10],&#x27;e&#x27;
 
-<span class="hljs-built_in">void</span> bad_guy(<span class="hljs-built_in">int</span> x) &#123;
-	<span class="hljs-keyword">if</span> (x &lt; <span class="hljs-number">16</span>) &#123;
-		temp &amp;= <span class="hljs-built_in">array</span>2[<span class="hljs-built_in">array</span>1[x] * <span class="hljs-number">512</span>];
-	&#125;
-&#125;</code></pre></div>
-<p>不到一会儿功夫，我们就执行了这个<code>bad_guy()</code>函数很多次，这不，又来了。</p>
-<p>负责取指令的小A向内存那家伙打了一通电话，让内存把参数x的内容传输过来，我们知道，以内存那蜗牛的速度，估计得让我们好等。</p>
-<p>这时，负责指令译码的小胖忍不住说了：“你们看，我们这都执行这个函数好多次了，每次的参数x都是小于16的，这一次估计也差不多，要不咱们启动<code>分支预测</code>功能，先把小于16分支里的指令先提前做一些？大家看怎么样”</p>
-<img src="/2022/08/21/22-0821-01/image-20220821135655565.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821135655565">
-<p>我和负责数据回写的老K互相看了一眼，都点头表示同意。</p>
-<p>于是，就在等待的间隙，我们又给内存那家伙打了电话，让他把<code>array1[x]</code>的内容也传过来。</p>
-<p>等了一会儿，数据总算传了过来：</p>
-<div class="code-wrapper"><pre><code class="hljs apache"><span class="hljs-attribute">x</span>: <span class="hljs-number">2</span>
-<span class="hljs-attribute">array1</span>[x]: <span class="hljs-number">3</span></code></pre></div>
-<p>拿到结果之后，我们开始一边执行<code>x&lt;16</code>的比较指令，一边继续打电话给内存索要<code>array2[3]</code>的内容。</p>
-<p>比较指令执行的结果不出所料，果然是<code>true</code>，接下来就要走入我们预测的分支，而我们提前已经将需要的数据准备到缓存中，省去了不少时间。</p>
-<p>就这样，我们成功的预测了后续的路线，我们真是一群机智的小伙伴。</p>
-<img src="/2022/08/21/22-0821-01/image-20220821140235996.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821140235996">
-<h1 id="遭遇滑铁卢"><a class="markdownIt-Anchor" href="#遭遇滑铁卢"></a> 遭遇滑铁卢</h1>
-<p>天有不测风云，不久，事情发生了变化。</p>
-<p>“呀！比较结果是<code>false</code>，这一次的x比16大了”，我执行完结果后发现和我们预期的有了出入。</p>
-<p>小A闻讯而来，“额，咱们提前执行了不该执行的指令不会有问题吧？”</p>
-<img src="/2022/08/21/22-0821-01/image-20220821140404348.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821140404348">
-<p>老K安慰道：“没事儿，咱们只是提前把数据读到了我们的缓存中，没问题的，放心好啦”</p>
-<p>我想了想也对，大不了我们提前做的准备工作白费了，没有多想就继续去执行&gt;16的分支指令了。</p>
-<p>随后，同样的事情也时有发生，渐渐的我们就习惯了。</p>
-<h1 id="灾难降临"><a class="markdownIt-Anchor" href="#灾难降临"></a> 灾难降临</h1>
-<p>夜越来越深，我们都有点犯困了，突然，领导来了一通电话，让我们放下手里的工作火速去他办公室。</p>
-<p>我们几个不敢耽误，赶紧出发。</p>
-<p>来到领导的办公室，里面多了两个陌生人，其中一个还被绑着，领导眉头紧锁，气氛很是紧张。</p>
-<img src="/2022/08/21/22-0821-01/image-20220821140529860.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821140529860">
-<p>“阿Q啊，你知不知道你们新发明的<code>乱序执行</code>和<code>分支预测</code>技术闯了大祸了？”</p>
-<p>我们几个一听傻眼了，“领导，这是从何说起啊？”</p>
-<p>领导从椅子上站了起来，指着旁边的陌生人说到：“给你们介绍一下，这是操作系统那边过来的安全员，让他告诉你们从何说起吧！”</p>
-<p>这位安全员向大家点了点头，指着被捆绑那人说道：“大家好，我们抓到这个线程在读取系统内核空间的数据，经过我们的初审，他交代了是通过你们CPU的<code>乱序执行</code>和<code>分支预测</code>功能实现的这一目的。”</p>
-<p>我和小A几个一听都是满脸问号，我们这两个提升工作效率的技术怎么就能泄漏系统内核数据呢？</p>
-<img src="/2022/08/21/22-0821-01/image-20220821140718910.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821140718910">
-<h1 id="真相大白"><a class="markdownIt-Anchor" href="#真相大白"></a> 真相大白</h1>
-<p>安全员显然看出了我们的疑惑，指着被捆绑的那个线程说道：“你把之前交代的再说一遍”</p>
-<p>“几位大爷，你们之前是不是遇到了分支预测失败的情况？”，那人抬头看着我们。</p>
-<p>“有啊，跟这有什么关系？失败了很正常嘛，既然是预测那就不能100%打包票能预测正确啊”，我回答道。</p>
-<p>“<strong>您说的没错，不过如果这个失败是我故意策划的呢？</strong>”</p>
-<img src="/2022/08/21/22-0821-01/image-20220821140925900.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821140925900">
-<p>听他这么一说，我的心一下悬了起来，“纳尼，你干的？”</p>
-<p>“是的，就是我，我先故意给你连续多次小于16的参数，误导你们，误以为后面的参数还是小于16的，然后突然来一个特意构造的大于16的参数，你们果然上钩了，预测失败，提前执行了一些本不该执行的指令。”</p>
-<p>“那又如何呢？我们只是把后面需要的数据提前准备到了缓存中，并没有进一步做什么啊”，我还是不太明白。</p>
-<p>“<strong>这就够了！</strong>”</p>
-<p>“你小子都被捆上了，就别吊胃口了，一次把话说清楚”，一旁急性子的老K忍不住了。</p>
-<img src="/2022/08/21/22-0821-01/image-20220821140943193.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821140943193">
-<p>“好好好，我这就交代。你们把数据提前准备到了缓存中，我后面去访问这部分数据的时候，发现比访问其他内存快了很多”</p>
-<p>“那可不，我们的缓存技术可不是吹牛的！哎等等，怎么又扯到缓存上去了？”，老K继续问道。</p>
-<p>那人继续说道：“<strong>如果我想知道某个地址单元内的值，我就以它作为数组的偏移，去访问一片内存区域。利用你们会提前预测执行而且会把数据缓存的机制。你们虽然预测失败了，但对应的那一块数据已经在缓存中了，接着，我依次去访问那一片内存，看看谁的访问时间明显比其他部分短，那就知道哪一块被缓存了，再接着反推就能知道作为偏移的数值是多少了</strong>，按照这个思路我可以知道每一个地址单元的内容”</p>
-<img src="/2022/08/21/22-0821-01/image-20220821141014291.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821141014291">
-<p>我们几个一边听着一边想着，琢磨了好一会儿总算弄清楚了这家伙的套路，老K气得火冒三丈，差点就想动手修理那人。</p>
-<p>“好你个家伙，倒是挺聪明的，可惜都不用在正途上！好好的加速优化机制竟然成为了你们的帮凶”，我心中也有一团火气。</p>
-<h1 id="亡羊补牢"><a class="markdownIt-Anchor" href="#亡羊补牢"></a> 亡羊补牢</h1>
-<p>事情的真相总算弄清楚了，我们几个此刻已经汗流浃背。</p>
-<p>经过和安全员的协商，操作系统那边推出了全新的<code>KPTI</code>技术来解决这个问题，也就是<code>内核页表隔离</code>。</p>
-<img src="/2022/08/21/22-0821-01/image-20220821142034063.png" srcset="/img/loading.gif" lazyload class="" title="image-20220821142034063">
-<p>以前的时候，线程执行在用户态和内核态时用的是同一本地址翻译手册，也就是人们说的<code>页表</code>，通过这本手册，我们CPU就能通过虚拟地址找到真实的内存页面。</p>
-<p>现在好了，让线程运行在用户态和内核态时使用不同的手册，用户态线程的手册中，内核地址空间部分是一片空白，来一招釜底抽薪！</p>
-<p>本以为我们可以回去了，没想到领导却给我们出了难题，“这祸是你们闯下的，人家操作系统那边虽然做了保护，你们是不是也该拿出点办法来呢，要不然以后我们CPU还怎么抬得起头来？”</p>
-<p class="note note-secondary">
-    本文描述的是两年前爆发的大名鼎鼎的CPU的熔断与幽灵漏洞。<br/>
-    乱序执行与分支预测是现代处理器普遍采用的优化机制。和传统软件漏洞不同，硬件级别的漏洞影响更大更深也更难以修复。<br/>
-    通过判断内存的访问速度来获知是否有被缓存，这类技术有一个专门的术语叫侧信道，即通过一些场外信息来分析得出重要结论，进而达成正常途径无法达成的目的
+infi:
+	jmp near infi
+times 510-($-$$) db 0
+db 0x55,0xaa</code></pre></div>
+<p>然后利用如下工具向虚拟硬盘中写数据，首先选择要写入的虚拟硬盘</p>
+<img src="/2022/08/21/22-0821-01/image-20220904224459198.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904224459198">
+<p>然后选择写入的数据，这里写入ayu.bin文件（因为计算机识别的就是二进制文件，无法识别源码），即显示naizigege</p>
+<img src="/2022/08/21/22-0821-01/image-20220904224506479.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904224506479">
+<p>然后选择LBA模式写入文件，会提示写入成功</p>
+<img src="/2022/08/21/22-0821-01/image-20220904224513051.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904224513051">
+<p>然后用 Oracle VM VirtualBox 新建虚拟机</p>
+<img src="/2022/08/21/22-0821-01/image-20220904224519933.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904224519933">
+<p>然后分配内存，如下</p>
+<img src="/2022/08/21/22-0821-01/image-20220904224525637.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904224525637">
+<p>然后使用我们刚才写入数据的虚拟磁盘</p>
+<img src="/2022/08/21/22-0821-01/image-20220904224531927.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904224531927">
+<p>然后开机，显示如下</p>
+<img src="/2022/08/21/22-0821-01/image-20220904224537949.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904224537949">
+<h1 id="大小端模式"><a class="markdownIt-Anchor" href="#大小端模式"></a> 大小端模式</h1>
+<p>小端模式：指数据的高字节保存在内存的高地址中，而数据的低字节保存在内存的低地址中，在前面我们学16位汇编时，就是小端模式，而x86汇编中也是小端模式</p>
+<img src="/2022/08/21/22-0821-01/image-20220904224551771.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904224551771">
+<p>为啥需要区分大小端模式呢 ？？？</p>
+<p>因为在计算机系统中，我们是以字节为单位的，每个地址单元都对应着一个字节，一个字节为 8bit，对于位数大于 8位 的处理器，例如 16位 或者 32位 的处理器，由于寄存器宽度大于一个字节，那么必然存在着一个如何将多个字节安排的问题。因此就导致了大端存储模式和小端存储模式。</p>
+<p>小端模式的优势</p>
+<p>在进行强制类型转换时，由低精度向高精度进行转化时，比如：由 short 类型（2个字节）的 0x1234 转为 int 类型（4个字节）的 0x00001234，转换完后，数值是不变的，只是存储形式变了。</p>
+<img src="/2022/08/21/22-0821-01/image-20220904224614036.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904224614036">
+<p>如果是从高精度向低精度转换，比如：从 0x00001234 转为 0x1234 ，那么只需要将高地址的内容砍掉就好了</p>
+<img src="/2022/08/21/22-0821-01/image-20220904224624236.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904224624236">
+<p>大端模式的优势</p>
+<p>优点在于对于有符号数而言，判断更加方便，假设是大端模式的话，如果地址 073F:2000 的内容为十六进制的1234，并且是负数的话，那么对应大致如下：</p>
+<img src="/2022/08/21/22-0821-01/image-20220904224635725.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904224635725">
+<p>由于符号位在低地址处，所以我们一开始就可以在低地址处知道符号位是负的</p>
+<h1 id="屏幕显示内容的原理"><a class="markdownIt-Anchor" href="#屏幕显示内容的原理"></a> 屏幕显示内容的原理</h1>
+<p>为了显示数据，必须存在两大硬件:显卡+显示器。显卡是为显示器提供需要显示的数据，控制显示器的模式和状态。而显示器是将目标数据以可见的方式呈现在屏幕上。显存的概念和意义就是显卡拥有自己内部的而数据存储器，显存在本质上和普通内存无差别，用于存储目标数据，操作显存中的数据将导致显示器上内容的改变。</p>
+<p>对于显卡，有两种工作模式，一个是文本模式，另一个是图形模式，开机启动后，默认是文本模式，文本模式下，内存的<code>0xB8000</code>到<code>0xBFFFF</code>这段物理地址被映射到显存。也就是说，写这些物理地址，就可以控制显示内容。</p>
+<h1 id="16位汇编和32位的简单区别"><a class="markdownIt-Anchor" href="#16位汇编和32位的简单区别"></a> 16位汇编和32位的简单区别</h1>
+<p>在16位汇编中的寄存器为：AX、BX、CX 等等</p>
+<p>在32位汇编中的寄存器为：EAX、EBX、ECX 等等 ，EAX可拆分成两个16位的寄存器使用</p>
+<p>在64位汇编中 的寄存器为：RAX、RBX、RCX 等等、RAX可拆分成两个32位的寄存器使用，当然低32位寄存器还可以继续拆分。还新增了 R8、R9 等，这些不能拆分</p>
 
                 
               </div>
@@ -428,6 +430,27 @@
             <hr/>
             <div>
               <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/x86%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/" class="category-chain-item">x86保护模式</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
   
   
     <div class="post-meta">
@@ -447,9 +470,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/08/21/22-0821-02/" title="x86保护模式day5">
+                      <a href="/2022/08/21/22-0821-06/" title="转载：CPU的熔断幽灵">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">x86保护模式day5</span>
+                        <span class="hidden-mobile">转载：CPU的熔断幽灵</span>
                         <span class="visible-mobile">Previous</span>
                       </a>
                     
@@ -457,8 +480,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/08/20/22-0820-04/" title="汇编Day4">
-                        <span class="hidden-mobile">汇编Day4</span>
+                      <a href="/2022/08/20/22-0820-11/" title="汇编day11">
+                        <span class="hidden-mobile">汇编day11</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
