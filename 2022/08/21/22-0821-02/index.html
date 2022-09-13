@@ -1,0 +1,838 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="数据段的基地址          jmp near start			;为啥开头要jmp指令，因为部分数据可能会被当成指令执行         mytext db &amp;#x27;L&amp;#x27;,0x07,&amp;#x27;a&amp;#x27;,0x07,&amp;#x27;b&amp;#x27;,0x07,&amp;#x27;e&amp;#x27;,0x07,&amp;#x27;l&amp;#x27;,0x07,&amp;#x27; &amp;#x27;,0x07,&amp;#x27">
+<meta property="og:type" content="article">
+<meta property="og:title" content="x86保护模式day2">
+<meta property="og:url" content="http://example.com/2022/08/21/22-0821-02/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="数据段的基地址          jmp near start			;为啥开头要jmp指令，因为部分数据可能会被当成指令执行         mytext db &amp;#x27;L&amp;#x27;,0x07,&amp;#x27;a&amp;#x27;,0x07,&amp;#x27;b&amp;#x27;,0x07,&amp;#x27;e&amp;#x27;,0x07,&amp;#x27;l&amp;#x27;,0x07,&amp;#x27; &amp;#x27;,0x07,&amp;#x27">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-02/image-20220906150250762.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-02/image-20220906151320227.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-02/image-20220906151326386.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-02/image-20220906151332886.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-02/image-20220906151555262.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-02/image-20220906151605053.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-02/image-20220906152143233.png">
+<meta property="article:published_time" content="2022-08-20T18:38:11.000Z">
+<meta property="article:modified_time" content="2022-09-06T07:49:00.593Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="二进制">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/08/21/22-0821-02/image-20220906150250762.png">
+  
+  
+  
+  <title>x86保护模式day2 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/suofang.css">
+<link rel="stylesheet" href="/css/font.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>A_Yu&#39;s BLOG</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="x86保护模式day2"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-08-21 02:38" pubdate>
+          August 21, 2022 am
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6.1k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          51 mins
+        
+      </span>
+    
+	
+
+  
+
+	
+
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">x86保护模式day2</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="数据段的基地址"><a href="#数据段的基地址" class="headerlink" title="数据段的基地址"></a>数据段的基地址</h1><div class="code-wrapper"><pre><code class="hljs x86asm">          <span class="hljs-keyword">jmp</span> <span class="hljs-built_in">near</span> start			<span class="hljs-comment">;为啥开头要jmp指令，因为部分数据可能会被当成指令执行</span>
+       
+mytext <span class="hljs-built_in">db</span> <span class="hljs-string">&#x27;L&#x27;</span>,<span class="hljs-number">0x07</span>,<span class="hljs-string">&#x27;a&#x27;</span>,<span class="hljs-number">0x07</span>,<span class="hljs-string">&#x27;b&#x27;</span>,<span class="hljs-number">0x07</span>,<span class="hljs-string">&#x27;e&#x27;</span>,<span class="hljs-number">0x07</span>,<span class="hljs-string">&#x27;l&#x27;</span>,<span class="hljs-number">0x07</span>,<span class="hljs-string">&#x27; &#x27;</span>,<span class="hljs-number">0x07</span>,<span class="hljs-string">&#x27;o&#x27;</span>,<span class="hljs-number">0x07</span>,<span class="hljs-string">&#x27;f&#x27;</span>,<span class="hljs-number">0x07</span>,<span class="hljs-string">&#x27;f&#x27;</span>,<span class="hljs-number">0x07</span>,<span class="hljs-string">&#x27;s&#x27;</span>,<span class="hljs-number">0x07</span>,<span class="hljs-string">&#x27;e&#x27;</span>,<span class="hljs-number">0x07</span>,<span class="hljs-string">&#x27;t&#x27;</span>,<span class="hljs-number">0x07</span>,<span class="hljs-string">&#x27;:&#x27;</span>,<span class="hljs-number">0x07</span>		
+
+number <span class="hljs-built_in">db</span> <span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>
+<span class="hljs-symbol"></span>
+<span class="hljs-symbol">start:</span>
+       <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">0x7c0</span>                  <span class="hljs-comment">;设置数据段基地址 </span>
+       <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>,<span class="hljs-built_in">ax</span>
+       
+       <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">0xb800</span>                 <span class="hljs-comment">;设置附加段基地址 </span>
+       <span class="hljs-keyword">mov</span> <span class="hljs-built_in">es</span>,<span class="hljs-built_in">ax</span>
+       
+       <span class="hljs-keyword">cld</span>							<span class="hljs-comment">;标志寄存器第6位ZF 零标志位  第10位是DF direction flag 通过指令设置1或0，cld设置0，表示正方向</span>
+									<span class="hljs-comment">;std设置1，表示反方向  SF符号位 计算结果如果最高位是0  SF处理器自动设0  否则1 PF </span>
+       <span class="hljs-keyword">mov</span> <span class="hljs-built_in">si</span>,mytext                 
+       <span class="hljs-keyword">mov</span> <span class="hljs-built_in">di</span>,<span class="hljs-number">0</span>
+       <span class="hljs-keyword">mov</span> <span class="hljs-built_in">cx</span>,(number-mytext)/<span class="hljs-number">2</span>      <span class="hljs-comment">;实际上等于 13</span>
+       <span class="hljs-keyword">rep</span> <span class="hljs-keyword">movsw</span><span class="hljs-comment">;movsb  源</span>
+   
+       <span class="hljs-comment">;得到标号所代表的偏移地址</span>
+       <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,number
+       
+       <span class="hljs-comment">;计算各个数位</span>
+       <span class="hljs-keyword">mov</span> <span class="hljs-built_in">bx</span>,<span class="hljs-built_in">ax</span>
+       <span class="hljs-keyword">mov</span> <span class="hljs-built_in">cx</span>,<span class="hljs-number">5</span>                      <span class="hljs-comment">;循环次数 </span>
+       <span class="hljs-keyword">mov</span> <span class="hljs-built_in">si</span>,<span class="hljs-number">10</span>                     <span class="hljs-comment">;除数 </span>
+<span class="hljs-symbol">digit:</span> 
+       <span class="hljs-keyword">xor</span> <span class="hljs-built_in">dx</span>,<span class="hljs-built_in">dx</span>
+       <span class="hljs-keyword">div</span> <span class="hljs-built_in">si</span>
+       <span class="hljs-keyword">mov</span> [<span class="hljs-built_in">bx</span>],<span class="hljs-built_in">dl</span>                   <span class="hljs-comment">;保存数位</span>
+       <span class="hljs-keyword">inc</span> <span class="hljs-built_in">bx</span> 
+       <span class="hljs-keyword">loop</span> digit
+       
+       <span class="hljs-comment">;显示各个数位</span>
+       <span class="hljs-keyword">mov</span> <span class="hljs-built_in">bx</span>,number 
+       <span class="hljs-keyword">mov</span> <span class="hljs-built_in">si</span>,<span class="hljs-number">4</span>                      
+<span class="hljs-symbol"> show:</span>
+       <span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>,[<span class="hljs-built_in">bx</span>+<span class="hljs-built_in">si</span>]
+       <span class="hljs-keyword">add</span> <span class="hljs-built_in">al</span>,<span class="hljs-number">0x30</span>
+       <span class="hljs-keyword">mov</span> <span class="hljs-number">ah</span>,<span class="hljs-number">0x04</span>
+       <span class="hljs-keyword">mov</span> [<span class="hljs-built_in">es</span>:<span class="hljs-built_in">di</span>],<span class="hljs-built_in">ax</span>
+       <span class="hljs-keyword">add</span> <span class="hljs-built_in">di</span>,<span class="hljs-number">2</span>
+       <span class="hljs-keyword">dec</span> <span class="hljs-built_in">si</span>
+       <span class="hljs-keyword">jns</span> show 
+       
+       <span class="hljs-keyword">mov</span> <span class="hljs-built_in">word</span> [<span class="hljs-built_in">es</span>:<span class="hljs-built_in">di</span>],<span class="hljs-number">0x0744</span>  
+
+       <span class="hljs-keyword">jmp</span> <span class="hljs-built_in">near</span> $ 
+ 
+<span class="hljs-built_in">times</span> <span class="hljs-number">510</span>-($-$$) <span class="hljs-built_in">db</span> <span class="hljs-number">0</span> <span class="hljs-comment">;  naizi: jmp near naizi/jmp near $  $表示当前行首的标号  $$代表当前汇编代码的起始汇编地址</span>
+                 <span class="hljs-built_in">db</span> <span class="hljs-number">0x55</span>,<span class="hljs-number">0xaa</span></code></pre></div>
+
+<p>将上述asm文件编译成列表文件</p>
+<img src="/2022/08/21/22-0821-02/image-20220906150250762.png" srcset="/img/loading.gif" lazyload class="" title="image-20220906150250762">
+
+<p>编译后的列表文件的内容如下：</p>
+<div class="code-wrapper"><pre><code class="hljs txt"> 1 00000000 E91F00                                 jmp near start
+ 2                                           
+ 3 00000003 4C076107620765076C-       mytext db &#x27;L&#x27;,0x07,&#x27;a&#x27;,0x07,&#x27;b&#x27;,0x07,&#x27;e&#x27;,0x07,&#x27;l&#x27;,0x07,&#x27; &#x27;,0x07,&#x27;o&#x27;,0x07,&#x27;f&#x27;,0x07,&#x27;f&#x27;,0x07,&#x27;s&#x27;,0x07,&#x27;e&#x27;,0x07,&#x27;t&#x27;,0x07,&#x27;:&#x27;,0x07		
+ 3 0000000C 0720076F0766076607-
+ 3 00000015 7307650774073A07   
+ 4                                  
+ 5 0000001D 0000000000                number db 0,0,0,0,0
+ 6                                    
+ 7                                    start:
+ 8 00000022 B8C007                           mov ax,0x7c0                  ;设置数据段基地址 
+ 9 00000025 8ED8                             mov ds,ax
+10                                           
+11 00000027 B800B8                           mov ax,0xb800                 ;设置附加段基地址 
+12 0000002A 8EC0                             mov es,ax
+13                                           
+14 0000002C FC                               cld;标志寄存器第6位ZF 零标志位  第10位是DF direction flag 通过指令设置1或0，cld设置0，表示正方向
+15                                  			;std设置1，表示反方向  SF符号位 计算结果如果最高位是0  SF处理器自动设0  否则1 PF 
+16 0000002D BE[0300]                         mov si,mytext                 
+17 00000030 BF0000                           mov di,0
+18 00000033 B90D00                           mov cx,(number-mytext)/2      ;实际上等于 13
+19 00000036 F3A5                             rep movsw;movsb  源
+20                                       
+21                                           ;得到标号所代表的偏移地址
+22 00000038 B8[1D00]                         mov ax,number
+23                                           
+24                                           ;计算各个数位
+25 0000003B 89C3                             mov bx,ax
+26 0000003D B90500                           mov cx,5                      ;循环次数 
+27 00000040 BE0A00                           mov si,10                     ;除数 
+28                                    digit: 
+29 00000043 31D2                             xor dx,dx
+30 00000045 F7F6                             div si
+31 00000047 8817                             mov [bx],dl                   ;保存数位
+32 00000049 43                               inc bx 
+33 0000004A E2F7                             loop digit
+34                                           
+35                                           ;显示各个数位
+36 0000004C BB[1D00]                         mov bx,number 
+37 0000004F BE0400                           mov si,4                      
+38                                     show:
+39 00000052 8A00                             mov al,[bx+si]
+40 00000054 0430                             add al,0x30
+41 00000056 B404                             mov ah,0x04
+42 00000058 268905                           mov [es:di],ax
+43 0000005B 83C702                           add di,2
+44 0000005E 4E                               dec si
+45 0000005F 79F1                             jns show 
+46                                           
+47 00000061 26C7054407                       mov word [es:di],0x0744  
+48                                  
+49 00000066 E9FDFF                           jmp near $ 
+50                                   
+51 00000069 00&lt;rep 195h&gt;              times 510-($-$$) db 0 ;  naizi: jmp near naizi/jmp near $  $表示当前行首的标号  $$代表当前汇编代码的起始汇编地址
+52 000001FE 55AA                                       db 0x55,0xaa</code></pre></div>
+
+<p>分析：为啥要设置数据段的基地址为0x7c0 ？？？</p>
+<p>程序加载后，如果是从偏移地址为0开始的</p>
+<p>那么执行 jmp label_a，而如果 label_a 标号的偏移地址是0x08，所以这里 jmp 指令就会跳转到 0x08 这个地址</p>
+<p>前面day1学过，实际BIOS会将硬盘主引导扇区内容加载到0x7c00这个物理地址，而物理地址由段地址和偏移地址组合来，0x07c00这个物理地址可以表示成 0x0000:0x7c00，当然也可以表示成 0x07c0:0x0000 这种形式</p>
+<p>程序加载后，如果段地址为0，那么偏移地址就是0x7c00，偏移地址也就不是从0开始的，那么我们执行 jmp label_a 指令，还是会跳到 0x08和这个偏移地址，而实际 label_a 标号的地址应该为 [0x7c00+0x08] 这个地址</p>
+<p>那么，如果我们直接把 DS 设置为 0x07c0，那么偏移地址肯定就是 0x000，偏移地址就是从0开始，这样我们直接 jmp label_a 对应的就是跳转到 label_a 标号的地址是0x08</p>
+<h1 id="计算机中的正数-x2F-负数"><a href="#计算机中的正数-x2F-负数" class="headerlink" title="计算机中的正数&#x2F;负数"></a>计算机中的正数&#x2F;负数</h1><p>定义一些十进制的数据如下：</p>
+<div class="code-wrapper"><pre><code class="hljs txt">db 128,127,3,2,1,0,-1,-2,-3,-127,-128</code></pre></div>
+
+<p>编译成二进制后，以十六进制形式查看：</p>
+<img src="/2022/08/21/22-0821-02/image-20220906151320227.png" srcset="/img/loading.gif" lazyload class="" title="image-20220906151320227">
+
+<p>10进制 -1 即 0-1 ，由于计算机中识别的是0和1，即对应二进制的 0 - 1，需要一直向前借位，如下：</p>
+<img src="/2022/08/21/22-0821-02/image-20220906151326386.png" srcset="/img/loading.gif" lazyload class="" title="image-20220906151326386">
+
+<p>而10进制的 -2 即 0 - 2，对应成二进制就是 0 - 10，如下：</p>
+<img src="/2022/08/21/22-0821-02/image-20220906151332886.png" srcset="/img/loading.gif" lazyload class="" title="image-20220906151332886">
+
+<p>注意：即然 -2 是 FFFFF…FFFFE，那么上面为啥只有 FE 呢 ？？？</p>
+<p>可能是因为计算后的结果保存在了8位寄存器中，所以这里只有 1111 1110，对应的16进制就是FF</p>
+<p>那么对于0xFF我们就可以表示成10进制的-1，也可以表示成10进制的255，但是具体表示成啥呢 ？？？</p>
+<p>这里就引入了有符号数和无符号数来区分，如果我们看成有符号数，最高位为0，即表示正数，最高位为-1，即表示负数。如果我们看成无符号数，那么不存在正负，全表示正数</p>
+<p>假设我们现在把 1111 看成有符号数，该数字就是一个负数，而这个负数实际是 0 减 一个正数 得到的结果，那么我们如何得到这个正数呢 ？？？</p>
+<p>由于 0 - 正数 &#x3D; 负数，所以正数&#x3D;0-负数，即 该正数 &#x3D; 0 - 1111 &#x3D; 0000 - 1111 &#x3D; 0001</p>
+<h1 id="neg指令"><a href="#neg指令" class="headerlink" title="neg指令"></a>neg指令</h1><p>neg指令：neg是汇编指令中的求补指令，对操作数执行求补运算：用零减去操作数，然后结果返回操作数。求补运算也可以表达成：将操作数按位取反后加1，简单来说该指令会把正数变成负数、负数变成正数</p>
+<div class="code-wrapper"><pre><code class="hljs txt">neg al ;如果al中保存的值为 0000 1000，也就是10进制的8，一般十进制表示成8D
+执行neg al后，al内的值变成了 1111 1000，也就是10进制的-8 （0000 1000——&gt;按位取反——&gt;1111 0111——&gt;然后再加1——&gt;1111 1000）
+注意：这里为啥是-8，-8不应该是 1 1000 吗 ？？？，最前面的1表示符号位
+为了方便,假设是8位二进制7的二进制是0000 0111按位求反就是1111 1000注意最高位是1,说明这是个负数,负数在计算机内是补码,补码的值怎么能知道呢把补码求反再+1,(当然最高位的1不变,因为那是负号)所以是1000 0111+1是1000 1000这个数正好是-8</code></pre></div>
+
+<h1 id="CBW指令"><a href="#CBW指令" class="headerlink" title="CBW指令"></a>CBW指令</h1><p>CBW指令：CBW属于符号扩展指令，它可以把8位扩展到16位，扩展前后两数的真值不变，主要用于数据类型不同时用符号扩展指令可以使得数据类型相同</p>
+<div class="code-wrapper"><pre><code class="hljs txt">比如：把AL中的有符号数扩展到整个AX中
+al=0100 1111
+cbw
+执行cbw后，ax= 0000 0000 0100 1111
+
+上面的例子中al为正数，如果al为负数呢 ？？？
+al=1000 1101
+cbw
+执行cbw后，ax= 1111 1111 1000 1101</code></pre></div>
+
+<h1 id="CWD指令"><a href="#CWD指令" class="headerlink" title="CWD指令"></a>CWD指令</h1><p>CWD指令：CWD是字到双字符的扩展指令，可将AX内容扩展到DX:AX</p>
+<div class="code-wrapper"><pre><code class="hljs txt">AX = 0100 1111 0111 0001
+CWD
+执行cwd指令后，dx= 0000 0000 0000 0000 ax= 0100 1111 0111 0001 
+
+如果ax为负数
+AX = 1100 1111 0111 0001
+CWD
+执行cwd指令后，dx= 1111 1111 1111 1111 ax= 1100 1111 0111 0001</code></pre></div>
+
+<h1 id="有符号数和无符号数"><a href="#有符号数和无符号数" class="headerlink" title="有符号数和无符号数"></a>有符号数和无符号数</h1><p>在编写汇编程序时，如下：</p>
+<p>AX &#x3D; 0XBFFF </p>
+<p>注意0xBFFF对应的十进制是49151，如下：</p>
+<img src="/2022/08/21/22-0821-02/image-20220906151555262.png" srcset="/img/loading.gif" lazyload class="" title="image-20220906151555262">
+
+<p>这里是把 0XBFFF ，即 1011 1111 1111 1111 看成了无符号数才表示成49151，如果我们把 1011 1111 1111 1111 看成有符号数，那么这个数肯定是负数，由于计算机中的负数都是补码表示的，所以 1011 1111 1111 1111 即负数的补码，我们把这个补码转为原码，对应原码为 1100 0000 0000 0001 ，第一位符号位表示负数，也就是 -16385</p>
+<img src="/2022/08/21/22-0821-02/image-20220906151605053.png" srcset="/img/loading.gif" lazyload class="" title="image-20220906151605053">
+
+<p>那么到底是表示 49151 还是表示 -16385 呢 ？？？</p>
+<p>其实计算机不会进行区分，主要是取决于我们自己如何看待，是看作有符号数，还是看作无符号数 </p>
+<h1 id="指令解释"><a href="#指令解释" class="headerlink" title="指令解释"></a>指令解释</h1><p>解释文章开头第一个代码块中的部分指令</p>
+<h2 id="jns指令"><a href="#jns指令" class="headerlink" title="jns指令"></a>jns指令</h2><p>jns指令：当执行jns指令时，如果标志位 SF&#x3D;0，则跳转到指定的地址，如果 SF&#x3D;1，不跳转 （ 注意：SF表示符号标志位，如果运算结果为负数（也就是有符号数最高位为1），SF&#x3D;1，反之若为正数 SF&#x3D;0 ）</p>
+<h2 id="js指令"><a href="#js指令" class="headerlink" title="js指令"></a>js指令</h2><p>js指令：当执行js指令时，如果标志位 SF&#x3D;1，则跳转到指定地址，如果 SF&#x3D;0，不跳转，该指令恰好和 jns 指令相反</p>
+<h2 id="times指令"><a href="#times指令" class="headerlink" title="times指令"></a>times指令</h2><p>times指令：该指令实际前面在学习16位的masm汇编的时，学过类似的指令，即dup指令</p>
+<ul>
+<li><p>dup是masm的指令</p>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-comment">;开辟200字节内存空间</span>
+<span class="hljs-built_in">times</span> <span class="hljs-number">200</span> <span class="hljs-built_in">db</span> <span class="hljs-number">0</span></code></pre></div>
+</li>
+<li><p>times是nasm的指令</p>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-comment">;开辟200字节内存空间</span>
+<span class="hljs-built_in">times</span> <span class="hljs-number">200</span> <span class="hljs-built_in">db</span> <span class="hljs-number">0</span></code></pre></div></li>
+</ul>
+<h2 id="符号"><a href="#符号" class="headerlink" title="$ 符号"></a>$ 符号</h2><p>$ 符号：$符号的作用是表示当前行首的标号地址</p>
+<p>比如：naizi：jmp near naizi，该指令的作用就是跳到标号naizi当前行，然后一直进行死循环，而 jmp near $ 也是跳转到当前行</p>
+<h2 id="符号-1"><a href="#符号-1" class="headerlink" title="$$ 符号"></a>$$ 符号</h2><p>$$ 符号：表示当前汇编代码的开始地址</p>
+<p>比如：</p>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">1</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">bx</span>,<span class="hljs-number">1</span>
+<span class="hljs-keyword">jmp</span> <span class="hljs-built_in">near</span> $$ <span class="hljs-comment">;实际就是跳转到mov ax,1这里</span></code></pre></div>
+
+<p>db 0x55,0xaa 代表啥意思：主扇区代码结尾必须要用0x55和0xaa，主扇区一共为512个字节，那么0x55和0xaa占用了两个字节，前面还有510个字节</p>
+<h1 id="8086-寻址方式"><a href="#8086-寻址方式" class="headerlink" title="8086 寻址方式"></a>8086 寻址方式</h1><p>如何找到要操作的数，以及如何找到存放操作结果的地方 ？？？</p>
+<h2 id="寄存器寻址"><a href="#寄存器寻址" class="headerlink" title="寄存器寻址"></a>寄存器寻址</h2><div class="code-wrapper"><pre><code class="hljs txt">操作数位于寄存器中
+mov ax,cx
+add bx,0xff00
+inc bx</code></pre></div>
+
+<h2 id="立即寻址（立即数寻址）"><a href="#立即寻址（立即数寻址）" class="headerlink" title="立即寻址（立即数寻址）"></a>立即寻址（立即数寻址）</h2><div class="code-wrapper"><pre><code class="hljs txt">add bx,0xff00   (第一条指令add的目的操作数bx采用了寄存器寻址，而0xfff就是一个立即给出的数值，即立即数，这个立即数是cpu生成的)
+mov dx,label	(label编译后会转为一个地址，这个地址也是一个数值，也是立即数)</code></pre></div>
+
+<h2 id="内存寻址"><a href="#内存寻址" class="headerlink" title="内存寻址"></a>内存寻址</h2><h3 id="直接寻址"><a href="#直接寻址" class="headerlink" title="直接寻址"></a>直接寻址</h3><div class="code-wrapper"><pre><code class="hljs txt">mov ax,[0x1111]
+and word [0x023],0x555
+xor byte [es:label],0x555</code></pre></div>
+
+<h3 id="基址寻址"><a href="#基址寻址" class="headerlink" title="基址寻址"></a>基址寻址</h3><div class="code-wrapper"><pre><code class="hljs txt">如果我们有一大堆数据要处理，可以用如下的方式处理
+buffer dw 0x10,0x20,0x30
+inc word [buffer]
+inc word [buffer+2]
+inc word [buffer+4]
+基址寻址就是在指令的地址部分使用基址寄存器BX或者BP来提供偏移地址，如下：
+mov [bx],dx
+add byte [bp],0x222
+基址寻址也可以在寄存器的基础上使用一个偏移量
+mov dx,[bp-2]
+对于处理一大堆数据，可以用基址寻址来实现，如下：
+mov bx,buffer
+mov cx,4
+s:inc word [bx]
+ add bx,2
+ loop s</code></pre></div>
+
+<h4 id="bp寄存器的作用"><a href="#bp寄存器的作用" class="headerlink" title="bp寄存器的作用"></a>bp寄存器的作用</h4><p>扩展：bp寄存器的作用 （bp作用为访问现行堆栈段提供方便的寄存器）</p>
+<p>mov ax,0x6666<br>push ax<br>mov ax,0x8888<br>push ax</p>
+<p>这里压入两个数据0x6666和0x8888，这里很显然，如果要用pop指令弹出数据，就必须先pop弹出0x8888这个数据，然后才能弹出0x6666这个数据，那么我们有没有方法直接拿到0x6666这个数据呢？？？</p>
+<p>当然是有的，嘿嘿 ，我们可以修改SP的位置，如下：</p>
+<img src="/2022/08/21/22-0821-02/image-20220906152143233.png" srcset="/img/loading.gif" lazyload class="" title="image-20220906152143233">
+
+<p>但是如果直接修改SP，这样就直接破坏了栈的结构。而在高级语言中，所有的参数都位于栈中，为了访问到哪些被压在栈底的参数，就使用了BP来实现</p>
+<div class="code-wrapper"><pre><code class="hljs txt">mov ax,0x6666
+push ax
+mov bp,sp
+mov ax,0x8888
+push ax
+mov dx,[bp]  ;这样就拿到了0x6666，dx的内容就为0x6666，注意：这里[bp]就是ss:[bp]，默认省略了段寄存器ss</code></pre></div>
+
+<h3 id="变址寻址"><a href="#变址寻址" class="headerlink" title="变址寻址"></a>变址寻址</h3><p>类似于基址寻址，不过这种寻址使用的是变址寄存器（索引寄存器）di、si ，如下：</p>
+<div class="code-wrapper"><pre><code class="hljs txt">mov [si],dx
+mov ax,[di]
+
+mov [si+0x222],al
+and byte [di+100],0x888</code></pre></div>
+
+<h3 id="基址变址寻址"><a href="#基址变址寻址" class="headerlink" title="基址变址寻址"></a>基址变址寻址</h3><div class="code-wrapper"><pre><code class="hljs txt">基址变址就如下四种：
+mov ax,[bx+si]
+mov ax,[bx+di]
+mov ax,[bp+di]
+mov ax,[bp+si]</code></pre></div>
+
+
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/x86%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/" class="category-chain-item">x86保护模式</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/">#二进制</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/08/21/22-0821-03/" title="x86保护模式day3">
+                        <i class="iconfont icon-anniu_jiantouxiangzuo_o"></i>
+                        <span class="hidden-mobile">x86保护模式day3</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/08/21/22-0821-01/" title="x86保护模式day1">
+                        <span class="hidden-mobile">x86保护模式day1</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-anniu-jiantouxiangyou_o"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键字</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/image.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>

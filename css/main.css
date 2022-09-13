@@ -757,13 +757,6 @@ sup > a::before,
   top: 2rem;
   padding: 3rem 0;
 }
-@font-face {
-  font-family: 'lanting';
-  src: url("../fonts/lanting/lanting.eot"); /* IE9 */
-  src: url("../fonts/lanting/lanting.eot?#iefix") format('embedded-opentype'), /* IE6-IE8 */ url("../fonts/lanting/lanting.woff2") format('woff2'), url("../fonts/lanting/lanting.woff") format('woff'), url("../fonts/lanting/lanting.ttf") format('truetype'); /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
-  font-weight: 300;
-  font-display: swap;
-}
 html {
   font-size: 16px;
   letter-spacing: 0.02em;
@@ -771,7 +764,7 @@ html {
 html,
 body {
   height: 100%;
-  font-family: 'Microsoft Jhenghei', Lantinghei SC, 'lanting', PingFang SC, Seguo UI, Microsoft Yahei, Arial;
+  font-family: Microsoft Jhenghei;
   overflow-wrap: break-word;
 }
 body {
@@ -844,7 +837,7 @@ i.iconfont {
   --link-hover-color: #30a9de;
   --link-hover-bg-color: #f8f9fa;
   --line-color: #eaecef;
-  --navbar-bg-color: #000000;
+  --navbar-bg-color: #2f4154;
   --navbar-text-color: #fff;
   --subtitle-color: #fff;
   --scrollbar-color: #c4c6c9;
@@ -859,7 +852,7 @@ i.iconfont {
     --color-mode: "dark";
   }
   :root:not([data-user-color-scheme]) {
-    --body-bg-color: #000000;
+    --body-bg-color: #181c27;
     --board-bg-color: #252d38;
     --text-color: #c4c6c9;
     --sec-text-color: #a7a9ad;
@@ -869,7 +862,7 @@ i.iconfont {
     --link-hover-color: #30a9de;
     --link-hover-bg-color: #364151;
     --line-color: #435266;
-    --navbar-bg-color: #000000;
+    --navbar-bg-color: #1f3144;
     --navbar-text-color: #d0d0d0;
     --subtitle-color: #d0d0d0;
     --scrollbar-color: #687582;
@@ -894,7 +887,7 @@ i.iconfont {
   }
 }
 [data-user-color-scheme="dark"] {
-  --body-bg-color: #000000;
+  --body-bg-color: #181c27;
   --board-bg-color: #252d38;
   --text-color: #c4c6c9;
   --sec-text-color: #a7a9ad;
@@ -904,7 +897,7 @@ i.iconfont {
   --link-hover-color: #30a9de;
   --link-hover-bg-color: #364151;
   --line-color: #435266;
-  --navbar-bg-color: #000000;
+  --navbar-bg-color: #1f3144;
   --navbar-text-color: #d0d0d0;
   --subtitle-color: #d0d0d0;
   --scrollbar-color: #687582;
@@ -1317,7 +1310,7 @@ figure.highlight td.code > pre {
 .markdown-body {
   font-size: 1rem;
   line-height: 1.6;
-  font-family: 'Microsoft Jhenghei', Lantinghei SC, 'lanting', PingFang SC, Seguo UI, Microsoft Yahei, Arial;
+  font-family: Microsoft Jhenghei;
   margin-bottom: 2rem;
   color: var(--post-text-color);
 }

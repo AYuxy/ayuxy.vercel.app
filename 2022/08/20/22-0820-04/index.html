@@ -12,16 +12,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
-  <meta name="theme-color" content="#000000">
+  <meta name="theme-color" content="#2f4154">
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="AND和OR指令 and：逻辑与，按位进行与运算，两个1才为1，不然为0 or：逻辑或指令，按位进行计算，有一个1就为1，不然为0  字符串定义 assume cs:code  string segment 	db &amp;#x27;ayu&amp;#x27; string ends  code segment start:	mov ax,string code ends end start 然后调试  疑惑">
+    <meta name="description" content="AND和OR指令and：逻辑与，按位进行与运算，两个1才为1，不然为0 or：逻辑或指令，按位进行计算，有一个1就为1，不然为0 字符串定义assume cs:code  string segment 	db &amp;#x27;ayu&amp;#x27; string ends  code segment start:	mov ax,string code ends end start  然后调试   疑惑：d">
 <meta property="og:type" content="article">
 <meta property="og:title" content="汇编Day4">
 <meta property="og:url" content="http://example.com/2022/08/20/22-0820-04/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="AND和OR指令 and：逻辑与，按位进行与运算，两个1才为1，不然为0 or：逻辑或指令，按位进行计算，有一个1就为1，不然为0  字符串定义 assume cs:code  string segment 	db &amp;#x27;ayu&amp;#x27; string ends  code segment start:	mov ax,string code ends end start 然后调试  疑惑">
+<meta property="og:description" content="AND和OR指令and：逻辑与，按位进行与运算，两个1才为1，不然为0 or：逻辑或指令，按位进行计算，有一个1就为1，不然为0 字符串定义assume cs:code  string segment 	db &amp;#x27;ayu&amp;#x27; string ends  code segment start:	mov ax,string code ends end start  然后调试   疑惑：d">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/2022/08/20/22-0820-04/image-20220902095749648.png">
 <meta property="og:image" content="http://example.com/2022/08/20/22-0820-04/image-20220902102015177.png">
@@ -221,7 +221,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.8k words
+          3.9k words
         
       </span>
     
@@ -232,7 +232,7 @@
         
         
         
-          32 mins
+          33 mins
         
       </span>
     
@@ -281,11 +281,9 @@
             
               <div class="markdown-body">
                 
-                <h1 id="and和or指令"><a class="markdownIt-Anchor" href="#and和or指令"></a> AND和OR指令</h1>
-<p>and：逻辑与，按位进行与运算，两个1才为1，不然为0</p>
+                <h1 id="AND和OR指令"><a href="#AND和OR指令" class="headerlink" title="AND和OR指令"></a>AND和OR指令</h1><p>and：逻辑与，按位进行与运算，两个1才为1，不然为0</p>
 <p>or：逻辑或指令，按位进行计算，有一个1就为1，不然为0</p>
-<h1 id="字符串定义"><a class="markdownIt-Anchor" href="#字符串定义"></a> 字符串定义</h1>
-<div class="code-wrapper"><pre><code class="hljs livecodeserver">assume cs:code
+<h1 id="字符串定义"><a href="#字符串定义" class="headerlink" title="字符串定义"></a>字符串定义</h1><div class="code-wrapper"><pre><code class="hljs livecodeserver">assume cs:code
 
 <span class="hljs-keyword">string</span> <span class="hljs-keyword">segment</span>
 	db <span class="hljs-string">&#x27;ayu&#x27;</span>
@@ -295,35 +293,40 @@ code <span class="hljs-keyword">segment</span>
 <span class="hljs-built_in">start</span>:	mov ax,<span class="hljs-keyword">string</span>
 code <span class="hljs-keyword">ends</span>
 <span class="hljs-function"><span class="hljs-keyword">end</span> <span class="hljs-title">start</span></span></code></pre></div>
+
 <p>然后调试</p>
 <img src="/2022/08/20/22-0820-04/image-20220902095749648.png" srcset="/img/loading.gif" lazyload class="" title="image-20220902095749648">
-<p><strong>疑惑：</strong><code>db 'ayu'</code>，到底存储到代码段cs中，还是数据段ds中呢 ？（理论肯定是存在数据段ds中的）</p>
-<p>这里采用mov ax,string来测试，发现mov ax,string就是mov ax,076a，所以显然<code>db 'ayu'</code>被存放到了076a，根据上图中ds的起始地址为075a，而cs的起始地址为076b，所以经过分析<code>db 'ayu'</code>确实被放到了数据段中</p>
-<h1 id="psp区"><a class="markdownIt-Anchor" href="#psp区"></a> PSP区</h1>
-<p>程序加载后，ds中存放着程序所在内存区的段地址，这个内存区的偏移地址为0，则程序所在的内存区的地址为  ds:0，这个内存区的前256个字节（256对应16进制0100）中存放的是PSP，DOS用来和程序进行通信。从256字节处向后的空间存放的是程序。</p>
+
+<p><strong>疑惑：</strong><code>db &#39;ayu&#39;</code>，到底存储到代码段cs中，还是数据段ds中呢 ？（理论肯定是存在数据段ds中的）</p>
+<p>这里采用mov ax,string来测试，发现mov ax,string就是mov ax,076a，所以显然<code>db &#39;ayu&#39;</code>被存放到了076a，根据上图中ds的起始地址为075a，而cs的起始地址为076b，所以经过分析<code>db &#39;ayu&#39;</code>确实被放到了数据段中</p>
+<h1 id="PSP区"><a href="#PSP区" class="headerlink" title="PSP区"></a>PSP区</h1><p>程序加载后，ds中存放着程序所在内存区的段地址，这个内存区的偏移地址为0，则程序所在的内存区的地址为  ds:0，这个内存区的前256个字节（256对应16进制0100）中存放的是PSP，DOS用来和程序进行通信。从256字节处向后的空间存放的是程序。</p>
 <img src="/2022/08/20/22-0820-04/image-20220902102015177.png" srcset="/img/loading.gif" lazyload class="" title="image-20220902102015177">
+
 <p>注意：上图中为啥不写SA+0100H呢？？？？而是用的SA+10H呢？？？</p>
-<p>正常来说应该是<code>SA+0100H:0</code>那么对应实际物理地址就是<code>SA*16+256 = SA*16+16*16 = 16(SA+16) = 16(DS+16)</code> (实际地址 = 段地址*16+偏移地址，这里的段地址和偏移地址换算成10进制运算)。而真正CS:IP对应的实际物理地址为<code>CS*16+IP</code>，而偏移地址IP开始为0，也就是<code>CS*16</code>，所以<code>DS+16 = CS</code>，由于这里采用的是10进制运算，16 就是十六进制的10h，所以<code>ds+10h = cs</code></p>
-<p>比如：上面的ds=075a，那么psp的内容就是从075a:0到075a+10h:0，也就是075a:0到076a:0，而真正程序是从076a:0开始的，所以我们查看076a:0就可以看到我们定义的数据<code>db 'ayu'</code></p>
+<p>正常来说应该是<code>SA+0100H:0</code>那么对应实际物理地址就是<code>SA*16+256 = SA*16+16*16 = 16(SA+16) = 16(DS+16)   </code> (实际地址 &#x3D; 段地址*16+偏移地址，这里的段地址和偏移地址换算成10进制运算)。而真正CS:IP对应的实际物理地址为<code>CS*16+IP</code>，而偏移地址IP开始为0，也就是<code>CS*16</code>，所以<code>DS+16 = CS</code>，由于这里采用的是10进制运算，16 就是十六进制的10h，所以<code>ds+10h = cs</code></p>
+<p>比如：上面的ds&#x3D;075a，那么psp的内容就是从075a:0到075a+10h:0，也就是075a:0到076a:0，而真正程序是从076a:0开始的，所以我们查看076a:0就可以看到我们定义的数据<code>db &#39;ayu&#39;</code></p>
 <img src="/2022/08/20/22-0820-04/image-20220903160907793.png" srcset="/img/loading.gif" lazyload class="" title="image-20220903160907793">
+
 <p>但是这里076a:0为啥并不是CS:IP？？？？</p>
 <img src="/2022/08/20/22-0820-04/image-20220903160916449.png" srcset="/img/loading.gif" lazyload class="" title="image-20220903160916449">
-<p>可能是因为<code>db 'ayu'</code>是数据，但是CS寄存器存放的是指令，也就是说CS:IP指向存放指令的地方，而076a到076b这里面存放的是一些数据，就比如：刚才我们定义的段<code>db 'ayu'</code>，类似如下图：</p>
+
+<p>可能是因为<code>db &#39;ayu&#39;</code>是数据，但是CS寄存器存放的是指令，也就是说CS:IP指向存放指令的地方，而076a到076b这里面存放的是一些数据，就比如：刚才我们定义的段<code>db &#39;ayu&#39;</code>，类似如下图：</p>
 <img src="/2022/08/20/22-0820-04/image-20220903160925092.png" srcset="/img/loading.gif" lazyload class="" title="image-20220903160925092">
+
 <p>现在我们将程序删除string段改成如下：</p>
 <div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-meta">assume</span> <span class="hljs-built_in">cs</span>:code
 code <span class="hljs-meta">segment</span>
 <span class="hljs-symbol">start:</span>	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">0</span>
 code ends
 end start</code></pre></div>
+
 <p>重新debug后，如下：恰好DS和CS差10H，那么上面的猜测可能就是正确的</p>
 <img src="/2022/08/20/22-0820-04/image-20220903160955361.png" srcset="/img/loading.gif" lazyload class="" title="image-20220903160955361">
-<h1 id="寄存器si-di"><a class="markdownIt-Anchor" href="#寄存器si-di"></a> 寄存器SI、DI</h1>
-<p>si和di功能和bx差不多的用法，但是不能和bx一样分成两个8位的寄存器</p>
+
+<h1 id="寄存器SI、DI"><a href="#寄存器SI、DI" class="headerlink" title="寄存器SI、DI"></a>寄存器SI、DI</h1><p>si和di功能和bx差不多的用法，但是不能和bx一样分成两个8位的寄存器</p>
 <p>对于bx，经常的用法为：mov bx,0 或者mov bx,[0]，同理对于si、di也可以这样用：mov si,0 或者 mov si,[0]、mov di,0 或者 mov di,[0] 等</p>
-<h1 id="寻址方式总结"><a class="markdownIt-Anchor" href="#寻址方式总结"></a> 寻址方式总结</h1>
-<ul>
-<li>直接寻址，比如：[0]、[1]</li>
+<h1 id="寻址方式总结"><a href="#寻址方式总结" class="headerlink" title="寻址方式总结"></a>寻址方式总结</h1><ul>
+<li>直接寻址，比如：[0]、[1] </li>
 <li>寄存器间接寻址，比如：[bx]、[si]、[di]、[bp]</li>
 <li>寄存器相对寻址，比如：[bx+1]、[si+2] 等</li>
 <li>基址加变址寻址，比如：[bx+si]、[bx+di]等</li>
@@ -397,14 +400,15 @@ code <span class="hljs-meta">segment</span>
 		
 code ends
 end start</code></pre></div>
-<h1 id="ptr"><a class="markdownIt-Anchor" href="#ptr"></a> ptr</h1>
-<p>下面的指令中，寄存器指明了指令进行的是字操作：</p>
+
+<h1 id="ptr"><a href="#ptr" class="headerlink" title="ptr"></a>ptr</h1><p>下面的指令中，寄存器指明了指令进行的是字操作：</p>
 <div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">1</span>
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">bx</span>,<span class="hljs-built_in">ds</span>:[<span class="hljs-number">0</span>]     
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>,<span class="hljs-built_in">ax</span>
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>:[<span class="hljs-number">0</span>],<span class="hljs-built_in">ax</span>
 <span class="hljs-keyword">inc</span> <span class="hljs-built_in">ax</span>
 <span class="hljs-keyword">add</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">1000</span></code></pre></div>
+
 <p>下面的指令中，寄存器指明了指令进行的是字节操作（因为是al）：</p>
 <div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>,<span class="hljs-number">1</span>
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>,<span class="hljs-built_in">bl</span>
@@ -412,6 +416,7 @@ end start</code></pre></div>
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>:[<span class="hljs-number">0</span>],<span class="hljs-built_in">al</span>
 <span class="hljs-keyword">inc</span> <span class="hljs-built_in">al</span>
 <span class="hljs-keyword">add</span> <span class="hljs-built_in">al</span>,<span class="hljs-number">100</span></code></pre></div>
+
 <p>在没有寄存器名存在的情况下，既都是在内存，得用操作符 X ptr 指明内存单元的长度，X在汇编指令中可以为byte，word或者DWORD。要不然内存是片连续的区域，操作就乱了</p>
 <p>例如：</p>
 <p>下面的指令中，用word ptr 指明了指令访问的内存单元是一个字单元：</p>
@@ -419,37 +424,27 @@ end start</code></pre></div>
 <span class="hljs-keyword">inc</span> <span class="hljs-built_in">word</span> <span class="hljs-built_in">ptr</span> [<span class="hljs-built_in">bx</span>]
 <span class="hljs-keyword">inc</span> <span class="hljs-built_in">word</span> <span class="hljs-built_in">ptr</span> <span class="hljs-built_in">ds</span>:[<span class="hljs-number">0</span>]
 <span class="hljs-keyword">add</span> <span class="hljs-built_in">word</span> <span class="hljs-built_in">ptr</span> [<span class="hljs-built_in">bx</span>],<span class="hljs-number">2</span></code></pre></div>
+
 <p>下面的指令中，用byte ptr 指明了指令访问的内存单元是一个字节单元：</p>
 <div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">byte</span> <span class="hljs-built_in">ptr</span> <span class="hljs-built_in">ds</span>:[<span class="hljs-number">0</span>],<span class="hljs-number">1</span>
 <span class="hljs-keyword">inc</span> <span class="hljs-built_in">byte</span> <span class="hljs-built_in">ptr</span> [<span class="hljs-built_in">bx</span>]
 <span class="hljs-keyword">inc</span> <span class="hljs-built_in">byte</span> <span class="hljs-built_in">ptr</span> <span class="hljs-built_in">ds</span>:[<span class="hljs-number">0</span>]
 <span class="hljs-keyword">add</span> <span class="hljs-built_in">byte</span> <span class="hljs-built_in">ptr</span> [<span class="hljs-built_in">bx</span>],<span class="hljs-number">2</span></code></pre></div>
+
 <p>在没有寄存器参与的内存单元访问指令中，用word prt 或byte ptr 显性地指明所要访问的内存单元的长度是很必要的。否则，CPU无法得知所要访问的单元，还是字节单元。假如我们用Debug查看内存的结果如下：</p>
-<p>2000：1000 FF FF FF FF FF FF …</p>
-<p>那么指令：<br />
-mov ax,2000H<br />
-mov ds,ax<br />
-mov byte ptr [1000H],1<br />
-将使内存中的内容变为：<br />
-2000: 1000 01 FF FF FF FF FF …</p>
-<p>而指令：<br />
-mov ax,2000H<br />
-mov ds,ax<br />
-mov word ptr [1000H],1<br />
-将使内存中的内容变为：<br />
-2000：1000 01 00 FF FF FF FF …</p>
-<h1 id="综合应用"><a class="markdownIt-Anchor" href="#综合应用"></a> 综合应用</h1>
-<div class="code-wrapper"><pre><code class="hljs autoit">关于公司的一条记录如下：
+<p>2000：1000 FF FF FF FF FF FF ……</p>
+<p>那么指令：<br>mov ax,2000H<br>mov ds,ax<br>mov byte ptr [1000H],1<br>将使内存中的内容变为：<br>2000: 1000 01 FF FF FF FF FF ……</p>
+<p>而指令：<br>mov ax,2000H<br>mov ds,ax<br>mov word ptr [1000H],1<br>将使内存中的内容变为：<br>2000：1000 01 00 FF FF FF FF ……</p>
+<h1 id="综合应用"><a href="#综合应用" class="headerlink" title="综合应用"></a>综合应用</h1><div class="code-wrapper"><pre><code class="hljs autoit">关于公司的一条记录如下：
 公司名称：<span class="hljs-built_in">DEC</span>
 公司姓名：naizi
 排名：<span class="hljs-number">250</span>
 收入：<span class="hljs-number">20</span>
 著名产品：pos</code></pre></div>
+
 <img src="/2022/08/20/22-0820-04/image-20220903162344655.png" srcset="/img/loading.gif" lazyload class="" title="image-20220903162344655">
-<p>现在进行如下操作：<br />
-修改排名为100<br />
-收入为50<br />
-产品变成amd</p>
+
+<p>现在进行如下操作：<br>修改排名为100<br>收入为50<br>产品变成amd</p>
 <div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-built_in">seg</span>
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>,<span class="hljs-built_in">ax</span>
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">bx</span>,<span class="hljs-number">60h</span>
@@ -462,8 +457,8 @@ mov word ptr [1000H],1<br />
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">byte</span> <span class="hljs-built_in">ptr</span> [<span class="hljs-built_in">bx</span>+<span class="hljs-number">12</span>+<span class="hljs-built_in">si</span>],<span class="hljs-string">&#x27;M&#x27;</span>
 <span class="hljs-keyword">inc</span> <span class="hljs-built_in">si</span>
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">byte</span> <span class="hljs-built_in">ptr</span> [<span class="hljs-built_in">bx</span>+<span class="hljs-number">12</span>+<span class="hljs-built_in">si</span>],<span class="hljs-string">&#x27;D&#x27;</span></code></pre></div>
-<h1 id="div除法指令"><a class="markdownIt-Anchor" href="#div除法指令"></a> div除法指令</h1>
-<p>除法：有8位和16位两种，在一个寄存器或者内存单元中</p>
+
+<h1 id="div除法指令"><a href="#div除法指令" class="headerlink" title="div除法指令"></a>div除法指令</h1><p>除法：有8位和16位两种，在一个寄存器或者内存单元中</p>
 <p>被除数：如果除数为8位，被除数为16位，默认放在ax中，如果除数为16位，被除数一定为32位，在dx和ax中存放，dx存放高16位，ax存放低16位（注意：被除数一定比除数值大，除数是16位，则被除数一定是32位）</p>
 <p>结果存放：如果除数为8位，则AL存放除法操作的商，AH存放除法操作的余数；如果除数是16位，则AX存放除法的商，DX存放余数</p>
 <p>div byte ptr ds:[0] 的含义：由于在这里div后面是byte字节，也就是除数是8位，那么被除数一定为16位，AL存放ax÷(ds×16+0) 的商，AH存放ax÷(ds×16+0)的余数</p>
@@ -476,8 +471,8 @@ mov word ptr [1000H],1<br />
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">bx</span>,<span class="hljs-number">100</span>
 <span class="hljs-keyword">div</span> <span class="hljs-built_in">bx</span>
 <span class="hljs-comment">;ax=商，dx=余数</span></code></pre></div>
-<h1 id="伪指令-db-dw-dd"><a class="markdownIt-Anchor" href="#伪指令-db-dw-dd"></a> 伪指令 db 、dw 、dd</h1>
-<p>dd 定义两个字型数据：double word</p>
+
+<h1 id="伪指令-db-、dw-、dd"><a href="#伪指令-db-、dw-、dd" class="headerlink" title="伪指令 db 、dw 、dd"></a>伪指令 db 、dw 、dd</h1><p>dd 定义两个字型数据：double word</p>
 <p>dup指令：进行数据重复</p>
 <p>db 3 dup(0) 相当于 db 0,0,0</p>
 <p>db 3 dup(0,1,2) 相当于 db 0,1,2,0,1,2,0,1,2</p>
@@ -529,7 +524,7 @@ mov word ptr [1000H],1<br />
                     
                     
                       <a href="/2022/08/20/22-0820-05/" title="汇编Day5">
-                        <i class="iconfont icon-arrowleft"></i>
+                        <i class="iconfont icon-anniu_jiantouxiangzuo_o"></i>
                         <span class="hidden-mobile">汇编Day5</span>
                         <span class="visible-mobile">Previous</span>
                       </a>
@@ -541,7 +536,7 @@ mov word ptr [1000H],1<br />
                       <a href="/2022/08/20/22-0820-03/" title="汇编Day3">
                         <span class="hidden-mobile">汇编Day3</span>
                         <span class="visible-mobile">Next</span>
-                        <i class="iconfont icon-arrowright"></i>
+                        <i class="iconfont icon-anniu-jiantouxiangyou_o"></i>
                       </a>
                     
                   </article>

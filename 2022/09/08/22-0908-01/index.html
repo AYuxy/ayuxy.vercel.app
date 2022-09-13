@@ -1,0 +1,1035 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一般指令的扩展32位除法如果被除数是64位，那么高32位在edx寄存器，低32位在eax中保存 栈操作栈操作在32位处理器也进行了扩展，允许压入4个字节操作数（双字），还支持立即数压栈（之前学过的压栈都是mov ax,4，然后再push ax），可以直接push 0x4 注意：实际0x4是表示不清楚的，0x4可以表示0x0004（一个字），还可以表示成0x00000004（两个字），所以我们需要说">
+<meta property="og:type" content="article">
+<meta property="og:title" content="x86保护模式day7">
+<meta property="og:url" content="http://example.com/2022/09/08/22-0908-01/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一般指令的扩展32位除法如果被除数是64位，那么高32位在edx寄存器，低32位在eax中保存 栈操作栈操作在32位处理器也进行了扩展，允许压入4个字节操作数（双字），还支持立即数压栈（之前学过的压栈都是mov ax,4，然后再push ax），可以直接push 0x4 注意：实际0x4是表示不清楚的，0x4可以表示0x0004（一个字），还可以表示成0x00000004（两个字），所以我们需要说">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220909204954938.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220909212002260.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220910160219727.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220910160530032.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220910194715352.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220911135715856.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220911140124581.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220911144630591.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220911145840994.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220911153457716.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220911154020182.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220911153457716.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220911163225748.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220912162820252.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220912163606344.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220911175145059.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220911175655390.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220912171948219.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220912180425116.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220912181800340.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220912183635479.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220912214436960.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220912220613445.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220912224930703.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220912225020357.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220912225338071.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220912225535479.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220912230052573.png">
+<meta property="og:image" content="http://example.com/2022/09/08/22-0908-01/image-20220912230224563.png">
+<meta property="article:published_time" content="2022-09-08T08:21:17.000Z">
+<meta property="article:modified_time" content="2022-09-12T15:02:39.079Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/09/08/22-0908-01/image-20220909204954938.png">
+  
+  
+  
+  <title>x86保护模式day7 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/suofang.css">
+<link rel="stylesheet" href="/css/font.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>A_Yu&#39;s BLOG</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="x86保护模式day7"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-09-08 16:21" pubdate>
+          September 8, 2022 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          11k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          91 mins
+        
+      </span>
+    
+	
+
+  
+
+	
+
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">x86保护模式day7</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="一般指令的扩展"><a href="#一般指令的扩展" class="headerlink" title="一般指令的扩展"></a>一般指令的扩展</h1><h2 id="32位除法"><a href="#32位除法" class="headerlink" title="32位除法"></a>32位除法</h2><p>如果被除数是64位，那么高32位在edx寄存器，低32位在eax中保存</p>
+<h2 id="栈操作"><a href="#栈操作" class="headerlink" title="栈操作"></a>栈操作</h2><p>栈操作在32位处理器也进行了扩展，允许压入4个字节操作数（双字），还支持立即数压栈（之前学过的压栈都是<code>mov ax,4</code>，然后再<code>push ax</code>），可以直接<code>push 0x4</code></p>
+<p>注意：实际0x4是表示不清楚的，0x4可以表示0x0004（一个字），还可以表示成0x00000004（两个字），所以我们需要说明操作的大小，如下：</p>
+<ul>
+<li><p>push byte 0x4 （byte告诉编译器压入的是一个字节）</p>
+<ul>
+<li><p>push 8位立即数——对应的机器码——&gt;6A</p>
+</li>
+<li><p>push 16位立即数——对应的机器码——&gt;68</p>
+</li>
+<li><p>push 32位立即数——对应的机器码——&gt;68</p>
+</li>
+</ul>
+</li>
+<li><p>push byte 0x4 该指令在32位处理器下编译后对应机器码为6a 04，但是当执行时压入的不是一个字节（因为无论任何时候处理器都不会压入一个字节，要不压入字、要不压入双字）</p>
+<ul>
+<li>在16位下执行的时候，sp-2，压入0x0004</li>
+<li>在32位下执行的时候，esp-4，压入0x00000004</li>
+</ul>
+</li>
+<li><p>push word 0xfffb</p>
+<ul>
+<li>在16位模式下，sp-2，压入0xfffb</li>
+<li>在32位模式下，sp-4，压入0xffff fffb</li>
+</ul>
+</li>
+<li><p>push dword 0xfb</p>
+<ul>
+<li>在16位模式下，sp-2，压入0x0000 00fb</li>
+<li>在32位模式下，sp-4，压入0x0000 00fb</li>
+</ul>
+</li>
+</ul>
+<h1 id="保护模式"><a href="#保护模式" class="headerlink" title="保护模式"></a>保护模式</h1><p>在实模式下，用户程序对内存的访问非常的自由，没有任何的限制</p>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">cx</span>,<span class="hljs-number">0x8000</span>
+<span class="hljs-keyword">push</span> <span class="hljs-built_in">ds</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>,<span class="hljs-built_in">cx</span>
+<span class="hljs-keyword">mov</span> [<span class="hljs-number">0x05</span>],<span class="hljs-built_in">ds</span>	<span class="hljs-comment">;[0x8000]实际就是0x8000:0x0005</span>
+<span class="hljs-keyword">pop</span> <span class="hljs-built_in">ds</span></code></pre></div>
+
+<h2 id="全局描述符表"><a href="#全局描述符表" class="headerlink" title="全局描述符表"></a>全局描述符表</h2><p>为了程序在内存中能够自由浮动而不影响执行，处理器将内存划分成逻辑上的段解决重定位问题，在保护模式下，对内存的访问仍然使用段地址和偏移地址，但是在每个段能够访问之前，必须先进行登记，登记的信息包括段的起始地址、段的界限等各种访问属性</p>
+<p>登记好了之后，如果访问的偏移地址超出段的界限时，处理器会阻止这种访问，产生一个叫做内部异常的中断</p>
+<p>和一个段有关的信息需要8个字节来描述，这个称之为段描述符</p>
+<p>为了存放这些描述符，需要在内存中开辟一段空间，在这段空间中所有的描述符都挨在一起，构成一个描述符表，最主要的描述符表就是全局描述符表，简称GDT（所谓全局就是为整个软硬件系统服务）</p>
+<p>为了跟踪这个全局描述符表，处理器内部有一个48位的寄存器，全局描述符寄存器 GDTR，如下图：</p>
+<img src="/2022/09/08/22-0908-01/image-20220909204954938.png" srcset="/img/loading.gif" lazyload class="" title="image-20220909204954938">
+
+<ul>
+<li>这里GDT的边界是0~15，即大小也就是2的16次方，即GDT表的大小65536</li>
+<li>由于一个描述符占8个字节，65536÷8&#x3D;8192，所以最多可以定义8192个描述符</li>
+<li>全局描述符表可以位于内存的任何地方，但是因为进入保护模式后，处理器会按照新的内存访问模式工作，所以必须在进入保护模式之前来定义GDT表，因为在实模式下（16位处理器有20条地址总线，寻址范围最大为2的20次方，即寻址空间只有1MB），只能按照1MB来访问内容，所以GDT通常都定义在1MB的范围内</li>
+</ul>
+ <img src="/2022/09/08/22-0908-01/image-20220909212002260.png" srcset="/img/loading.gif" lazyload class="" title="image-20220909212002260">
+
+<p>在保护模式下，不能说访问哪个段就访问哪个段，在访问之前，必须现在GDT中定义要访问的内存段</p>
+<p>通常，在操作系统上，描述符不是用户程序自己建立的，而是操作系统根据你的程序结构建立的，用户程序是无法建立的和修改GDT的，在这种情况下，操作系统为你建立了几个段，你就只能在这些段内老老实实工作，一旦超出这个范围或者未按照预定的方法访问这些段，都将处理器阻止</p>
+<p>每个描述符在GDT中占8字节，下图就是存储器段描述符格式，图中上面是高32位，下面是低32位 </p>
+<img src="/2022/09/08/22-0908-01/image-20220910160219727.png" srcset="/img/loading.gif" lazyload class="" title="image-20220910160219727">
+
+<p>在实模式下，段地址并非真实的物理地址，在计算物理地址时还要左移4位。</p>
+<blockquote>
+<p>这里解释 “计算物理地址时还要左移4位” 这句话 </p>
+<p>前面学习16位汇编时，物理地址&#x3D;段地址×16+偏移地址</p>
+<p>乘16就是十六进制左移一位，比如：段地址为1200h，那么段地址×16&#x3D;1200 0h，这里的左移4位是<code>相对二进制而言</code>的</p>
+</blockquote>
+<p>和实模式不同，32位保护模式下，段地址是32位的线性地址，如果没有开启页功能，那么该线性地址就是物理地址</p>
+<p>扩展了解：为啥上图中的（段）基地址分成了三个部分，不是连着的呢 ？<br>这要从80286开始说起，80286也有保护模式，是属于16位的保护模式，但寻址是24位的（最多访问16M的内存），然后32位处理器（80386）为了向下兼容，所以只能在旧的描述符（80286的描述符）格式下进行扩展，所以造成了段基地址不连续</p>
+<p>20位的段界限（段限长，共两部分 <code>0~15</code> 和 <code>16~19</code> ）用来限制段的扩展范围，对于向上扩展的段，如代码段和数据段，偏移量从0开始递增，段界限就决定了偏移量的最大值，对于向下扩展的段，如栈段，段界限决定了偏移量的最小值</p>
+<h3 id="G位"><a href="#G位" class="headerlink" title="G位"></a>G位</h3><p>G位是粒度位，用于解释段界限的含义，当G&#x3D;0，段界限以字节为单位，段的扩展范围为1字节到1兆（2的0次方到2的20次方） ，当G&#x3D;1，段界限以4KB为单位，段的扩展范围就是从4KB~4GB</p>
+<h3 id="S位"><a href="#S位" class="headerlink" title="S位"></a>S位</h3><p>S位用于指定描述符的类型，S&#x3D;0，表示描述符是系统段描述符，S&#x3D;1，表示描述符是代码段或数据段描述符（栈段属于特殊的数据段描述符）</p>
+<h3 id="DPL位"><a href="#DPL位" class="headerlink" title="DPL位"></a>DPL位</h3><p>DPL表示描述符的特权级，分别是0,1,2,3，其中0就是最高特权级别，3是最低。通常刚进入保护模式时候，执行的代码具有最高特权级别（刚进入保护模式时，可以看成从处理器继承而来，所以拥有最高权限）。每当操作系统加载一个用户程序，通常都会指定一个比较低的特权级别（一般的用户程序，都是3的特权级别），不同特权级别是相互隔离的，其访问相互限制，有些处理器指令只能由0特权级别的程序来执行，在这里描述符的特权级用于指定要访问该段所必须具备的最低特权级，如果这里的数值是2，那么只有特权级别为0,1,2的程序才能访问该段，特权3访问这个段时处理器是会阻止的</p>
+<h3 id="P位"><a href="#P位" class="headerlink" title="P位"></a>P位</h3><p>P位表示段存在位，用于指示描述符对应的段是否存在，一般描述符所指示的段都在内存中，当内存空间紧张时，有可能只是建立了描述符，但是对应的内存空间可能并不存在，这时候就把描述符的P位清零。同样，在内存空间紧张情况下，操作系统会把很少用到的段放到硬盘中去，然后节省下空间给当前急需内存的程序使用，同样也会把描述符的P位清零，当再次轮到它执行时，再装入内存，然后将P位置为1。</p>
+<p>P位是处理器负责检查的，每当通过描述符访问内存中的段时，如果P位是0，处理器会产生一个异常中断，通常该中断处理过程是由操作系统提供的，该处理过程任务就是负责将该段从硬盘放到内存中，并将P位置1。在多用户多任务的系统中，这是一种常用的虚拟内存调度策略</p>
+<h3 id="D-x2F-B位"><a href="#D-x2F-B位" class="headerlink" title="D&#x2F;B位"></a>D&#x2F;B位</h3><p>D&#x2F;B位表示默认操作数的大小&#x2F;默认的栈指针大小，设立该标志位主要是为了在32位的处理器上兼容16位保护模式的程序，该标志位对于不同的段有不同的效果，对于代码段，此位称为D位，用于指示指令默认的偏移地址和操作数尺寸，D&#x3D;0表示指令指令中偏移地址或操作数是16位的，D&#x3D;1，表示指令指令中偏移地址或操作数是32位的。</p>
+<p>如果代码段描述符D位是0，那么处理器在这个段上执行时使用16位寄存器IP来取指令，否则使用32位EIP</p>
+<p>对于栈段来说，该位叫B位，用于栈操作的时候，是使用SP还是ESP，该位是0，使用SP，该位是1，使用ESP。同时B位的值也决定了栈的上部边界，如果B&#x3D;0，栈的上部边界（也就是SP寄存器最大值）为0xFFFF。B&#x3D;1，那么也就是ESP的最大值0xFFFFFFFF</p>
+<h3 id="L位"><a href="#L位" class="headerlink" title="L位"></a>L位</h3><p>AVL左边就是L位，是64位代码段标志，保留给64位处理器使用的，一般置为0即可</p>
+<h3 id="TYPE字段"><a href="#TYPE字段" class="headerlink" title="TYPE字段"></a>TYPE字段</h3><p>type字段为4位，用于指示描述符的类别，如下图：</p>
+<img src="/2022/09/08/22-0908-01/image-20220910160530032.png" srcset="/img/loading.gif" lazyload class="" title="image-20220910160530032">
+
+<ul>
+<li>X位：表示是否可以执行（其中数据段总是不可执行，所以X&#x3D;0，代码段总可以执行，所以X&#x3D;1）</li>
+<li>E位：E位指示段的扩展方向，E&#x3D;0，表示向上扩展，也就是向高地址方向扩展，表示的就是普通的数据段。E&#x3D;1，表示向下扩展，通常表示栈段</li>
+<li>C位：表示一致性&#x2F;非一致性，C&#x3D;0，表示一致性，表示这样的代码段可以从与它特权级相同的代码段调用。C&#x3D;1，表示非一致性，表示可以从低特权级的程序转移到该段执行，但低特权级的程序仍然保持自身的特权级 <ul>
+<li>注意：所有的数据段都是非一致性的，他们不能被低特权的程序访问，但可以被更高特权的程序访问</li>
+</ul>
+</li>
+<li>R位：表示代码段是否允许读出来，代码段总是可以执行的，但是为了防止程序被破坏，代码段不允许被写入，至于代码段能否被读出来，则由R位决定，R&#x3D;0，代码段不可被读出来，代码段只能被执行，R&#x3D;1，表示代码段可被读出，段的内容可以被读到。<br>但是如果代码段的内容不可读，那么处理器如何来执行呢 ？？<br>因为R位是来限制程序和指令的行为，并不会限制处理器的，所以处理器一定是可以读取到代码段的</li>
+<li>A位：表示已访问位（accessed）用于指示它所指向的段最近是否被访问过，在描述符创建的时候应该清零。每当该段被访问时，处理器自动将该位设置1，对该位的清零是由操作系统负责的，通过定期监控该位的状态，就可以统计出该段的使用频率，从而实现虚拟内存管理。</li>
+</ul>
+<h3 id="AVL"><a href="#AVL" class="headerlink" title="AVL"></a>AVL</h3><p>avl位属于软件可以使用的位，通常操作系统来使用，处理器一般不用</p>
+<h1 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h1><blockquote>
+<p>分析代码c11_mbr.asm</p>
+</blockquote>
+<div class="code-wrapper"><pre><code class="hljs x86asm">         <span class="hljs-comment">;</span>
+         <span class="hljs-comment">;文件名：c11_mbr.asm</span>
+         <span class="hljs-comment">;文件说明：硬盘主引导扇区代码 </span>
+         <span class="hljs-comment">;</span>
+
+         <span class="hljs-comment">;设置堆栈段和栈指针 </span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-built_in">cs</span>      
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ss</span>,<span class="hljs-built_in">ax</span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">sp</span>,<span class="hljs-number">0x7c00</span>
+      
+         <span class="hljs-comment">;计算GDT所在的逻辑段地址 </span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,[<span class="hljs-built_in">cs</span>:gdt_base+<span class="hljs-number">0x7c00</span>]        <span class="hljs-comment">;低16位 </span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">dx</span>,[<span class="hljs-built_in">cs</span>:gdt_base+<span class="hljs-number">0x7c00</span>+<span class="hljs-number">0x02</span>]   <span class="hljs-comment">;高16位 </span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">bx</span>,<span class="hljs-number">16</span>        
+         <span class="hljs-keyword">div</span> <span class="hljs-built_in">bx</span>            
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>,<span class="hljs-built_in">ax</span>                          <span class="hljs-comment">;令DS指向该段以进行操作</span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">bx</span>,<span class="hljs-built_in">dx</span>                          <span class="hljs-comment">;段内起始偏移地址 </span>
+      
+         <span class="hljs-comment">;创建0#描述符，它是空描述符，这是处理器的要求 null描述符 </span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">dword</span> [<span class="hljs-built_in">bx</span>+<span class="hljs-number">0x00</span>],<span class="hljs-number">0x00</span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">dword</span> [<span class="hljs-built_in">bx</span>+<span class="hljs-number">0x04</span>],<span class="hljs-number">0x00</span>  
+
+         <span class="hljs-comment">;创建#1描述符，保护模式下的代码段描述符</span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">dword</span> [<span class="hljs-built_in">bx</span>+<span class="hljs-number">0x08</span>],<span class="hljs-number">0x7c0001ff</span>			<span class="hljs-comment">;线性基地址为0x00007c00 段界限为0x001FF G=0粒度为字节，该段的长度为512字节 </span>
+													<span class="hljs-comment">;S=1表示代码段或者数据段  D=1表示32的段 P=1表示该段在内存中，</span>
+													<span class="hljs-comment">;DPL=00 特权级位0 TYPE=1000，表示只能执行的代码段</span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">dword</span> [<span class="hljs-built_in">bx</span>+<span class="hljs-number">0x0c</span>],<span class="hljs-number">0x00409800</span>			<span class="hljs-comment">;0   0  0  0 0  0  0  0  0  1  0  0  0  0  0  0  1  0  0  1  1  0  0 0 0 0 0 0 0 0 0 0     </span>
+													<span class="hljs-comment">;31 30 29 28 27 26 25 24 23 22 21 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0	</span>
+         <span class="hljs-comment">;创建#2描述符，保护模式下的数据段描述符（文本模式下的显示缓冲区） </span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">dword</span> [<span class="hljs-built_in">bx</span>+<span class="hljs-number">0x10</span>],<span class="hljs-number">0x8000ffff</span>     
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">dword</span> [<span class="hljs-built_in">bx</span>+<span class="hljs-number">0x14</span>],<span class="hljs-number">0x0040920b</span>     
+
+         <span class="hljs-comment">;创建#3描述符，保护模式下的堆栈段描述符</span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">dword</span> [<span class="hljs-built_in">bx</span>+<span class="hljs-number">0x18</span>],<span class="hljs-number">0x00007a00</span><span class="hljs-comment">;0x07a00</span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">dword</span> [<span class="hljs-built_in">bx</span>+<span class="hljs-number">0x1c</span>],<span class="hljs-number">0x00409600</span>
+
+         <span class="hljs-comment">;初始化描述符表寄存器GDTR</span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">word</span> [<span class="hljs-built_in">cs</span>: gdt_size+<span class="hljs-number">0x7c00</span>],<span class="hljs-number">31</span>  <span class="hljs-comment">;描述符表的界限（总字节数减一）   </span>
+                                             
+         <span class="hljs-keyword">lgdt</span> [<span class="hljs-built_in">cs</span>: gdt_size+<span class="hljs-number">0x7c00</span>]
+      
+         <span class="hljs-keyword">in</span> <span class="hljs-built_in">al</span>,<span class="hljs-number">0x92</span>                         <span class="hljs-comment">;南桥芯片内的端口 </span>
+         <span class="hljs-keyword">or</span> <span class="hljs-built_in">al</span>,<span class="hljs-number">0000_0010B</span>
+         <span class="hljs-keyword">out</span> <span class="hljs-number">0x92</span>,<span class="hljs-built_in">al</span>                        <span class="hljs-comment">;打开A20 </span>
+
+         <span class="hljs-keyword">cli</span>                                <span class="hljs-comment">;保护模式下中断机制尚未建立，应 </span>
+                                            <span class="hljs-comment">;禁止中断 </span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">eax</span>,<span class="hljs-built_in">cr0</span>
+         <span class="hljs-keyword">or</span> <span class="hljs-built_in">eax</span>,<span class="hljs-number">1</span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">cr0</span>,<span class="hljs-built_in">eax</span>                        <span class="hljs-comment">;设置PE位</span>
+      
+         <span class="hljs-comment">;以下进入保护模式... ...</span>
+         <span class="hljs-keyword">jmp</span> <span class="hljs-built_in">dword</span> <span class="hljs-number">0x0008</span>:flush             <span class="hljs-comment">;16位的描述符选择子：32位偏移</span>
+                                           <span class="hljs-comment">;清流水线并串行化处理器 </span>
+         [<span class="hljs-meta">bits</span> <span class="hljs-number">32</span>] 
+<span class="hljs-symbol"></span>
+<span class="hljs-symbol">    flush:</span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">cx</span>,<span class="hljs-number">00000000000_10_000B</span>         <span class="hljs-comment">;加载数据段选择子(0x0010)</span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>,<span class="hljs-built_in">cx</span>
+
+         <span class="hljs-comment">;以下在屏幕上显示&quot;Protect mode OK.&quot; </span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">byte</span> [<span class="hljs-number">0x00</span>],<span class="hljs-string">&#x27;P&#x27;</span>  
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">byte</span> [<span class="hljs-number">0x02</span>],<span class="hljs-string">&#x27;r&#x27;</span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">byte</span> [<span class="hljs-number">0x04</span>],<span class="hljs-string">&#x27;o&#x27;</span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">byte</span> [<span class="hljs-number">0x06</span>],<span class="hljs-string">&#x27;t&#x27;</span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">byte</span> [<span class="hljs-number">0x08</span>],<span class="hljs-string">&#x27;e&#x27;</span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">byte</span> [<span class="hljs-number">0x0a</span>],<span class="hljs-string">&#x27;c&#x27;</span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">byte</span> [<span class="hljs-number">0x0c</span>],<span class="hljs-string">&#x27;t&#x27;</span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">byte</span> [<span class="hljs-number">0x0e</span>],<span class="hljs-string">&#x27; &#x27;</span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">byte</span> [<span class="hljs-number">0x10</span>],<span class="hljs-string">&#x27;m&#x27;</span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">byte</span> [<span class="hljs-number">0x12</span>],<span class="hljs-string">&#x27;o&#x27;</span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">byte</span> [<span class="hljs-number">0x14</span>],<span class="hljs-string">&#x27;d&#x27;</span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">byte</span> [<span class="hljs-number">0x16</span>],<span class="hljs-string">&#x27;e&#x27;</span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">byte</span> [<span class="hljs-number">0x18</span>],<span class="hljs-string">&#x27; &#x27;</span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">byte</span> [<span class="hljs-number">0x1a</span>],<span class="hljs-string">&#x27;O&#x27;</span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">byte</span> [<span class="hljs-number">0x1c</span>],<span class="hljs-string">&#x27;K&#x27;</span>
+
+         <span class="hljs-comment">;以下用简单的示例来帮助阐述32位保护模式下的堆栈操作 </span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">cx</span>,<span class="hljs-number">00000000000_11_000B</span>         <span class="hljs-comment">;加载堆栈段选择子</span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ss</span>,<span class="hljs-built_in">cx</span>
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">esp</span>,<span class="hljs-number">0x7c00</span>
+
+         <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ebp</span>,<span class="hljs-built_in">esp</span>                        <span class="hljs-comment">;保存堆栈指针 </span>
+         <span class="hljs-keyword">push</span> <span class="hljs-built_in">byte</span> <span class="hljs-string">&#x27;.&#x27;</span>                      <span class="hljs-comment">;压入立即数（字节）</span>
+         
+         <span class="hljs-keyword">sub</span> <span class="hljs-built_in">ebp</span>,<span class="hljs-number">4</span>
+         <span class="hljs-keyword">cmp</span> <span class="hljs-built_in">ebp</span>,<span class="hljs-built_in">esp</span>                        <span class="hljs-comment">;判断压入立即数时，ESP是否减4 </span>
+         <span class="hljs-keyword">jnz</span> ghalt                          
+         <span class="hljs-keyword">pop</span> <span class="hljs-built_in">eax</span>
+         <span class="hljs-keyword">mov</span> [<span class="hljs-number">0x1e</span>],<span class="hljs-built_in">al</span>                      <span class="hljs-comment">;显示句点 </span>
+<span class="hljs-symbol">      </span>
+<span class="hljs-symbol">  ghalt:</span>     
+         <span class="hljs-keyword">hlt</span>                                <span class="hljs-comment">;已经禁止中断，将不会被唤醒 </span>
+
+<span class="hljs-comment">;-------------------------------------------------------------------------------</span>
+     
+         gdt_size         <span class="hljs-built_in">dw</span> <span class="hljs-number">0</span>
+         gdt_base         <span class="hljs-built_in">dd</span> <span class="hljs-number">0x00007e00</span>     <span class="hljs-comment">;GDT的物理地址 </span>
+                             
+         <span class="hljs-built_in">times</span> <span class="hljs-number">510</span>-($-$$) <span class="hljs-built_in">db</span> <span class="hljs-number">0</span>
+                          <span class="hljs-built_in">db</span> <span class="hljs-number">0x55</span>,<span class="hljs-number">0xaa</span></code></pre></div>
+
+<h2 id="设置堆栈段和栈指针"><a href="#设置堆栈段和栈指针" class="headerlink" title="设置堆栈段和栈指针"></a>设置堆栈段和栈指针</h2><div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-comment">;设置堆栈段和栈指针 </span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-built_in">cs</span>      
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ss</span>,<span class="hljs-built_in">ax</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">sp</span>,<span class="hljs-number">0x7c00</span>
+
+<span class="hljs-comment">;--------------</span>
+gdt_base <span class="hljs-built_in">dd</span> <span class="hljs-number">0x00007e00</span>	<span class="hljs-comment">;GDT物理地址</span></code></pre></div>
+
+<p>上述代码如下图：</p>
+<img src="/2022/09/08/22-0908-01/image-20220910194715352.png" srcset="/img/loading.gif" lazyload class="" title="image-20220910194715352">
+
+<h2 id="计算GDT所在的逻辑段地址"><a href="#计算GDT所在的逻辑段地址" class="headerlink" title="计算GDT所在的逻辑段地址"></a>计算GDT所在的逻辑段地址</h2><blockquote>
+<p>我们从实模式到保护模式，就需要安装存储器的段描述符，并且加载到描述符表，安装描述符之前，我们要把GDT的物理地址转为逻辑段地址和偏移地址</p>
+</blockquote>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-comment">;计算GDT所在的逻辑段地址 </span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,[<span class="hljs-built_in">cs</span>:gdt_base+<span class="hljs-number">0x7c00</span>]        <span class="hljs-comment">;低16位放到ax</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">dx</span>,[<span class="hljs-built_in">cs</span>:gdt_base+<span class="hljs-number">0x7c00</span>+<span class="hljs-number">0x02</span>]   <span class="hljs-comment">;高16位放到dx</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">bx</span>,<span class="hljs-number">16</span>        
+<span class="hljs-keyword">div</span> <span class="hljs-built_in">bx</span>            
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>,<span class="hljs-built_in">ax</span>                          <span class="hljs-comment">;令DS指向该段以进行操作</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">bx</span>,<span class="hljs-built_in">dx</span>                          <span class="hljs-comment">;段内起始偏移地址 </span></code></pre></div>
+
+<h2 id="创建描述符"><a href="#创建描述符" class="headerlink" title="创建描述符"></a>创建描述符</h2><h3 id="创建0-描述符（空描述符）"><a href="#创建0-描述符（空描述符）" class="headerlink" title="创建0#描述符（空描述符）"></a>创建0#描述符（空描述符）</h3><blockquote>
+<p>处理器规定第一个描述符必须是空描述符，也叫null描述符（其实就是初始化为0）</p>
+</blockquote>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-comment">;创建0#描述符，它是空描述符，这是处理器的要求 null描述符 </span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">dword</span> [<span class="hljs-built_in">bx</span>+<span class="hljs-number">0x00</span>],<span class="hljs-number">0x00</span>		<span class="hljs-comment">;将描述符置为0</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">dword</span> [<span class="hljs-built_in">bx</span>+<span class="hljs-number">0x04</span>],<span class="hljs-number">0x00</span>  		<span class="hljs-comment">;将描述符置为0</span></code></pre></div>
+
+<p>为啥要有空描述符呢 ？？</p>
+<p>如果程序设计有问题，寄存器和内存单元的初始值可能会为0，会用0这个索引来选择0号描述符，这样设置null描述符后，就可避免安全问题</p>
+<p><code>mov dword [bx+0x00],0x00</code>：将双字0x00000000放入bx+0的地址空间中，这里bx为07e00，也就是将0放入地址空间07e00</p>
+<p><code>mov dword [bx+0x04],0x00</code> ：将双字0x00000000放入bx+0x04的地址空间中，即将0放入地址空间07e04</p>
+<p>如下图：</p>
+<img src="/2022/09/08/22-0908-01/image-20220911135715856.png" srcset="/img/loading.gif" lazyload class="" title="image-20220911135715856">
+
+<h3 id="创建1-描述符（保护模式下的代码段描述符）"><a href="#创建1-描述符（保护模式下的代码段描述符）" class="headerlink" title="创建1#描述符（保护模式下的代码段描述符）"></a>创建1#描述符（保护模式下的代码段描述符）</h3><div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-comment">;创建#1描述符，保护模式下的代码段描述符</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">dword</span> [<span class="hljs-built_in">bx</span>+<span class="hljs-number">0x08</span>],<span class="hljs-number">0x7c0001ff</span>	
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">dword</span> [<span class="hljs-built_in">bx</span>+<span class="hljs-number">0x0c</span>],<span class="hljs-number">0x00409800</span></code></pre></div>
+
+<p>放入内存中如下图 ：</p>
+<img src="/2022/09/08/22-0908-01/image-20220911140124581.png" srcset="/img/loading.gif" lazyload class="" title="image-20220911140124581">
+
+<img src="/2022/09/08/22-0908-01/image-20220911144630591.png" srcset="/img/loading.gif" lazyload class="" title="image-20220911144630591">
+
+<p>整合上面两个图的信息，可得知：</p>
+<ul>
+<li><p>段限长：即浅蓝色的部分，0x001FF</p>
+</li>
+<li><p>线性基地址：即粉色部分，0x00007c00</p>
+</li>
+<li><p>粒度：G&#x3D;0，即粒度为字节，该段长度512个字节</p>
+</li>
+<li><p>S&#x3D;1，该段属于存储器的段（代码段或数据段），而不是系统的段</p>
+</li>
+<li><p>D&#x3D;1，表示该段为32位的段</p>
+</li>
+<li><p>P&#x3D;1，表示该段在内存中</p>
+</li>
+<li><p>DPL&#x3D;00，表示该段特权级别为0</p>
+</li>
+<li><p>TYPE&#x3D;1000，表示一个只能执行的代码段</p>
+<img src="/2022/09/08/22-0908-01/image-20220911145840994.png" srcset="/img/loading.gif" lazyload class="" title="image-20220911145840994"></li>
+</ul>
+<h3 id="创建2-描述符（保护模式下的数据段描述符）"><a href="#创建2-描述符（保护模式下的数据段描述符）" class="headerlink" title="创建2#描述符（保护模式下的数据段描述符）"></a>创建2#描述符（保护模式下的数据段描述符）</h3><div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">dword</span> [<span class="hljs-built_in">bx</span>+<span class="hljs-number">0x10</span>],<span class="hljs-number">0x8000ffff</span>     
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">dword</span> [<span class="hljs-built_in">bx</span>+<span class="hljs-number">0x14</span>],<span class="hljs-number">0x0040920b</span></code></pre></div>
+
+<p>分析过程同#1描述符</p>
+<h3 id="创建-3描述符（保护模式下的堆栈段描述符）"><a href="#创建-3描述符（保护模式下的堆栈段描述符）" class="headerlink" title="创建#3描述符（保护模式下的堆栈段描述符）"></a>创建#3描述符（保护模式下的堆栈段描述符）</h3><div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">dword</span> [<span class="hljs-built_in">bx</span>+<span class="hljs-number">0x18</span>],<span class="hljs-number">0x00007a00</span>	<span class="hljs-comment">;0x07a00</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">dword</span> [<span class="hljs-built_in">bx</span>+<span class="hljs-number">0x1c</span>],<span class="hljs-number">0x00409600</span></code></pre></div>
+
+<p>分析过程同#1描述符</p>
+<h2 id="将描述符加载到GDTR寄存器"><a href="#将描述符加载到GDTR寄存器" class="headerlink" title="将描述符加载到GDTR寄存器"></a>将描述符加载到GDTR寄存器</h2><blockquote>
+<p>描述符安装到内存相对应位置之后，需要将描述符线性基地址和界限加载到描述符表寄存器GDTR</p>
+</blockquote>
+<p>首先我们要先定义一个描述符表的界限，低16位就是界限，如下图：</p>
+<img src="/2022/09/08/22-0908-01/image-20220911153457716.png" srcset="/img/loading.gif" lazyload class="" title="image-20220911153457716">
+
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">word</span> [<span class="hljs-built_in">cs</span>: gdt_size+<span class="hljs-number">0x7c00</span>],<span class="hljs-number">31</span>  <span class="hljs-comment">;描述符表的界限（总字节数减一）</span></code></pre></div>
+
+<blockquote>
+<p>解释：总字数减一的含义：</p>
+</blockquote>
+<img src="/2022/09/08/22-0908-01/image-20220911154020182.png" srcset="/img/loading.gif" lazyload class="" title="image-20220911154020182">
+
+<blockquote>
+<p>这里为啥表大小是32呢 ？？</p>
+</blockquote>
+<p>因为总共有4个描述符（空 描述符、代码段描述符、数据段描述符、堆栈段描述符），即一共有4个段，一个段占4个字节，一个字节8位，4*8&#x3D;32</p>
+<h3 id="lgdt指令"><a href="#lgdt指令" class="headerlink" title="lgdt指令"></a>lgdt指令</h3><p>lgdt的操作数一个48位的内存单元，格式如下：</p>
+<div class="code-wrapper"><pre><code class="hljs txt">lgdt 48位内存单元</code></pre></div>
+
+<p>其中48位的内存单元中，低16位就是界限值，高32位是基地址，计算机启动后，基地址会被初始化为0x00000000，界限是0xFFFF</p>
+<img src="/2022/09/08/22-0908-01/image-20220911153457716.png" srcset="/img/loading.gif" lazyload class="" title="image-20220911153457716">
+
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">lgdt</span> [<span class="hljs-built_in">cs</span>: gdt_size+<span class="hljs-number">0x7c00</span>]</code></pre></div>
+
+<p>上述指令中，lgdt指令会把从 gdt_size+0x7c00标号开始后面的6个字节（即48位）加载到GDT寄存器中</p>
+<h2 id="打开A20地址线"><a href="#打开A20地址线" class="headerlink" title="打开A20地址线"></a>打开A20地址线</h2><div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">in</span> <span class="hljs-built_in">al</span>,<span class="hljs-number">0x92</span>                         <span class="hljs-comment">;南桥芯片内的端口 </span>
+<span class="hljs-keyword">or</span> <span class="hljs-built_in">al</span>,<span class="hljs-number">0000_0010B</span>
+<span class="hljs-keyword">out</span> <span class="hljs-number">0x92</span>,<span class="hljs-built_in">al</span>                        <span class="hljs-comment">;打开A20 </span></code></pre></div>
+
+<blockquote>
+<p>进入保护模式之前，还有一个历史遗留的问题</p>
+</blockquote>
+<p>地址线从0开始编号，第一根地址线为A0，A20是处理器的第21根地址线</p>
+<p>在8086中有20根地址线，不存在第21根地址线问题，在8086中，当逻辑地址到达FFFF之后，如果逻辑地址+1，正常来说，FFFF+1&#x3D;10000，但是由于逻辑地址只能保留16位，所以最高位的1就没有了，这样FFFF+1&#x3D;0000，就又绕回到最低位0000，逻辑地址就从最高位FFFF绕回到了最低位0000</p>
+<p>同理，物理地址FFFFF，FFFFF+1&#x3D;00000，也是会绕回最低位物理地址00000</p>
+<p>当年，很多程序员利用硬件的某些特性展示自己的技术，依赖回绕特性来写一些代码</p>
+<p>80286有24根地址线，进位不会被丢弃，这样回绕特性就不能用了，为了80286能够兼容运行8086程序，就把第21根地址线这一位强制变成0，这样进位就不是1，而是0，这样就能模仿8086的回绕特性</p>
+<p>但是如果在80286中想要访问更多的地址线，那么我们就要先打开A20地址线，让第21根地址线由0变成1 （注意：老式设备才需要，一般处理器默认就是打开的）</p>
+<img src="/2022/09/08/22-0908-01/image-20220911163225748.png" srcset="/img/loading.gif" lazyload class="" title="image-20220911163225748">
+
+<p>打开地址线的代码如下：</p>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">in</span> <span class="hljs-built_in">al</span>,<span class="hljs-number">0x92</span>                         <span class="hljs-comment">;南桥芯片内的端口 </span>
+<span class="hljs-keyword">or</span> <span class="hljs-built_in">al</span>,<span class="hljs-number">0000_0010B</span>
+<span class="hljs-keyword">out</span> <span class="hljs-number">0x92</span>,<span class="hljs-built_in">al</span>                        <span class="hljs-comment">;打开A20 </span></code></pre></div>
+
+<h2 id="关闭中断"><a href="#关闭中断" class="headerlink" title="关闭中断"></a>关闭中断</h2><blockquote>
+<p>保护模式下的中断机制和实模式不同，因此原来的中断向量表不再适用，在保护模式下，所有的BIOS中断都不能再用（因为这是实模式下的代码），在重新设置保护模式下的中断环境之前，必须先关闭中断</p>
+</blockquote>
+<div class="code-wrapper"><pre><code class="hljs abnf">cli		<span class="hljs-comment">;保护模式下中断机制尚未建立，应禁止中断 </span></code></pre></div>
+
+<h2 id="进入保护模式"><a href="#进入保护模式" class="headerlink" title="进入保护模式"></a>进入保护模式</h2><h3 id="CR0寄存器"><a href="#CR0寄存器" class="headerlink" title="CR0寄存器"></a>CR0寄存器</h3><p>CR0寄存器（32位）是处理器内部的控制寄存器，包含了一系列用于控制处理器操作模式和运行状态的标志位，它的第0位（PE，即Protection Enable）是开启保护模式的车钥匙，该位设置为1，则处理器进入保护模式，按保护模式的规则开始运行</p>
+<p>设置PE位，进入保护模式，代码如下：</p>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">eax</span>,<span class="hljs-built_in">cr0</span>
+<span class="hljs-keyword">or</span> <span class="hljs-built_in">eax</span>,<span class="hljs-number">1</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">cr0</span>,<span class="hljs-built_in">eax</span>                        <span class="hljs-comment">;设置PE位</span></code></pre></div>
+
+<h3 id="描述符高速缓存器"><a href="#描述符高速缓存器" class="headerlink" title="描述符高速缓存器"></a>描述符高速缓存器</h3><blockquote>
+<p>8086有4个16位的段寄存器，CS、ES、DS、SS</p>
+</blockquote>
+<p>32位处理器在原先的基础上又增加了2个段寄存器FS、GS，也就是一共有6个：CS，ES，DS，SS，FS，GS</p>
+<p>32位处理器的6个段寄存器又分可见部分和隐藏部分两个部分</p>
+<ul>
+<li>可见部分为16位，与8086一样，目的是在实模式下用于按传统方式寻址，寻址空间1MB（这样就兼容了8086的程序可以在32位的处理器上运行）</li>
+<li>不可见部分为16位，称为描述符高速缓存器，里面有段的基地址和各种访问属性。这部分内容程序不可访问，由处理器自动使用</li>
+</ul>
+<p>32位处理器的段寄存器结构如下图：</p>
+<img src="/2022/09/08/22-0908-01/image-20220912162820252.png" srcset="/img/loading.gif" lazyload class="" title="image-20220912162820252">
+
+<h4 id="8086和32位处理器的内存访问"><a href="#8086和32位处理器的内存访问" class="headerlink" title="8086和32位处理器的内存访问"></a>8086和32位处理器的内存访问</h4><h5 id="8086处理器（只有实模式）"><a href="#8086处理器（只有实模式）" class="headerlink" title="8086处理器（只有实模式）"></a>8086处理器（只有实模式）</h5><blockquote>
+<p>在学习16位汇编已经学习过，简单说明</p>
+</blockquote>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">cx</span>,<span class="hljs-number">0x2000</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>,<span class="hljs-built_in">cx</span>
+<span class="hljs-keyword">mov</span> [<span class="hljs-number">0xc0</span>],<span class="hljs-built_in">al</span></code></pre></div>
+
+<p>首先将ds寄存器的内容设置为0x2000，这个只是逻辑段地址，接着向段内偏移地址为0x00c0的地方写入1字节，写入时，处理器将ds的内容左移4位加上偏移地址，实际物理地址为0x200c0</p>
+<h5 id="32位处理器"><a href="#32位处理器" class="headerlink" title="32位处理器"></a>32位处理器</h5><h6 id="实模式"><a href="#实模式" class="headerlink" title="实模式"></a>实模式</h6><p>在32位处理器的实模式下，每当引用一个段（执行将段地址传送到段寄存器的指令，比如如下指令：）</p>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">0x2000</span>
+<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>,<span class="hljs-built_in">ax</span></code></pre></div>
+
+<p>32位处理器将逻辑段地址0x2000传送到ds段寄存器中，然后自动将段地址左移4位得到段基地址，并传送到描述符高速缓存器中</p>
+<p>段基址&#x3D;0x2000左移四位&#x3D;0x20000，段基址也只有20位，所以高速缓存器中的32位段基址仅低20位有效，高20位全部为0</p>
+<p>此时ds段寄存器如下图：</p>
+<img src="/2022/09/08/22-0908-01/image-20220912163606344.png" srcset="/img/loading.gif" lazyload class="" title="image-20220912163606344">
+
+<p class="note note-warning">扩展：段基值、段基址、物理地址的区别：<br/>
+    段基址（段地址、段基地址）=段基值×10H，即 段基址=段基值左移4位<br/>
+    物理地址（实际地址、绝对地址）=段基值×10H+偏移地址=段基址+偏移地址<br/>
+    需要注意的是：很多微机教材中没有介绍段基值，而是直接定义 物理地址=段基址×10H+偏移地址，这是因为这类教材中认为段寄存器中的16位数就是段基址，而将段基址×10H定义为段的起始地址
+</p>
+
+<h6 id="保护模式-1"><a href="#保护模式-1" class="headerlink" title="保护模式"></a>保护模式</h6><p>在32位处理器的保护模式下，CS，ES，DS，SS，FS，GS称之为段选择器，而不是段寄存器。</p>
+<p>32位处理器在实模式下，访问内存时会将逻辑地址传送给ds段寄存器。而在保护模式下，处理器访问内存会将<code>段选择子</code>传送给ds段选择器</p>
+<blockquote>
+<p>那么什么是段选择子呢 ？？</p>
+<p>段选择子可以大致理解成段描述符在描述符表（GDT）中的索引号</p>
+</blockquote>
+<p>段选择子具体由如下三部分组成：</p>
+<img src="/2022/09/08/22-0908-01/image-20220911175145059.png" srcset="/img/loading.gif" lazyload class="" title="image-20220911175145059">
+
+<ul>
+<li>第一部分是描述符索引号</li>
+<li>第二部分是描述符表指示器，TI&#x3D;0表示描述符在GDT中，TI&#x3D;1表示描述符在LDT中</li>
+<li>第三部分，RPL是请求特权级，表示给出当前选择子的那个程序的特权级别</li>
+</ul>
+<blockquote>
+<p>加载段选择子</p>
+</blockquote>
+<p>前面我们定义过0#描述符（空描述符）、1#描述符（代码段描述符）、2#描述符（数据段描述符）、3#（堆栈段描述符），那么加载的段选择子的描述符索引应该是哪个描述符的索引呢 ？</p>
+<p>32位处理器在进行内存访问时，段选择子将传送给ds数据段选择器，那么这里段选择子的索引肯定是数据段描述符的索引</p>
+<p>在c11_mbr_asm文件中，我们可以发现加载段选择子的代码如下：</p>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">cx</span>,<span class="hljs-number">00000000000_10_000B</span>         <span class="hljs-comment">;加载数据段选择子(0x0010)</span></code></pre></div>
+
+<p>通过分析，可以得出段选择子的描述符索引恰好为2，恰好就是我们之前定义过的数据段描述符的索引</p>
+<img src="/2022/09/08/22-0908-01/image-20220911175655390.png" srcset="/img/loading.gif" lazyload class="" title="image-20220911175655390">
+
+<p>将段选择子传送给ds段选择器后，此时ds段选择器如下：</p>
+<img src="/2022/09/08/22-0908-01/image-20220912171948219.png" srcset="/img/loading.gif" lazyload class="" title="image-20220912171948219">
+
+<p>因为每个描述符占8个字节，那么描述符在表内的偏移地址&#x3D;索引号×8，然后GDTR寄存器提供一个线性基地址，那么我们就可以得到该描述符的起始物理地址，就能够访问到该描述符，然后处理器就把描述符中的段属性、段基址、段界限加载到高速缓存器中</p>
+<p>即如下三个步骤：</p>
+<img src="/2022/09/08/22-0908-01/image-20220912180425116.png" srcset="/img/loading.gif" lazyload class="" title="image-20220912180425116">
+
+<ul>
+<li><p>步骤①</p>
+<ul>
+<li>2号描述符的起始物理地址 &#x3D; 2×8 + 0x7e00 &#x3D; 16（十进制）+ 0x07e00（十六进制）&#x3D; 0x10 +  0x07e00 &#x3D; 0x07e10</li>
+</ul>
+</li>
+<li><p>步骤②</p>
+<ul>
+<li><p>处理器会找到2号描述符在描述符表的位置，如下：</p>
+<img src="/2022/09/08/22-0908-01/image-20220912181800340.png" srcset="/img/loading.gif" lazyload class="" title="image-20220912181800340"></li>
+</ul>
+</li>
+<li><p>步骤③</p>
+<ul>
+<li><p>将②号描述符的内容0x0040920b8000ffff加载到描述符高速缓存表中</p>
+<img src="/2022/09/08/22-0908-01/image-20220912183635479.png" srcset="/img/loading.gif" lazyload class="" title="image-20220912183635479">
+
+<ul>
+<li>2号 描述符中：<ul>
+<li>段属性&#x3D; 0100 1001 0010  （段属性即G、D&#x2F;B、L、AVL、P、DPL、S、TYPE）</li>
+<li>段基址&#x3D; 0000 00000 0000 1011 1000 0000 0000 0000 （即0xB8000）</li>
+<li>段界限&#x3D; 0000 FFFF FFFF FFFF FFFF</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>然后将段属性、段基址、段界限加载到高速缓存器中就行了，此后每当指令访问内存时，就不再访问描述符，直接用当前段寄存器描述符高速缓存器提供线性基地址</p>
+<ul>
+<li>比如保护模式下执行指令：mov byte[0x02],’r’<ul>
+<li>32位处理器会直接把高速缓存器里的32位段基址（即0xB8000）拿出来，然后加上偏移地址，就形成了物理地址，即物理地址&#x3D;0xB8002，也就是通过mov指令将P的ASCII码写入0xB8002这个物理地址</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="清空流水线"><a href="#清空流水线" class="headerlink" title="清空流水线"></a>清空流水线</h3><blockquote>
+<p>这里为啥要清空流水线呢 ? </p>
+</blockquote>
+<p>32位处理器在实模式下访问内存时，描述符高速缓存器中的段基地址是会保存内容的，所以在刚进入保护模式的时候，这些内容还是残留在里面的，我们要进行刷新，代码如下：</p>
+<div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">jmp</span> <span class="hljs-built_in">dword</span> <span class="hljs-number">0x0008</span>:flush</code></pre></div>
+
+<h1 id="代码调试"><a href="#代码调试" class="headerlink" title="代码调试"></a>代码调试</h1><blockquote>
+<p>采用bochs进行调试，调试前需要先把c11_mbr.asm编译成二进制的bin文件，然后把bin文件加载到vhd格式的虚拟磁盘中，然后设置bochs从vhd格式磁盘启动</p>
+</blockquote>
+<p>处理器刚加电后，除了cs段寄存器外，其余的寄存器全部为0，可以通过sreg来查看段寄存器的状态，如下：</p>
+<img src="/2022/09/08/22-0908-01/image-20220912214436960.png" srcset="/img/loading.gif" lazyload class="" title="image-20220912214436960">
+
+<p>这里的base&#x3D;0xffff0000，即段基址&#x3D;0xffff0000</p>
+<p>然后s进行跳转（即执行下一个命令），并且再次执行sreg查看段寄存器，如下：</p>
+<img src="/2022/09/08/22-0908-01/image-20220912220613445.png" srcset="/img/loading.gif" lazyload class="" title="image-20220912220613445">
+
+<p>这里cs的段基址从0xffff0000跳转到了0x000f0000，这是为啥呢 ？？？</p>
+<p>因为计算机加电后，会读取BIOS中的ROM芯片，而ROM的起始物理地址就是0x000f0000（在<a target="_blank" rel="noopener" href="https://ayuxy.cercel.app//2022/08/21/22-0821-01/#%E5%86%85%E5%AD%98">x86保护模式day1</a>中学习过）</p>
+<p>然后我们需要跳转到主引导扇区0x7c00，开始加载操作系统执行（通过<code>b 0x7c00</code>设置断点，然后通过<code>c</code>设置好的断点来执行）</p>
+<img src="/2022/09/08/22-0908-01/image-20220912224930703.png" srcset="/img/loading.gif" lazyload class="" title="image-20220912224930703">
+
+<img src="/2022/09/08/22-0908-01/image-20220912225020357.png" srcset="/img/loading.gif" lazyload class="" title="image-20220912225020357">
+
+<p>然后通过<code>u/100</code>反汇编后面的100条指令，如下 ：</p>
+<img src="/2022/09/08/22-0908-01/image-20220912225338071.png" srcset="/img/loading.gif" lazyload class="" title="image-20220912225338071">
+
+<p>前面了解过我们只要设置cr0就可以进入到保护模式</p>
+<p>我们可以先跳转到cli这个指令的地方，如下：</p>
+<img src="/2022/09/08/22-0908-01/image-20220912225535479.png" srcset="/img/loading.gif" lazyload class="" title="image-20220912225535479">
+
+<p>然后单步执行调试</p>
+<img src="/2022/09/08/22-0908-01/image-20220912230052573.png" srcset="/img/loading.gif" lazyload class="" title="image-20220912230052573">
+
+<p>然后还可以通过creg查看控制器的内容，如下：</p>
+<img src="/2022/09/08/22-0908-01/image-20220912230224563.png" srcset="/img/loading.gif" lazyload class="" title="image-20220912230224563">
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/09/07/22-0907-01/" title="x86保护模式day6">
+                        <span class="hidden-mobile">x86保护模式day6</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-anniu-jiantouxiangyou_o"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键字</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/image.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>

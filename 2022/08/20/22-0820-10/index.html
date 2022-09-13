@@ -12,16 +12,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
-  <meta name="theme-color" content="#000000">
+  <meta name="theme-color" content="#2f4154">
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="DOS中断例程 实际之前我们已经接触过dos中断例程，如下： mov ax,4c00h int 21h 而 mov  ax,4c00h 也就是 mov ah,4ch mov al,00h mov ah,4ch mov al,0 int 21h		;表示使用int 21h中断例程的4ch子程序，功能为程序返回，ah传递参数 作业： assume cs:code,ds:data  data segm">
+    <meta name="description" content="DOS中断例程实际之前我们已经接触过dos中断例程，如下： mov ax,4c00h int 21h  而 mov  ax,4c00h 也就是 mov ah,4ch mov al,00h  mov ah,4ch mov al,0 int 21h		;表示使用int 21h中断例程的4ch子程序，功能为程序返回，ah传递参数  作业： assume cs:code,ds:data  data seg">
 <meta property="og:type" content="article">
 <meta property="og:title" content="汇编day10">
 <meta property="og:url" content="http://example.com/2022/08/20/22-0820-10/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="DOS中断例程 实际之前我们已经接触过dos中断例程，如下： mov ax,4c00h int 21h 而 mov  ax,4c00h 也就是 mov ah,4ch mov al,00h mov ah,4ch mov al,0 int 21h		;表示使用int 21h中断例程的4ch子程序，功能为程序返回，ah传递参数 作业： assume cs:code,ds:data  data segm">
+<meta property="og:description" content="DOS中断例程实际之前我们已经接触过dos中断例程，如下： mov ax,4c00h int 21h  而 mov  ax,4c00h 也就是 mov ah,4ch mov al,00h  mov ah,4ch mov al,0 int 21h		;表示使用int 21h中断例程的4ch子程序，功能为程序返回，ah传递参数  作业： assume cs:code,ds:data  data seg">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/2022/08/20/22-0820-10/image-20220904162736276.png">
 <meta property="og:image" content="http://example.com/2022/08/20/22-0820-10/image-20220904162855237.png">
@@ -222,7 +222,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          5.7k words
+          5.8k words
         
       </span>
     
@@ -233,7 +233,7 @@
         
         
         
-          48 mins
+          49 mins
         
       </span>
     
@@ -282,14 +282,15 @@
             
               <div class="markdown-body">
                 
-                <h1 id="dos中断例程"><a class="markdownIt-Anchor" href="#dos中断例程"></a> DOS中断例程</h1>
-<p>实际之前我们已经接触过dos中断例程，如下：</p>
+                <h1 id="DOS中断例程"><a href="#DOS中断例程" class="headerlink" title="DOS中断例程"></a>DOS中断例程</h1><p>实际之前我们已经接触过dos中断例程，如下：</p>
 <div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">4c00h</span>
 <span class="hljs-keyword">int</span> <span class="hljs-number">21h</span></code></pre></div>
-<p>而 mov  ax,4c00h 也就是 mov ah,4ch mov al,00h</p>
+
+<p>而 mov  ax,4c00h 也就是 mov ah,4ch mov al,00h </p>
 <div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-number">ah</span>,<span class="hljs-number">4ch</span>
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>,<span class="hljs-number">0</span>
 <span class="hljs-keyword">int</span> <span class="hljs-number">21h</span>		<span class="hljs-comment">;表示使用int 21h中断例程的4ch子程序，功能为程序返回，ah传递参数</span></code></pre></div>
+
 <p>作业：</p>
 <div class="code-wrapper"><pre><code class="hljs txt">assume cs:code,ds:data
 
@@ -318,44 +319,46 @@ code segment
 		int 21h
 code ends
 end start</code></pre></div>
+
 <p>编译上述程序，指向后如下：</p>
 <img src="/2022/08/20/22-0820-10/image-20220904162736276.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904162736276">
-<h1 id="端口"><a class="markdownIt-Anchor" href="#端口"></a> 端口</h1>
-<p>CPU 是一块芯片，通过地址线、数据线、控制线和其他电子器件链接，那么我们在键盘上按下 ‘A’ ，CPU如何获取到我们键盘上按下的 ‘A’ 呢 ？？</p>
+
+<h1 id="端口"><a href="#端口" class="headerlink" title="端口"></a>端口</h1><p>CPU 是一块芯片，通过地址线、数据线、控制线和其他电子器件链接，那么我们在键盘上按下 ‘A’ ，CPU如何获取到我们键盘上按下的 ‘A’ 呢 ？？</p>
 <p>在电脑的主板上有很多接口，如下，这些接口上有很多芯片，这些芯片上还有一些寄存器，比如：笔记本上的插键盘的usb接口，这个接口上就有芯片，芯片上就有寄存器。</p>
 <img src="/2022/08/20/22-0820-10/image-20220904162855237.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904162855237">
-<p>比如：我们在键盘上按下 ‘A’ ，由于键盘上肯定也有芯片，芯片上就有寄存器，那么当我们在键盘上按下 ’ A’ 的时候，就会把 ‘A’ 存放到键盘芯片上的寄存器中，然后通过 “端口” 把A发送给CPU，实际这里端口就是键盘和电脑连接的usb接口上的寄存器，每个端口都有一个编号，类似于内存的地址。CPU通过端口地址来定位端口，端口的范围是64KB，即 0~65535</p>
+
+<p>比如：我们在键盘上按下 ‘A’ ，由于键盘上肯定也有芯片，芯片上就有寄存器，那么当我们在键盘上按下 ‘ A’ 的时候，就会把 ‘A’ 存放到键盘芯片上的寄存器中，然后通过 “端口” 把A发送给CPU，实际这里端口就是键盘和电脑连接的usb接口上的寄存器，每个端口都有一个编号，类似于内存的地址。CPU通过端口地址来定位端口，端口的范围是64KB，即 0~65535</p>
 <img src="/2022/08/20/22-0820-10/image-20220904162902231.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904162902231">
+
 <p>注意：对端口的读写不能使用 mov push pop 等内存指令，端口的读写有2条：In（读）和 out（写）</p>
-<p>比如：访问60号端口的内容</p>
+<p>比如：访问60号端口的内容  </p>
 <div class="code-wrapper"><pre><code class="hljs txt">In al,60h	;这里必须是al或者ax，这个是固定的格式，访问8位端口用al，访问16位端口用ax</code></pre></div>
-<p>具体如下：</p>
+
+<p>具体如下： </p>
 <p>CPU要读取60h号端口的内容，那么CPU通过地址总线将60h这个地址信息发送出去，找到60h端口，然后通过控制线告诉这个端口要执行In读命令，那么芯片所在的60h端口会把数据通过地址线直接放到CPU的寄存器中</p>
 <p>比如：对0~255（8位）以内的端口进行读写时，这里以20h端口为例</p>
 <div class="code-wrapper"><pre><code class="hljs txt">in al,20h	
 out 20h,al</code></pre></div>
+
 <p>比如：对256~65535（16位）进行读写，端口号放dx中，这里的端口号为3f8h（10进制的1016）为例</p>
 <div class="code-wrapper"><pre><code class="hljs txt">mov dx,3f8h
 in al,dx
 out dx,al</code></pre></div>
-<h1 id="cmos-ram-芯片简称cmos"><a class="markdownIt-Anchor" href="#cmos-ram-芯片简称cmos"></a> CMOS RAM 芯片（简称CMOS）</h1>
-<ol>
-<li>
-<p>CMOS芯片是电脑主板上的一块可读写的RAM芯片，因为可读写的特性，所以在电脑主板上用来保存BIOS设置完电脑硬件参数后的数据，这个芯片仅仅是用来存放数据的。</p>
+
+<h1 id="CMOS-RAM-芯片（简称CMOS）"><a href="#CMOS-RAM-芯片（简称CMOS）" class="headerlink" title="CMOS RAM 芯片（简称CMOS）"></a>CMOS RAM 芯片（简称CMOS）</h1><ol>
+<li><p>CMOS芯片是电脑主板上的一块可读写的RAM芯片，因为可读写的特性，所以在电脑主板上用来保存BIOS设置完电脑硬件参数后的数据，这个芯片仅仅是用来存放数据的。</p>
 </li>
-<li>
-<p>CMOS芯片包含一个实时钟（用来显示当前时间）和一个有128个存储单元的RAM存储器</p>
+<li><p>CMOS芯片包含一个实时钟（用来显示当前时间）和一个有128个存储单元的RAM存储器</p>
 </li>
-<li>
-<p>128个字节的RAM中内部实时钟占用0~0dh单元用，来保存时间信息，其余大部分单元用于保存系统配置信息，供系统启动时BIOS程序读取</p>
+<li><p>128个字节的RAM中内部实时钟占用0~0dh单元用，来保存时间信息，其余大部分单元用于保存系统配置信息，供系统启动时BIOS程序读取</p>
 </li>
-<li>
-<p>CMOS RAM 存储的具体时间信息如下：</p>
-<p>年、月、日、时、分、秒，这六个信息长度都为1个字节，存放单元为：秒:0   分:2   时:4  日: 7   月:8   年:9</p>
+<li><p>CMOS RAM 存储的具体时间信息如下：</p>
+<p>年、月、日、时、分、秒，这六个信息长度都为1个字节，存放单元为：秒:0   分:2   时:4  日: 7   月:8   年:9 </p>
 <p>这些时间数据都是以BCD码的方式存放</p>
 <p>BCD码是以4位二进制数表示十进制数码的编码方法，如下所示：</p>
 <div class="code-wrapper"><pre><code class="hljs tap">十进制数码:     <span class="hljs-number"> 0 </span>     <span class="hljs-number"> 1 </span>    <span class="hljs-number"> 2 </span>    <span class="hljs-number"> 3 </span>    <span class="hljs-number"> 4 </span>   <span class="hljs-number"> 5 </span>     <span class="hljs-number"> 6 </span>     <span class="hljs-number"> 7 </span>     <span class="hljs-number"> 8 </span>     9
 对应的BCD码:  <span class="hljs-number"> 0000 </span>  <span class="hljs-number"> 0001 </span> <span class="hljs-number"> 0010 </span> <span class="hljs-number"> 0011 </span> <span class="hljs-number"> 0100 </span> <span class="hljs-number"> 0101 </span> <span class="hljs-number"> 0110 </span>  <span class="hljs-number"> 0111 </span>  <span class="hljs-number"> 1000 </span>   1001</code></pre></div>
+
 <p>比如：数值26，用BCD码表示为: 0010 0110</p>
 <div class="code-wrapper"><pre><code class="hljs txt">;作业：编程在屏幕中间显示当前的月份
 ;分析：当前日期为6月，我们拿到的数据实际是bcd码，也就是0000 0110，然后我们右移四位，拿到4个高位数据0000，然后and指令拿到低4位0110，然后把高位和低位分别+30h，拿到对应的ascii码，然后写入显存，显示出来对应月份
@@ -391,20 +394,19 @@ code segment
 		int 21h
 code ends
 end start</code></pre></div>
+
 <p>编译运行上述程序后，结果如下：</p>
 <img src="/2022/08/20/22-0820-10/image-20220904163032978.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904163032978">
 </li>
-<li>
-<p>该芯片有电池供电，所以关机后内部的时钟依然可以正常工作，RAM中信息不丢失</p>
+<li><p>该芯片有电池供电，所以关机后内部的时钟依然可以正常工作，RAM中信息不丢失</p>
 </li>
-<li>
-<p>该芯片有两个端口：70h和71h，CPU通过这两个端口来读写CMOS RAM</p>
+<li><p>该芯片有两个端口：70h和71h，CPU通过这两个端口来读写CMOS RAM</p>
 </li>
-<li>
-<p>70h为地址端口，存放要访问的CMOS RAM单元的地址；71h为数据端口，存放从选定的CMOS RAM单元中读取的数据，或要写入其中的数据。</p>
+<li><p>70h为地址端口，存放要访问的CMOS RAM单元的地址；71h为数据端口，存放从选定的CMOS RAM单元中读取的数据，或要写入其中的数据。</p>
 <p>比如：要读取cmos 2号单元的内容</p>
 <div class="code-wrapper"><pre><code class="hljs txt">out 70h,2	;①将2送入端口70h
 in al,71h	;②从端口71h读出2号单元的内容</code></pre></div>
+
 <p>具体内容如下：</p>
 <div class="code-wrapper"><pre><code class="hljs txt">assume cs:code
 code segment
@@ -417,15 +419,15 @@ code segment
 		int 21h
 code ends
 end start</code></pre></div>
+
 <p>调式上述程序如下：</p>
 <img src="/2022/08/20/22-0820-10/image-20220904163101938.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904163101938">
+
 <p>执行完 in al,71 指令后，al由 02 变成了 48，而2号单元对应的是分钟，此时恰好是48分</p>
 </li>
 </ol>
-<h1 id="shl-shr指令"><a class="markdownIt-Anchor" href="#shl-shr指令"></a> shl、shr指令</h1>
-<p>shl（l=left 逻辑左移指令）和 shr（r=right 逻辑右移指令）</p>
-<h2 id="shl"><a class="markdownIt-Anchor" href="#shl"></a> shl</h2>
-<p>shl：将一个寄存器或内存单元中的数据向左移位，将<code>最后移出</code>的一位写入CF中，最低位用0补位</p>
+<h1 id="shl、shr指令"><a href="#shl、shr指令" class="headerlink" title="shl、shr指令"></a>shl、shr指令</h1><p>shl（l&#x3D;left 逻辑左移指令）和 shr（r&#x3D;right 逻辑右移指令）</p>
+<h2 id="shl"><a href="#shl" class="headerlink" title="shl"></a>shl</h2><p>shl：将一个寄存器或内存单元中的数据向左移位，将<code>最后移出</code>的一位写入CF中，最低位用0补位</p>
 <p>例如：</p>
 <div class="code-wrapper"><pre><code class="hljs txt">mov al,01001000b
 shl al,1	;从右向左移1位
@@ -433,50 +435,47 @@ shl al,1	;从右向左移1位
 al=10010000 CF=0
 然后再次执行 sh1 al,1 指令，执行后结果如下：
 al=00100000 CF=1</code></pre></div>
+
 <p>如果一次移动多位，位数大于1时，必须将移动位数放在cl中</p>
 <p>比如：我们向左移动5位，如下</p>
 <div class="code-wrapper"><pre><code class="hljs txt">mov al,01010001b
 mov cl,5
 shl al,cl</code></pre></div>
-<h2 id="shr"><a class="markdownIt-Anchor" href="#shr"></a> shr</h2>
-<p>shr：将一个寄存器或内存单元中的数据向右移，将<code>最后移出</code>的一位写入CF中，最高位用0补位</p>
+
+<h2 id="shr"><a href="#shr" class="headerlink" title="shr"></a>shr</h2><p>shr：将一个寄存器或内存单元中的数据向右移，将<code>最后移出</code>的一位写入CF中，最高位用0补位</p>
 <div class="code-wrapper"><pre><code class="hljs txt">mov al,01001001b
 shr al,1
 ;执行后al=00100100b cf=1</code></pre></div>
-<h1 id="外中断"><a class="markdownIt-Anchor" href="#外中断"></a> 外中断</h1>
-<p>外中断分为可屏蔽和不可屏蔽，CPU通过标志寄存器的IF位来判断是可屏蔽还是不可屏蔽，可屏蔽可以不响应（当然也可以响应）。如果不可屏蔽，则必须响应。IF=0为可屏蔽中断，IF=1为可屏蔽中断</p>
+
+<h1 id="外中断"><a href="#外中断" class="headerlink" title="外中断"></a>外中断</h1><p>外中断分为可屏蔽和不可屏蔽，CPU通过标志寄存器的IF位来判断是可屏蔽还是不可屏蔽，可屏蔽可以不响应（当然也可以响应）。如果不可屏蔽，则必须响应。IF&#x3D;0为可屏蔽中断，IF&#x3D;1为可屏蔽中断</p>
 <p>可屏蔽外中断流程：</p>
 <ol>
 <li>中断后，取中断类型码 n（是为了定位中断例程的入口地址）</li>
-<li>标志寄存器入栈，设置 IF=0 TF=0（pushf）</li>
+<li>标志寄存器入栈，设置 IF&#x3D;0 TF&#x3D;0（pushf）</li>
 <li>cs、ip入栈</li>
-<li>ip=n*4，cs=nx4+2</li>
+<li>ip&#x3D;n*4，cs&#x3D;nx4+2</li>
 </ol>
 <p>不可屏蔽中断流程：</p>
 <ol>
-<li>标志寄存器入栈，IF=0 TF=0（不可屏蔽中断类型码固定是2，不需要取中断类型码）</li>
+<li>标志寄存器入栈，IF&#x3D;0 TF&#x3D;0（不可屏蔽中断类型码固定是2，不需要取中断类型码）</li>
 <li>cs、ip入栈</li>
-<li>ip=n*4，cs=nx4+2</li>
+<li>ip&#x3D;n*4，cs&#x3D;nx4+2</li>
 </ol>
 <p>理解可屏蔽中断和不可屏蔽中断：比如，我们在键盘上按下按键，就属于可屏蔽中断，有时候会显示，有时候不显示</p>
 <img src="/2022/08/20/22-0820-10/image-20220904163423875.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904163423875">
+
 <p>键盘处理过程如下：</p>
 <ol>
-<li>
-<p>键盘上的每个键相当于一个开关，键盘中有一个芯片对键盘上的每一个键的开关状态进行扫描（判断我们到底有没有按这个按键）</p>
+<li><p>键盘上的每个键相当于一个开关，键盘中有一个芯片对键盘上的每一个键的开关状态进行扫描（判断我们到底有没有按这个按键）</p>
 </li>
-<li>
-<p>按下一个键，开关接通，该芯片产生一个扫描码，扫描码就说明了你按的是哪个键，扫描码会送到接口芯片的寄存器中，外设都是通过端口来读取数据的，键盘的端口地址为60h</p>
+<li><p>按下一个键，开关接通，该芯片产生一个扫描码，扫描码就说明了你按的是哪个键，扫描码会送到接口芯片的寄存器中，外设都是通过端口来读取数据的，键盘的端口地址为60h</p>
 </li>
-<li>
-<p>按下一个键产生的扫描码又称为通码，松开一个键产生扫描码称为断码。扫描码为一个字节。通码的第7位为0，断码的第7位为1</p>
+<li><p>按下一个键产生的扫描码又称为通码，松开一个键产生扫描码称为断码。扫描码为一个字节。通码的第7位为0，断码的第7位为1</p>
 <p>比如：g键的通码为 22h （对应二进制为 00100010 ），断码只需要将通码二进制第7位变为1即可，即 10100010 ，对应十六进制为a2h</p>
 </li>
-<li>
-<p>键盘的输入到达60h端口，相关芯片给CPU发出了中断类型码为9的可屏蔽中断信息，CPU检测到该信息后，如果这时IF=1,则响应，去执行int 9中断例程</p>
+<li><p>键盘的输入到达60h端口，相关芯片给CPU发出了中断类型码为9的可屏蔽中断信息，CPU检测到该信息后，如果这时IF&#x3D;1,则响应，去执行int 9中断例程</p>
 </li>
-<li>
-<p>BIOS提供了int 9中断例程用来进行基本的键盘输入处理</p>
+<li><p>BIOS提供了int 9中断例程用来进行基本的键盘输入处理</p>
 <p>int 9 中断例程进行基本的键盘输入处理大致如下：</p>
 <ol>
 <li>读出60h端口中的扫描码</li>
@@ -538,10 +537,13 @@ show:	mov dx,0
 		
 code ends
 end start</code></pre></div>
+
 <p>编译上述程序，如下：</p>
 <img src="/2022/08/20/22-0820-10/image-20220904163459454.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904163459454">
+
 <p>当我们按下shift键时，如下：</p>
 <img src="/2022/08/20/22-0820-10/image-20220904163505204-16622805054141-16622805063062.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904163505204">
+
 <p>这8个0表示的含义如下：</p>
 <ul>
 <li>字节第0位：键盘右边的shift状态，1表示按下</li>
@@ -553,15 +555,14 @@ end start</code></pre></div>
 <li>字节第6位：键盘CapsLock状态，置为1表示输入大写字母</li>
 <li>字节第7位：键盘Insert状态，置为1表示处于删除状态</li>
 </ul>
-<h1 id="作业"><a class="markdownIt-Anchor" href="#作业"></a> 作业</h1>
-<p>作业：编写程序覆盖int 9程序，按照自己意图来处理键盘的输入，比如在屏幕中间依次显示a~z，在显示的过程中，按下Esc键改变显示的颜色</p>
+<h1 id="作业"><a href="#作业" class="headerlink" title="作业"></a>作业</h1><p>作业：编写程序覆盖int 9程序，按照自己意图来处理键盘的输入，比如在屏幕中间依次显示a~z，在显示的过程中，按下Esc键改变显示的颜色</p>
 <p>思路：</p>
 <ol>
 <li>重写 int 9 中断例程，把原来的 int 9 中断例程覆盖掉 ，重写的内容如下大致如下</li>
 <li>首先要判断我们按下的按键是不是ESC按键，需要先从60h端口读取出从键盘输入的内容（扫描码）（ in,al ）</li>
 <li>ESC属于字符键，然后会将扫描码和对应的ASCII码送入内存的BIOS键盘缓冲区，然后对键盘系统进行相关控制（通过调用BIOS原来的 int 9 中断例程来实现 ）</li>
-<li>由于上面第3步中要调用原来的 int 9 例程，所以我们要调用没有覆盖前的 int 9 中断例程，就需要保存原来 int 9 中断例程的入口地址（原来 int 9 中断例程入口地址 CS : IP = 9×4 : 9×4+2），将入口地址 CS:IP 保存到 0:200、0:202 这里，用data段保存段地址和偏移地址</li>
-<li>然后标志寄存器入栈 IF =0、TF=0（pushf）</li>
+<li>由于上面第3步中要调用原来的 int 9 例程，所以我们要调用没有覆盖前的 int 9 中断例程，就需要保存原来 int 9 中断例程的入口地址（原来 int 9 中断例程入口地址 CS : IP &#x3D; 9×4 : 9×4+2），将入口地址 CS:IP 保存到 0:200、0:202 这里，用data段保存段地址和偏移地址</li>
+<li>然后标志寄存器入栈 IF &#x3D;0、TF&#x3D;0（pushf）</li>
 <li>然后CS:IP入栈、跳转到CS:IP（call dword ptr ds[0]）</li>
 </ol>
 <div class="code-wrapper"><pre><code class="hljs txt">;请将代码编写完成
@@ -658,6 +659,9 @@ myint9end:
 code ends
 end start</code></pre></div>
 
+
+
+
                 
               </div>
             
@@ -705,7 +709,7 @@ end start</code></pre></div>
                     
                     
                       <a href="/2022/08/20/22-0820-11/" title="汇编day11">
-                        <i class="iconfont icon-arrowleft"></i>
+                        <i class="iconfont icon-anniu_jiantouxiangzuo_o"></i>
                         <span class="hidden-mobile">汇编day11</span>
                         <span class="visible-mobile">Previous</span>
                       </a>
@@ -717,7 +721,7 @@ end start</code></pre></div>
                       <a href="/2022/08/20/22-0820-09/" title="汇编day9">
                         <span class="hidden-mobile">汇编day9</span>
                         <span class="visible-mobile">Next</span>
-                        <i class="iconfont icon-arrowright"></i>
+                        <i class="iconfont icon-anniu-jiantouxiangyou_o"></i>
                       </a>
                     
                   </article>

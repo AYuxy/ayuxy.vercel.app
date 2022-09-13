@@ -12,16 +12,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
-  <meta name="theme-color" content="#000000">
+  <meta name="theme-color" content="#2f4154">
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="作业 作业： 1.将datasg段中每个单词的前四个字母改为大写字母，（每个段大小是16字节，对齐方便寻址） assume cs:codesg,ss:stacksg,ds:datasg datasg segment   db &amp;#x27;1. naizi      &amp;#x27;   db &amp;#x27;2. madou        &amp;#x27;   db &amp;#x27;3. hackr">
+    <meta name="description" content="作业作业： 1.将datasg段中每个单词的前四个字母改为大写字母，（每个段大小是16字节，对齐方便寻址） assume cs:codesg,ss:stacksg,ds:datasg datasg segment   db &amp;#x27;1. naizi      &amp;#x27;   db &amp;#x27;2. madou        &amp;#x27;   db &amp;#x27;3. hackr      &amp;#">
 <meta property="og:type" content="article">
 <meta property="og:title" content="汇编Day5">
 <meta property="og:url" content="http://example.com/2022/08/20/22-0820-05/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="作业 作业： 1.将datasg段中每个单词的前四个字母改为大写字母，（每个段大小是16字节，对齐方便寻址） assume cs:codesg,ss:stacksg,ds:datasg datasg segment   db &amp;#x27;1. naizi      &amp;#x27;   db &amp;#x27;2. madou        &amp;#x27;   db &amp;#x27;3. hackr">
+<meta property="og:description" content="作业作业： 1.将datasg段中每个单词的前四个字母改为大写字母，（每个段大小是16字节，对齐方便寻址） assume cs:codesg,ss:stacksg,ds:datasg datasg segment   db &amp;#x27;1. naizi      &amp;#x27;   db &amp;#x27;2. madou        &amp;#x27;   db &amp;#x27;3. hackr      &amp;#">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/2022/08/20/22-0820-05/image-20220904102253206.png">
 <meta property="og:image" content="http://example.com/2022/08/20/22-0820-05/image-20220904102603672.png">
@@ -236,7 +236,7 @@
         
         
         
-          20 mins
+          21 mins
         
       </span>
     
@@ -285,8 +285,7 @@
             
               <div class="markdown-body">
                 
-                <h1 id="作业"><a class="markdownIt-Anchor" href="#作业"></a> 作业</h1>
-<div class="code-wrapper"><pre><code class="hljs txt">作业：
+                <h1 id="作业"><a href="#作业" class="headerlink" title="作业"></a>作业</h1><div class="code-wrapper"><pre><code class="hljs txt">作业：
 1.将datasg段中每个单词的前四个字母改为大写字母，（每个段大小是16字节，对齐方便寻址）
 assume cs:codesg,ss:stacksg,ds:datasg
 datasg segment
@@ -331,8 +330,8 @@ code segment
 		int 21h
 code ends
 end start</code></pre></div>
-<h1 id="offset"><a class="markdownIt-Anchor" href="#offset"></a> offset</h1>
-<p>offset 是由编译器处理的符号，作用是取标号的<code>偏移地址</code></p>
+
+<h1 id="offset"><a href="#offset" class="headerlink" title="offset"></a>offset</h1><p>offset 是由编译器处理的符号，作用是取标号的<code>偏移地址</code></p>
 <p>比如：</p>
 <div class="code-wrapper"><pre><code class="hljs X86ASM"><span class="hljs-meta">assume</span> <span class="hljs-built_in">cs</span>:code
 code <span class="hljs-meta">segment</span>
@@ -341,12 +340,15 @@ code <span class="hljs-meta">segment</span>
 <span class="hljs-symbol">	s:</span>	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,offset s        <span class="hljs-comment">;相当于mov ax,3，由于前面的mov ax,offset start机器码占三个字节，所以这里偏移3，即mov ax,3</span>
 code ends
 end start</code></pre></div>
+
 <p>如下：</p>
 <img src="/2022/08/20/22-0820-05/image-20220904102253206.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904102253206">
+
 <p>注意：</p>
 <div class="code-wrapper"><pre><code class="hljs txt">bx不能和bp加在一起寻址，如：[bx+bp]
 si不能和di加在一起寻址，如：[si+ds]
 可以用	bx+si或di  bp+si或di</code></pre></div>
+
 <div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-meta">assume</span> <span class="hljs-built_in">cs</span>:code
 code <span class="hljs-meta">segment</span>
 <span class="hljs-symbol">	s:</span>	<span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-built_in">bx</span>           <span class="hljs-comment">;将mov ax,bx指令放到nop处</span>
@@ -358,29 +360,37 @@ code <span class="hljs-meta">segment</span>
 		<span class="hljs-keyword">nop</span>
 code ends
 end s</code></pre></div>
+
 <p>详解：</p>
 <p>上述代码目的如下：</p>
 <img src="/2022/08/20/22-0820-05/image-20220904102603672.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904102603672">
+
 <p>调式代码：</p>
 <img src="/2022/08/20/22-0820-05/image-20220904102612033.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904102612033">
+
 <img src="/2022/08/20/22-0820-05/image-20220904102616212.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904102616212">
+
 <p>注意：这里在-t的话，下一步也就是执行mov ax,cs:[si]</p>
 <img src="/2022/08/20/22-0820-05/image-20220904102625227.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904102625227">
+
 <p>执行mov ax,cs:[si]，此时cs为076a，si为0000，也就是cs:si，076a:0地址对应的值如下：</p>
 <img src="/2022/08/20/22-0820-05/image-20220904102633273.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904102633273">
+
 <p>而8BC3也就是mov ax,bx的机器码</p>
 <img src="/2022/08/20/22-0820-05/image-20220904102641288.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904102641288">
+
 <p>然后我们 -T 执行，ax的值变成了C38B，然后再次-T，就会执行mov cs:[di],ax</p>
 <img src="/2022/08/20/22-0820-05/image-20220904102647758.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904102647758">
+
 <p>注意：cs:di是076A:000E，而076a:000E默认对应的机器码是09，执行 NOP指令</p>
 <img src="/2022/08/20/22-0820-05/image-20220904102655826.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904102655826">
+
 <p>执行完mov cs:[di],ax就会将ax的值C38B给076A:000E，那么076A:000E对应机器码就是C38B，NOP指令就会变成mov ax,bx</p>
 <p>我们发现-T执行完 mov cs:[di],ax 后，本来下面应该是执行NOP指令，但是NOP指令已经变成了mov ax,bx，所以下面执行mov ax,bx</p>
 <img src="/2022/08/20/22-0820-05/image-20220904102705040.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904102705040">
-<p><strong>注意：</strong><br />
-这里的cs:[si]，其中cs是指令寄存器的段地址，而[si]是指令寄存器的偏移地址，前面最常用的就是ds:[0]这种，注意这里的ds不能省略，不能写成 [0]，但是 ds:[bx] 这样的是可以省略ds，写成[bx]（因为汇编编译器和debug对指令的处理不同，详见：汇编day3）</p>
-<h1 id="转移指令jmp"><a class="markdownIt-Anchor" href="#转移指令jmp"></a> 转移指令（jmp）</h1>
-<p>可以修改ip，或者同时修改cs和ip的指令统称之为转移指令</p>
+
+<p><strong>注意：</strong><br>这里的cs:[si]，其中cs是指令寄存器的段地址，而[si]是指令寄存器的偏移地址，前面最常用的就是ds:[0]这种，注意这里的ds不能省略，不能写成 [0]，但是 ds:[bx] 这样的是可以省略ds，写成[bx]（因为汇编编译器和debug对指令的处理不同，详见：汇编day3）</p>
+<h1 id="转移指令（jmp）"><a href="#转移指令（jmp）" class="headerlink" title="转移指令（jmp）"></a>转移指令（jmp）</h1><p>可以修改ip，或者同时修改cs和ip的指令统称之为转移指令</p>
 <p>只修改ip，称之为段内转移，比如：jmp ax</p>
 <p>同时修改cs和ip，称之为段间转移，比如：jmp 1000:0</p>
 <p>偏移地址（寻址范围）最大ffff，转移指令对IP修改的范围不同，段内转移又分为：短转移和近转移</p>
@@ -404,8 +414,10 @@ code <span class="hljs-meta">segment</span>
 <span class="hljs-symbol">	s:</span>	<span class="hljs-keyword">inc</span> <span class="hljs-built_in">ax</span>
 code ends
 end start</code></pre></div>
+
 <p>调式上述代码，有如下疑惑 ？</p>
 <img src="/2022/08/20/22-0820-05/image-20220904112838381.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904112838381">
+
 <p>正常的CPU执行指令的过程如下：</p>
 <ol>
 <li>从CS:IP指向内存单元读取指令，读取的指令进入指令缓冲器</li>
@@ -414,14 +426,14 @@ end start</code></pre></div>
 </ol>
 <p>对于上述代码，则过程如下：</p>
 <ol>
-<li>当执行到jmp指令时候，也就是cs:ip = 076a:0006 时，对应机器码为EB03</li>
+<li>当执行到jmp指令时候，也就是cs:ip &#x3D; 076a:0006 时，对应机器码为EB03</li>
 <li>读取指令EB03进入指令缓冲器</li>
-<li>IP+2=<code>0008H</code>（EB03的长度为2），cs:ip指向076a:0008，也就是指向add ax,1</li>
+<li>IP+2&#x3D;<code>0008H</code>（EB03的长度为2），cs:ip指向076a:0008，也就是指向add ax,1</li>
 <li>执行缓冲区指令EB<code>03</code></li>
 <li>然后执行EB03后，进行跳转，跳转到000B，cs:ip指向inc ax（注意：这里的000B实际就是<code>0008+03</code>，EB03就是告诉CPU要转移的位移，当然这里就是转移3）</li>
 </ol>
 <p>jmp near ptr 标号，实现段内近转移，范围是16位（-32768~32767），ip+16位位移</p>
-<p>jmp far ptr 标号，实现段间转移，又称为远转移。cs=标号所在段的段地址，ip=标号所在段的偏移地址，far ptr 指明了指令用标号的段地址和偏移地址修改cs和ip</p>
+<p>jmp far ptr 标号，实现段间转移，又称为远转移。cs&#x3D;标号所在段的段地址，ip&#x3D;标号所在段的偏移地址，far ptr 指明了指令用标号的段地址和偏移地址修改cs和ip</p>
 
                 
               </div>
@@ -470,7 +482,7 @@ end start</code></pre></div>
                     
                     
                       <a href="/2022/08/20/22-0820-06/" title="汇编Day6">
-                        <i class="iconfont icon-arrowleft"></i>
+                        <i class="iconfont icon-anniu_jiantouxiangzuo_o"></i>
                         <span class="hidden-mobile">汇编Day6</span>
                         <span class="visible-mobile">Previous</span>
                       </a>
@@ -482,7 +494,7 @@ end start</code></pre></div>
                       <a href="/2022/08/20/22-0820-04/" title="汇编Day4">
                         <span class="hidden-mobile">汇编Day4</span>
                         <span class="visible-mobile">Next</span>
-                        <i class="iconfont icon-arrowright"></i>
+                        <i class="iconfont icon-anniu-jiantouxiangyou_o"></i>
                       </a>
                     
                   </article>

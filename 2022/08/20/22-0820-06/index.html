@@ -12,16 +12,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
-  <meta name="theme-color" content="#000000">
+  <meta name="theme-color" content="#2f4154">
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="jcxz 上节课学了段内和段间转移，但实际在操作中，我们直接使用 jmp s 即可，不需要写成 jmp short s 或 jmp far s 这样 ,不用考虑其它，那些都是编译器要考虑的事情 转移地址在寄存器里面，如：jmp ax，jmp bx 转移地址在内存中（段内转移），如下： mov ax,0123H mov ds:[0],ax jmp word ptr ds:[0]   ;就是jmp到">
+    <meta name="description" content="jcxz上节课学了段内和段间转移，但实际在操作中，我们直接使用 jmp s 即可，不需要写成 jmp short s 或 jmp far s 这样 ,不用考虑其它，那些都是编译器要考虑的事情 转移地址在寄存器里面，如：jmp ax，jmp bx 转移地址在内存中（段内转移），如下： mov ax,0123H mov ds:[0],ax jmp word ptr ds:[0]   ;就是jmp到ds">
 <meta property="og:type" content="article">
 <meta property="og:title" content="汇编Day6">
 <meta property="og:url" content="http://example.com/2022/08/20/22-0820-06/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="jcxz 上节课学了段内和段间转移，但实际在操作中，我们直接使用 jmp s 即可，不需要写成 jmp short s 或 jmp far s 这样 ,不用考虑其它，那些都是编译器要考虑的事情 转移地址在寄存器里面，如：jmp ax，jmp bx 转移地址在内存中（段内转移），如下： mov ax,0123H mov ds:[0],ax jmp word ptr ds:[0]   ;就是jmp到">
+<meta property="og:description" content="jcxz上节课学了段内和段间转移，但实际在操作中，我们直接使用 jmp s 即可，不需要写成 jmp short s 或 jmp far s 这样 ,不用考虑其它，那些都是编译器要考虑的事情 转移地址在寄存器里面，如：jmp ax，jmp bx 转移地址在内存中（段内转移），如下： mov ax,0123H mov ds:[0],ax jmp word ptr ds:[0]   ;就是jmp到ds">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/2022/08/20/22-0820-06/image-20220904114503770.png">
 <meta property="og:image" content="http://example.com/2022/08/20/22-0820-06/image-20220904114556768.png">
@@ -217,7 +217,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.9k words
+          2k words
         
       </span>
     
@@ -277,18 +277,19 @@
             
               <div class="markdown-body">
                 
-                <h1 id="jcxz"><a class="markdownIt-Anchor" href="#jcxz"></a> jcxz</h1>
-<p>上节课学了段内和段间转移，但实际在操作中，我们直接使用 jmp s 即可，不需要写成 jmp short s 或 jmp far s 这样 ,不用考虑其它，那些都是编译器要考虑的事情</p>
+                <h1 id="jcxz"><a href="#jcxz" class="headerlink" title="jcxz"></a>jcxz</h1><p>上节课学了段内和段间转移，但实际在操作中，我们直接使用 jmp s 即可，不需要写成 jmp short s 或 jmp far s 这样 ,不用考虑其它，那些都是编译器要考虑的事情</p>
 <p>转移地址在寄存器里面，如：jmp ax，jmp bx</p>
 <p>转移地址在内存中（段内转移），如下：</p>
 <div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">0123H</span>
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>:[<span class="hljs-number">0</span>],<span class="hljs-built_in">ax</span>
 <span class="hljs-keyword">jmp</span> <span class="hljs-built_in">word</span> <span class="hljs-built_in">ptr</span> <span class="hljs-built_in">ds</span>:[<span class="hljs-number">0</span>]   <span class="hljs-comment">;就是jmp到ds:0123地址的地方，执行后ip=0123h</span></code></pre></div>
+
 <p>转移地址在内存中（段间转移），修改cs和ip偏移地址，高地址的字是目的段地址，低地址处存放的目的偏移地址，如下：</p>
 <div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>,<span class="hljs-number">0123h</span>
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">ds</span>:[<span class="hljs-number">0</span>],<span class="hljs-built_in">ax</span>
 <span class="hljs-keyword">mov</span> <span class="hljs-built_in">word</span> <span class="hljs-built_in">ptr</span> <span class="hljs-built_in">ds</span>:[<span class="hljs-number">2</span>],<span class="hljs-number">0</span>
 <span class="hljs-keyword">jmp</span> <span class="hljs-built_in">dword</span> <span class="hljs-built_in">ptr</span> <span class="hljs-built_in">ds</span>:[<span class="hljs-number">0</span>]   <span class="hljs-comment">;执行完后，ip=0123H，cs=0，即cs:ip = 0000:0123</span></code></pre></div>
+
 <div class="code-wrapper"><pre><code class="hljs TXT">作业：
 ;要求执行jmp指令后，cs:ip指向程序需要的第一条指令
 assume cs:code
@@ -308,6 +309,7 @@ code ends
 end start
 解答：
 第一个？为0,第二个是cs</code></pre></div>
+
 <p>有条件的跳转指令 jcxz ，所有有条件的转移指令都是短转移，范围是 -128~127，if cx 等于0，那么就会执行 jcxz ，也就是会 jmp short 标号，如果if cx不为0，那么就啥也不干（程序按顺序向下执行），恰好和loop指令相反（loop是cx不等于0的时候执行）</p>
 <div class="code-wrapper"><pre><code class="hljs txt">作业：利用jcxz指令，实现在内存2000H段中查找到第一个值为0的字节，找到后将它的偏移地址存在dx中
 code segment
@@ -325,8 +327,9 @@ code segment
 		int 21h
 code ends
 end start</code></pre></div>
+
 <p>loop指令也是转移指令，所有循环指令都是短转移，在对应的机器码中包含转移的偏移地址，-128~127</p>
-<p>loop 标号，cx = cx -1，判断cx不等于0，转移到标号处执行指令，如果等于0什么也不做。</p>
+<p>loop 标号，cx &#x3D; cx -1，判断cx不等于0，转移到标号处执行指令，如果等于0什么也不做。</p>
 <p>通过分析下面的程序，在运行前思考这个程序可以正确返回吗？？运行后再思考：为啥是这种结果？？？通过该程序加深对相关内容理解，注意jmp指令对应的机器码，cpu最终执行的是机器码</p>
 <div class="code-wrapper"><pre><code class="hljs txt">assume cs:codesg
 codesg segment
@@ -351,16 +354,18 @@ start:  mov ax,0
         nop
 codesg ends
 end start</code></pre></div>
-<h1 id="ret-retf-call"><a class="markdownIt-Anchor" href="#ret-retf-call"></a> ret、retf、call</h1>
-<p>CALL、RET、RETF指令都是转移指令，其中CALL、RET修改ip，RETF同时修改cs和ip，可以通过这三个指令的配合实现子程序设计（相当于其它语言的函数功能）</p>
-<h2 id="ret-retf"><a class="markdownIt-Anchor" href="#ret-retf"></a> ret、retf</h2>
-<p>cpu执行ret指令时，把栈顶的数据赋值给ip，就等价于如下：</p>
+
+<h1 id="ret、retf、call"><a href="#ret、retf、call" class="headerlink" title="ret、retf、call"></a>ret、retf、call</h1><p>CALL、RET、RETF指令都是转移指令，其中CALL、RET修改ip，RETF同时修改cs和ip，可以通过这三个指令的配合实现子程序设计（相当于其它语言的函数功能）</p>
+<h2 id="ret、retf"><a href="#ret、retf" class="headerlink" title="ret、retf"></a>ret、retf</h2><p>cpu执行ret指令时，把栈顶的数据赋值给ip，就等价于如下：</p>
 <div class="code-wrapper"><pre><code class="hljs x86asm"><span class="hljs-keyword">pop</span> <span class="hljs-built_in">ip</span>
 <span class="hljs-built_in">ip</span> = (<span class="hljs-built_in">ss</span>*<span class="hljs-number">16</span>+<span class="hljs-built_in">sp</span>) ,这里用括号表示<span class="hljs-built_in">ip</span>是<span class="hljs-built_in">ss</span>*<span class="hljs-number">16</span>+<span class="hljs-built_in">sp</span>地址对应的值
 <span class="hljs-built_in">sp</span> = <span class="hljs-built_in">sp</span>+<span class="hljs-number">2</span></code></pre></div>
+
 <img src="/2022/08/20/22-0820-06/image-20220904114503770.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904114503770">
+
 <p>cpu执行retf指令时，把栈顶的数据赋值给ip，然后把第二次栈顶的数据赋值给cs，也就是pop两次，先pop ip，再pop cs，如下：</p>
 <img src="/2022/08/20/22-0820-06/image-20220904114556768.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904114556768">
+
 <div class="code-wrapper"><pre><code class="hljs txt">作业:
 补全程序，实现从内存1000:0000处开始执行指令
 stack segment
@@ -378,18 +383,17 @@ code segment
 		retf
 code ends
 end start</code></pre></div>
-<h2 id="call"><a class="markdownIt-Anchor" href="#call"></a> call</h2>
-<p>call指令：分为依据位移进行转移和转移目的地址在指令中</p>
-<h3 id="依据位移进行转移的call指令"><a class="markdownIt-Anchor" href="#依据位移进行转移的call指令"></a> 依据位移进行转移的call指令</h3>
-<ul>
-<li>
-<p>call 标号（将当前的ip压栈后，跳到标号处执行指令）</p>
+
+<h2 id="call"><a href="#call" class="headerlink" title="call"></a>call</h2><p>call指令：分为依据位移进行转移和转移目的地址在指令中</p>
+<h3 id="依据位移进行转移的call指令"><a href="#依据位移进行转移的call指令" class="headerlink" title="依据位移进行转移的call指令"></a>依据位移进行转移的call指令</h3><ul>
+<li><p>call 标号（将当前的ip压栈后，跳到标号处执行指令）</p>
 <img src="/2022/08/20/22-0820-06/image-20220904114854730.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904114854730">
+
 <p>执行后ax的值为6，执行call s后，会把当前ip 0006放到栈内，然后跳到 s 标号处，执行pop ax命令，将栈顶的0006给ax，所以最终ax为6</p>
 <p><strong>这里一定要记住：CPU执行命令的三部曲：</strong></p>
 <ol>
 <li>从CS:IP指向内存单元读取指令，读取的指令进入指令缓冲器</li>
-<li><strong>IP+读取到的指令长度，指向下一条指令</strong>（所以上面执行call s前，当前的ip为3+3=6）</li>
+<li><strong>IP+读取到的指令长度，指向下一条指令</strong>（所以上面执行call s前，当前的ip为3+3&#x3D;6）</li>
 <li>执行指令缓冲器中的指令</li>
 </ol>
 </li>
@@ -442,7 +446,7 @@ end start</code></pre></div>
                     
                     
                       <a href="/2022/08/20/22-0820-07/" title="汇编Day7">
-                        <i class="iconfont icon-arrowleft"></i>
+                        <i class="iconfont icon-anniu_jiantouxiangzuo_o"></i>
                         <span class="hidden-mobile">汇编Day7</span>
                         <span class="visible-mobile">Previous</span>
                       </a>
@@ -454,7 +458,7 @@ end start</code></pre></div>
                       <a href="/2022/08/20/22-0820-05/" title="汇编Day5">
                         <span class="hidden-mobile">汇编Day5</span>
                         <span class="visible-mobile">Next</span>
-                        <i class="iconfont icon-arrowright"></i>
+                        <i class="iconfont icon-anniu-jiantouxiangyou_o"></i>
                       </a>
                     
                   </article>

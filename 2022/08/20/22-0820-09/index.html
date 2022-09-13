@@ -12,16 +12,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
-  <meta name="theme-color" content="#000000">
+  <meta name="theme-color" content="#2f4154">
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="作业 assume cs:code code segment 	start: 		mov ax,0 		mov dx,1 		mov bx,1 		div bx 		mov ax,4c00h 		int 21h code ends end start 把上面的程序编译成ayu.exe，由于除数为bx（16位），那么被除数一定为32位，被除数的高位存放在dx中，低位存放在ax中，那么根据上述程序，">
+    <meta name="description" content="作业assume cs:code code segment 	start: 		mov ax,0 		mov dx,1 		mov bx,1 		div bx 		mov ax,4c00h 		int 21h code ends end start  把上面的程序编译成ayu.exe，由于除数为bx（16位），那么被除数一定为32位，被除数的高位存放在dx中，低位存放在ax中，那么根据上述程序，除">
 <meta property="og:type" content="article">
 <meta property="og:title" content="汇编day9">
 <meta property="og:url" content="http://example.com/2022/08/20/22-0820-09/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="作业 assume cs:code code segment 	start: 		mov ax,0 		mov dx,1 		mov bx,1 		div bx 		mov ax,4c00h 		int 21h code ends end start 把上面的程序编译成ayu.exe，由于除数为bx（16位），那么被除数一定为32位，被除数的高位存放在dx中，低位存放在ax中，那么根据上述程序，">
+<meta property="og:description" content="作业assume cs:code code segment 	start: 		mov ax,0 		mov dx,1 		mov bx,1 		div bx 		mov ax,4c00h 		int 21h code ends end start  把上面的程序编译成ayu.exe，由于除数为bx（16位），那么被除数一定为32位，被除数的高位存放在dx中，低位存放在ax中，那么根据上述程序，除">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/2022/08/20/22-0820-09/image-20220904160052203.png">
 <meta property="og:image" content="http://example.com/2022/08/20/22-0820-09/image-20220904160257886.png">
@@ -227,7 +227,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4.1k words
+          4.2k words
         
       </span>
     
@@ -287,8 +287,7 @@
             
               <div class="markdown-body">
                 
-                <h1 id="作业"><a class="markdownIt-Anchor" href="#作业"></a> 作业</h1>
-<div class="code-wrapper"><pre><code class="hljs txt">assume cs:code
+                <h1 id="作业"><a href="#作业" class="headerlink" title="作业"></a>作业</h1><div class="code-wrapper"><pre><code class="hljs txt">assume cs:code
 code segment
 	start:
 		mov ax,0
@@ -299,8 +298,10 @@ code segment
 		int 21h
 code ends
 end start</code></pre></div>
-<p>把上面的程序编译成ayu.exe，由于除数为bx（16位），那么被除数一定为32位，被除数的高位存放在dx中，低位存放在ax中，那么根据上述程序，除数bx=1h，被除数为dx中高位的1和ax中存放的低位0，也就是10000H，那么10000H/1H=10000H，而由于最后的结果存放在ax中，但是10000H远远超出了ax能存放的范围，所以会溢出，会显示出的内容如下：（注意：这个除法溢出的中断要在虚拟机windows2003下执行，在win10的dosbox中不会提示Divide overflow）</p>
+
+<p>把上面的程序编译成ayu.exe，由于除数为bx（16位），那么被除数一定为32位，被除数的高位存放在dx中，低位存放在ax中，那么根据上述程序，除数bx&#x3D;1h，被除数为dx中高位的1和ax中存放的低位0，也就是10000H，那么10000H&#x2F;1H&#x3D;10000H，而由于最后的结果存放在ax中，但是10000H远远超出了ax能存放的范围，所以会溢出，会显示出的内容如下：（注意：这个除法溢出的中断要在虚拟机windows2003下执行，在win10的dosbox中不会提示Divide overflow）</p>
 <img src="/2022/08/20/22-0820-09/image-20220904160052203.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904160052203">
+
 <p>这里将 Divide overflow 改成显示 geinaizigegeshaozhi</p>
 <p>整体思路如下：</p>
 <ol>
@@ -349,17 +350,23 @@ code segment
 		nop
 code ends
 end start</code></pre></div>
+
 <p>编译上述程序，并且debug调试程序：</p>
 <p>开始在内存地址为0:200上全是0，没有数据</p>
 <img src="/2022/08/20/22-0820-09/image-20220904160257886.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904160257886">
+
 <p>然后 -U 调试</p>
 <img src="/2022/08/20/22-0820-09/image-20220904160313336.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904160313336">
+
 <p>然后执行完程序</p>
 <img src="/2022/08/20/22-0820-09/image-20220904160319741.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904160319741">
+
 <p>然后再次d查看0:200处的地址的内容</p>
 <img src="/2022/08/20/22-0820-09/image-20220904160325978.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904160325978">
+
 <p>然后查看0:200对应的指令，发现我们确实把 <code>shaozhi</code> 标号处的4条指令放到了内存 0:200 处</p>
 <img src="/2022/08/20/22-0820-09/image-20220904160332798.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904160332798">
+
 <p>然后我们把<code>shaozhi</code>标号处的内容换成<code>geinaizigegeshaozhi</code>，并且把 中断类型码为 0 的地址对应的内容改成 0:200，代码如下：</p>
 <div class="code-wrapper"><pre><code class="hljs txt">assume cs:code
 stack segment stack
@@ -432,21 +439,19 @@ code segment
 		nop
 code ends
 end start</code></pre></div>
+
 <p>这里很奇怪，执行后，没有成功。。。实际应该是可以成功的。。。</p>
-<h1 id="cpu如何判断是否中断"><a class="markdownIt-Anchor" href="#cpu如何判断是否中断"></a> CPU如何判断是否中断</h1>
-<p>CPU怎么知道发生中断的，它是检测标志寄存器的TF位为1的话就引发中断过程，比如中断类型码为1，则中断过程如下：</p>
+<h1 id="CPU如何判断是否中断"><a href="#CPU如何判断是否中断" class="headerlink" title="CPU如何判断是否中断"></a>CPU如何判断是否中断</h1><p>CPU怎么知道发生中断的，它是检测标志寄存器的TF位为1的话就引发中断过程，比如中断类型码为1，则中断过程如下：</p>
 <ol>
 <li>取得中断类型码1</li>
 <li>标志寄存器入栈，TF、IF设置为0</li>
 <li>cs、ip入栈</li>
-<li>ip=1x4 、cs=1x4+2</li>
+<li>ip&#x3D;1x4 、cs&#x3D;1x4+2</li>
 </ol>
-<h1 id="cpu为什么提供中断功能"><a class="markdownIt-Anchor" href="#cpu为什么提供中断功能"></a> CPU为什么提供中断功能</h1>
-<p>我们知道CPU执行程序时候是从CS:IP指向某个地址开始，自动向下读取指令执行，如果没有这个功能，CPU一加电，就从预设的CS:IP开始读取指令一直执行下去，不可能说执行完一条指令，去做别的事情，只有CPU提供中断后，才能够执行完一条指令后，去做一些其他的事情（比如：debug和其他断点调试就是利用CPU的中断，dosbox的-t参数就是中断，debug使用-t命令时候将TF设置1，使得CPU工作于单步中断下，在CPU执行完这条指令后就会引发单步中断）</p>
-<p>为啥要设置TF=0 ？？</p>
-<p>由于TF=1，cpu执行完一条指令后会引发单步中断，转去执行中断处理程序。所以为了避免一直中断，那么在进入中断处理程序之前，设置TF=0，从而避免CPU在执行中断处理程序的时候又发生中断过程导致一直中断，产生死循环</p>
-<h1 id="中断例程"><a class="markdownIt-Anchor" href="#中断例程"></a> 中断例程</h1>
-<p>中断处理程序也叫中断例程</p>
+<h1 id="CPU为什么提供中断功能"><a href="#CPU为什么提供中断功能" class="headerlink" title="CPU为什么提供中断功能"></a>CPU为什么提供中断功能</h1><p>我们知道CPU执行程序时候是从CS:IP指向某个地址开始，自动向下读取指令执行，如果没有这个功能，CPU一加电，就从预设的CS:IP开始读取指令一直执行下去，不可能说执行完一条指令，去做别的事情，只有CPU提供中断后，才能够执行完一条指令后，去做一些其他的事情（比如：debug和其他断点调试就是利用CPU的中断，dosbox的-t参数就是中断，debug使用-t命令时候将TF设置1，使得CPU工作于单步中断下，在CPU执行完这条指令后就会引发单步中断）</p>
+<p>为啥要设置TF&#x3D;0 ？？</p>
+<p>由于TF&#x3D;1，cpu执行完一条指令后会引发单步中断，转去执行中断处理程序。所以为了避免一直中断，那么在进入中断处理程序之前，设置TF&#x3D;0，从而避免CPU在执行中断处理程序的时候又发生中断过程导致一直中断，产生死循环</p>
+<h1 id="中断例程"><a href="#中断例程" class="headerlink" title="中断例程"></a>中断例程</h1><p>中断处理程序也叫中断例程</p>
 <p>int指令格式为：int n，n就代表中断类型码，功能是引发中断过程，和call命令类似</p>
 <div class="code-wrapper"><pre><code class="hljs txt">assume cs:code
 code segment
@@ -454,8 +459,10 @@ code segment
 		int 0
 code ends
 end start</code></pre></div>
+
 <p>编译上述程序，在windows2003下执行，然后就会报除法溢出错误（0号中断类型码为除法溢出）</p>
 <img src="/2022/08/20/22-0820-09/image-20220904160804997.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904160804997">
+
 <p>编写一个中断例程，功能是返回一个word型数据的平方，编译如下程序为test.exe</p>
 <div class="code-wrapper"><pre><code class="hljs txt">assume cs:code
 code segment
@@ -468,6 +475,7 @@ code segment
 		
 code ends
 end start</code></pre></div>
+
 <p>编写7ch中断例程，如下，然后编译成ayu.exe</p>
 <div class="code-wrapper"><pre><code class="hljs TXT">assume cs:code
 code segment
@@ -496,32 +504,35 @@ sqrend:	nop
 		
 code ends
 end star</code></pre></div>
+
 <p>调试 ayu.exe 和 test.exe，先调试 ayu.exe ，如下：</p>
 <img src="/2022/08/20/22-0820-09/image-20220904160854310.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904160854310">
+
 <img src="/2022/08/20/22-0820-09/image-20220904160857194-16622789373791-16622789382312.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904160857194">
-<p>然后调试 test.exe，引发7ch中断例程的IP为<code>7ch*4=1F0</code>地址处的值 ，CS为<code>7ch*4+2=1F2</code>地址处的值，即CS:IP=0:200</p>
+
+<p>然后调试 test.exe，引发7ch中断例程的IP为<code>7ch*4=1F0</code>地址处的值 ，CS为<code>7ch*4+2=1F2</code>地址处的值，即CS:IP&#x3D;0:200</p>
 <img src="/2022/08/20/22-0820-09/image-20220904160907876-16622789481813.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904160907876">
-<p>然后一步步调试，十进制1234转为16进制也就是3C44，然后3C44*3C44=173C44，存放在AX和DX两个寄存器中，高位在DX中，低位在AX中，如下：</p>
+
+<p>然后一步步调试，十进制1234转为16进制也就是3C44，然后3C44*3C44&#x3D;173C44，存放在AX和DX两个寄存器中，高位在DX中，低位在AX中，如下：</p>
 <img src="/2022/08/20/22-0820-09/image-20220904160940339.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904160940339">
-<h1 id="bios-dos"><a class="markdownIt-Anchor" href="#bios-dos"></a> BIOS、DOS</h1>
-<p>在系统板的ROM种存放着一套程序，称为BIOS（基本输入输出系统），BIOS主要包含以下内容：</p>
+
+<h1 id="BIOS、DOS"><a href="#BIOS、DOS" class="headerlink" title="BIOS、DOS"></a>BIOS、DOS</h1><p>在系统板的ROM种存放着一套程序，称为BIOS（基本输入输出系统），BIOS主要包含以下内容：</p>
 <ol>
 <li>硬件系统的检测和初始化程序</li>
 <li>存储着外部中断和内部中断的中断例程</li>
-<li>用于对硬件设备进行I/O操作的中断例程</li>
+<li>用于对硬件设备进行I&#x2F;O操作的中断例程</li>
 <li>其他和硬件系统相关的中断例程</li>
 </ol>
 <p>操作系统DOS提供了中断例程（如果操作系统为windows，那么windows系统API就类似中断例程），DOS的中断例程其实就是操作系统给我们程序员提供的编程资源 （我们可以直接int指令调用中断例程，类似上面的 int 7ch 直接得到 ax 的平方）</p>
 <p>BIOS和DOS（操作系统）所提供的中断例程中包含了许多子程序（造好的轮子），这些子程序实现了我们在编程的时候经常要用的功能，所以我们要用这些功能的时候不用自己造轮子，直接int指令调用即可</p>
 <p>BIOS和DOS中断例程安装过程：</p>
 <ol>
-<li>CPU一加电（开机），初始化CS=0FFFFH,IP=0,自动从FFFF:0单元开始执行程序，FFFF:0处有一条跳转指令，CPU执行该指令后，转去执行BIOS中的硬件系统检测和初始化程序</li>
+<li>CPU一加电（开机），初始化CS&#x3D;0FFFFH,IP&#x3D;0,自动从FFFF:0单元开始执行程序，FFFF:0处有一条跳转指令，CPU执行该指令后，转去执行BIOS中的硬件系统检测和初始化程序</li>
 <li>初始化程序将把BIOS提供的中断例程的入口地址登记在中断向量表中</li>
 <li>硬件检测和初始化完成后，调用19h(int 19h)进行操作系统的引导，从此之后计算机交由操作系统控制</li>
 <li>操作系统（dos）启动后，除了完成其他工作外，还将它所提供的中断例程装入内存，并建立相应的中断向量（提供的中断例程的入口地址登记在中断向量表中）</li>
 </ol>
-<h1 id="中断例程的多个子程序"><a class="markdownIt-Anchor" href="#中断例程的多个子程序"></a> 中断例程的多个子程序</h1>
-<p>一个供程序员调用的中断例程中往往包含多个子程序，中断例程内部用传递进来的参数来决定执行哪一个子程序。BIOS和DOS提供的中断例程都用<code>ah</code>来传递内部子程序的编号</p>
+<h1 id="中断例程的多个子程序"><a href="#中断例程的多个子程序" class="headerlink" title="中断例程的多个子程序"></a>中断例程的多个子程序</h1><p>一个供程序员调用的中断例程中往往包含多个子程序，中断例程内部用传递进来的参数来决定执行哪一个子程序。BIOS和DOS提供的中断例程都用<code>ah</code>来传递内部子程序的编号</p>
 <p>例如 int 10h 中断例程（int 10h是BIOS提供的）中包含了很多与屏幕输出相关的子程序</p>
 <div class="code-wrapper"><pre><code class="hljs txt">assume cs:code
 code segment
@@ -538,8 +549,10 @@ code segment
 		
 code ends
 end start</code></pre></div>
+
 <p>编译上述程序，然后运行exe文件</p>
 <img src="/2022/08/20/22-0820-09/image-20220904161236687.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904161236687">
+
 <div class="code-wrapper"><pre><code class="hljs txt">assume cs:code
 code segment
 	start:
@@ -559,6 +572,7 @@ code segment
 		
 code ends
 end start</code></pre></div>
+
 <p>编译中上述程序，执行</p>
 <img src="/2022/08/20/22-0820-09/image-20220904161309656.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904161309656">
 
@@ -609,7 +623,7 @@ end start</code></pre></div>
                     
                     
                       <a href="/2022/08/20/22-0820-10/" title="汇编day10">
-                        <i class="iconfont icon-arrowleft"></i>
+                        <i class="iconfont icon-anniu_jiantouxiangzuo_o"></i>
                         <span class="hidden-mobile">汇编day10</span>
                         <span class="visible-mobile">Previous</span>
                       </a>
@@ -621,7 +635,7 @@ end start</code></pre></div>
                       <a href="/2022/08/20/22-0820-08/" title="汇编day8">
                         <span class="hidden-mobile">汇编day8</span>
                         <span class="visible-mobile">Next</span>
-                        <i class="iconfont icon-arrowright"></i>
+                        <i class="iconfont icon-anniu-jiantouxiangyou_o"></i>
                       </a>
                     
                   </article>

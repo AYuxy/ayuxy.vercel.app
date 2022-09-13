@@ -12,16 +12,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
-  <meta name="theme-color" content="#000000">
+  <meta name="theme-color" content="#2f4154">
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="CPU三种工作模式   实模式：最早的PC机，没有windows系统，一开机就是dos窗口，缺陷就是不安全，程序可以随意访问任何的物理地址   保护模式：32位cpu带有保护模式，特权级 ，0~3，0为最高特权，是内核代码所运行的级别，3是最低权限，为用户程序的运行级别 PC加载操作系统的过程：开机—&gt;加电自检—&gt;从磁盘中寻找boot引导程序去加载内核—&gt;如果装的是window">
+    <meta name="description" content="CPU三种工作模式 实模式：最早的PC机，没有windows系统，一开机就是dos窗口，缺陷就是不安全，程序可以随意访问任何的物理地址  保护模式：32位cpu带有保护模式，特权级 ，0~3，0为最高特权，是内核代码所运行的级别，3是最低权限，为用户程序的运行级别 PC加载操作系统的过程：开机—&gt;加电自检—&gt;从磁盘中寻找boot引导程序去加载内核—&gt;如果装的是windows系统（">
 <meta property="og:type" content="article">
 <meta property="og:title" content="汇编day8">
 <meta property="og:url" content="http://example.com/2022/08/20/22-0820-08/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="CPU三种工作模式   实模式：最早的PC机，没有windows系统，一开机就是dos窗口，缺陷就是不安全，程序可以随意访问任何的物理地址   保护模式：32位cpu带有保护模式，特权级 ，0~3，0为最高特权，是内核代码所运行的级别，3是最低权限，为用户程序的运行级别 PC加载操作系统的过程：开机—&gt;加电自检—&gt;从磁盘中寻找boot引导程序去加载内核—&gt;如果装的是window">
+<meta property="og:description" content="CPU三种工作模式 实模式：最早的PC机，没有windows系统，一开机就是dos窗口，缺陷就是不安全，程序可以随意访问任何的物理地址  保护模式：32位cpu带有保护模式，特权级 ，0~3，0为最高特权，是内核代码所运行的级别，3是最低权限，为用户程序的运行级别 PC加载操作系统的过程：开机—&gt;加电自检—&gt;从磁盘中寻找boot引导程序去加载内核—&gt;如果装的是windows系统（">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/2022/08/20/22-0820-08/image-20220904154211857.png">
 <meta property="og:image" content="http://example.com/2022/08/20/22-0820-08/image-20220904154522947.png">
@@ -229,7 +229,7 @@
         
         
         
-          14 mins
+          15 mins
         
       </span>
     
@@ -278,60 +278,49 @@
             
               <div class="markdown-body">
                 
-                <h1 id="cpu三种工作模式"><a class="markdownIt-Anchor" href="#cpu三种工作模式"></a> CPU三种工作模式</h1>
-<ul>
-<li>
-<p>实模式：最早的PC机，没有windows系统，一开机就是dos窗口，缺陷就是不安全，程序可以随意访问任何的物理地址</p>
+                <h1 id="CPU三种工作模式"><a href="#CPU三种工作模式" class="headerlink" title="CPU三种工作模式"></a>CPU三种工作模式</h1><ul>
+<li><p>实模式：最早的PC机，没有windows系统，一开机就是dos窗口，缺陷就是不安全，程序可以随意访问任何的物理地址</p>
 </li>
-<li>
-<p>保护模式：32位cpu带有保护模式，特权级 ，0~3，0为最高特权，是内核代码所运行的级别，3是最低权限，为用户程序的运行级别</p>
+<li><p>保护模式：32位cpu带有保护模式，特权级 ，0~3，0为最高特权，是内核代码所运行的级别，3是最低权限，为用户程序的运行级别</p>
 <p>PC加载操作系统的过程：开机—&gt;加电自检—&gt;从磁盘中寻找boot引导程序去加载内核—&gt;如果装的是windows系统（多任务系统），将由它把CPU切换到保护模式下运行</p>
 </li>
-<li>
-<p>虚拟8086（dos）：比如：我们电脑中日常用的dos窗口、前面常用的dosbox都是虚拟出来的</p>
+<li><p>虚拟8086（dos）：比如：我们电脑中日常用的dos窗口、前面常用的dosbox都是虚拟出来的</p>
 </li>
 </ul>
-<h1 id="中断"><a class="markdownIt-Anchor" href="#中断"></a> 中断</h1>
-<p>中断分为内中断和外中断</p>
-<h2 id="内中断"><a class="markdownIt-Anchor" href="#内中断"></a> 内中断</h2>
-<p>内中断：发生了需要CPU立刻要去处理的信息。CPU发生中断的情况也是不同的，会产生了4种不同的中断信息，那就需要进行不同的处理，如下：</p>
+<h1 id="中断"><a href="#中断" class="headerlink" title="中断"></a>中断</h1><p>中断分为内中断和外中断</p>
+<h2 id="内中断"><a href="#内中断" class="headerlink" title="内中断"></a>内中断</h2><p>内中断：发生了需要CPU立刻要去处理的信息。CPU发生中断的情况也是不同的，会产生了4种不同的中断信息，那就需要进行不同的处理，如下：</p>
 <ul>
-<li>
-<p>除法错误（除法溢出）</p>
+<li><p>除法错误（除法溢出）</p>
 <img src="/2022/08/20/22-0820-08/image-20220904154211857.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904154211857">
 </li>
-<li>
-<p>单步调试，我们在前面的学习中经常用到dosbox单步调试（-t命令）</p>
+<li><p>单步调试，我们在前面的学习中经常用到dosbox单步调试（-t命令）</p>
 </li>
-<li>
-<p>执行into指令</p>
+<li><p>执行into指令</p>
 </li>
-<li>
-<p>执行int指令</p>
+<li><p>执行int指令</p>
 </li>
 </ul>
-<h2 id="中断类型码"><a class="markdownIt-Anchor" href="#中断类型码"></a> 中断类型码</h2>
-<p>中断类型码：CPU在接受到中断信息后，需要判断是啥类型的中断，中断类型码就标识了它是啥中断类型</p>
+<h2 id="中断类型码"><a href="#中断类型码" class="headerlink" title="中断类型码"></a>中断类型码</h2><p>中断类型码：CPU在接受到中断信息后，需要判断是啥类型的中断，中断类型码就标识了它是啥中断类型</p>
 <ul>
 <li>除法错误—&gt;中断类型码 0</li>
 <li>单步执行—&gt;中断类型码 1</li>
 <li>执行into指令—&gt;中断类型码 4</li>
 <li>执行int指令（int n）—&gt;中断类型码 n</li>
 </ul>
-<h2 id="中断向量表"><a class="markdownIt-Anchor" href="#中断向量表"></a> 中断向量表</h2>
-<p>中断向量表：通过中断类型码作为表项号去定位中断向量表的表项，从而获得程序的入口地址，对于8086机器，中断向量表指定存放在内存地址0000:0000到0000:03FF之间（一共124个单元）</p>
+<h2 id="中断向量表"><a href="#中断向量表" class="headerlink" title="中断向量表"></a>中断向量表</h2><p>中断向量表：通过中断类型码作为表项号去定位中断向量表的表项，从而获得程序的入口地址，对于8086机器，中断向量表指定存放在内存地址0000:0000到0000:03FF之间（一共124个单元）</p>
 <p>中断向量表大致如下：</p>
 <img src="/2022/08/20/22-0820-08/image-20220904154522947.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904154522947">
-<p>中断向量表的一个表项占4个字节（2个字)，高位地址存放段地址，低位地址存放偏移地址，比如：0号表项的中断处理程序的入口地址为 CS:IP = 0020:0100，那么0号表项具体如下：</p>
+
+<p>中断向量表的一个表项占4个字节（2个字)，高位地址存放段地址，低位地址存放偏移地址，比如：0号表项的中断处理程序的入口地址为 CS:IP &#x3D; 0020:0100，那么0号表项具体如下：</p>
 <img src="/2022/08/20/22-0820-08/image-20220904154621695.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904154621695">
+
 <p>作业：现在问：2号中断源处理程序的入口地址是啥？？？？</p>
 <p>解答：</p>
 <img src="/2022/08/20/22-0820-08/image-20220904154640150.png" srcset="/img/loading.gif" lazyload class="" title="image-20220904154640150">
-<p>2号中断源处理程序的入口地址CS:IP = 0070:0008</p>
-<h2 id="中断过程"><a class="markdownIt-Anchor" href="#中断过程"></a> 中断过程</h2>
-<p>用中断类型码找到中断向量（中断向量表中的表项），用它设置CS:IP，这个称为中断过程，由CPU硬件自动完成</p>
-<p>整个中断的过程大致如下：<br />
-CPU收到中断信息—&gt;要对中断信息做处理—&gt;首先将引发中断过程—&gt;硬件完成自动完成中断过程—&gt;CS:IP会指向中断处理程序的入口，CPU就会执行这个中断处理程序</p>
+
+<p>2号中断源处理程序的入口地址CS:IP &#x3D; 0070:0008</p>
+<h2 id="中断过程"><a href="#中断过程" class="headerlink" title="中断过程"></a>中断过程</h2><p>用中断类型码找到中断向量（中断向量表中的表项），用它设置CS:IP，这个称为中断过程，由CPU硬件自动完成</p>
+<p>整个中断的过程大致如下：<br>CPU收到中断信息—&gt;要对中断信息做处理—&gt;首先将引发中断过程—&gt;硬件完成自动完成中断过程—&gt;CS:IP会指向中断处理程序的入口，CPU就会执行这个中断处理程序</p>
 <p>注意：程序执行完中断处理程序后，肯定还要回到原程序继续往后执行，所以硬件肯定会把执行中断前的CS:IP的值保存起来（通过将CS和IP入栈来进行保存），然后执行完中断处理程序后，再将CS:IP指向之前的CS:IP，使程序继续向下执行</p>
 <p>中断过程6部区：</p>
 <ol>
@@ -342,30 +331,27 @@ CPU收到中断信息—&gt;要对中断信息做处理—&gt;首先将引发中
 <li>IP入栈</li>
 <li>从内存地址中找到中断类型码<code>N*4</code>和<code>N*4+2</code>的两个字单元中，读取中断处理程序的入口地址，设置IP和CS</li>
 </ol>
-<h2 id="iret指令"><a class="markdownIt-Anchor" href="#iret指令"></a> IRET指令</h2>
-<p>IRET指令：中断返回，中断服务程序的最后⼀条指令。IRET指令将推⼊堆栈的段地址和偏移地址弹出，使程序返回到原来发⽣中断的地⽅。其作⽤是从中断中恢复中断前的状态。</p>
+<h2 id="IRET指令"><a href="#IRET指令" class="headerlink" title="IRET指令"></a>IRET指令</h2><p>IRET指令：中断返回，中断服务程序的最后⼀条指令。IRET指令将推⼊堆栈的段地址和偏移地址弹出，使程序返回到原来发⽣中断的地⽅。其作⽤是从中断中恢复中断前的状态。</p>
 <p>IRET作用大致相当于如下3条指令的功能：</p>
 <div class="code-wrapper"><pre><code class="hljs txt">POP IP
 POP CS
 POPF</code></pre></div>
-<h2 id="外中断"><a class="markdownIt-Anchor" href="#外中断"></a> 外中断</h2>
-<p>外中断 ：来自于 CPU 外部，CPU 检测到发送过来的中断信息，引发中断过程，处理外设的输入</p>
+
+<h2 id="外中断"><a href="#外中断" class="headerlink" title="外中断"></a>外中断</h2><p>外中断 ：来自于 CPU 外部，CPU 检测到发送过来的中断信息，引发中断过程，处理外设的输入</p>
 <p>主板和接口板上装有各种接口芯片，这些外设接口芯片里面有一些寄存器，CPU是把这些寄存器当作<strong>端口</strong>来访问。外设的输入不直接送入内存和CPU，而是送入相关接口芯片端口里面，cpu向外设的输出也是先送到端口，再由端口的相关芯片送到外设。（<strong>cpu通过端口和外部设备进行联系</strong>）</p>
 <p>外中断源分为2种：</p>
 <ul>
-<li>
-<p>可屏蔽中断，CPU可以不鸟你的外中断，搭不搭理你要看标志寄存器IF位的设置，IF=1要搭理你，IF=0不鸟你，不响应（几乎所有的外设引发的外中断都是可屏蔽中断）</p>
-<p>如果IF=1，那么中断步骤如下：</p>
+<li><p>可屏蔽中断，CPU可以不鸟你的外中断，搭不搭理你要看标志寄存器IF位的设置，IF&#x3D;1要搭理你，IF&#x3D;0不鸟你，不响应（几乎所有的外设引发的外中断都是可屏蔽中断）</p>
+<p>如果IF&#x3D;1，那么中断步骤如下：</p>
 <ol>
 <li>取得中断类型码</li>
-<li>标志寄存器入栈 pushf</li>
-<li>TF=0 IF=0</li>
+<li>标志寄存器入栈 pushf </li>
+<li>TF&#x3D;0 IF&#x3D;0</li>
 <li>CS IP入栈</li>
 <li>设置cs和ip指向处理中断的程序</li>
 </ol>
 </li>
-<li>
-<p>不可屏蔽中断。中断类型码固定是2，见到这个，CPU必须要引发中断过程</p>
+<li><p>不可屏蔽中断。中断类型码固定是2，见到这个，CPU必须要引发中断过程</p>
 </li>
 </ul>
 
@@ -416,7 +402,7 @@ POPF</code></pre></div>
                     
                     
                       <a href="/2022/08/20/22-0820-09/" title="汇编day9">
-                        <i class="iconfont icon-arrowleft"></i>
+                        <i class="iconfont icon-anniu_jiantouxiangzuo_o"></i>
                         <span class="hidden-mobile">汇编day9</span>
                         <span class="visible-mobile">Previous</span>
                       </a>
@@ -428,7 +414,7 @@ POPF</code></pre></div>
                       <a href="/2022/08/20/22-0820-07/" title="汇编Day7">
                         <span class="hidden-mobile">汇编Day7</span>
                         <span class="visible-mobile">Next</span>
-                        <i class="iconfont icon-arrowright"></i>
+                        <i class="iconfont icon-anniu-jiantouxiangyou_o"></i>
                       </a>
                     
                   </article>

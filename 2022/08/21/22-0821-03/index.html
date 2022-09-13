@@ -1,0 +1,653 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="操作系统操作系统（实际可以看成一个软件）往往肩负多种任务，如：处理器管理、内存分配、程序加载、进程调度、外围设备的控制（显卡、声卡等） 程序保存到硬盘上的，然后我们双击程序运行后，首先要读取硬盘，知道该程序保存到了硬盘的什么位置上（比如：该程序保存到了c盘上），然后会把程序加载到内存的空闲地址，载入内存后要重新计算程序的段地址，这就是段的重定位（重定位在前面学习过） 注意：操作系统下运行用户exe">
+<meta property="og:type" content="article">
+<meta property="og:title" content="x86保护模式day3">
+<meta property="og:url" content="http://example.com/2022/08/21/22-0821-03/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="操作系统操作系统（实际可以看成一个软件）往往肩负多种任务，如：处理器管理、内存分配、程序加载、进程调度、外围设备的控制（显卡、声卡等） 程序保存到硬盘上的，然后我们双击程序运行后，首先要读取硬盘，知道该程序保存到了硬盘的什么位置上（比如：该程序保存到了c盘上），然后会把程序加载到内存的空闲地址，载入内存后要重新计算程序的段地址，这就是段的重定位（重定位在前面学习过） 注意：操作系统下运行用户exe">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-03/image-20220906161129036.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-03/image-20220906161136108.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-03/image-20220906161144869.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-03/image-20220906161509390.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-03/image-20220906161528556.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-03/image-20220906161536535.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-03/image-20220906161600042.png">
+<meta property="og:image" content="http://example.com/2022/08/21/22-0821-03/image-20220906161629156.png">
+<meta property="article:published_time" content="2022-08-20T19:54:10.000Z">
+<meta property="article:modified_time" content="2022-09-06T08:16:50.870Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="二进制">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/08/21/22-0821-03/image-20220906161129036.png">
+  
+  
+  
+  <title>x86保护模式day3 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/suofang.css">
+<link rel="stylesheet" href="/css/font.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>A_Yu&#39;s BLOG</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="x86保护模式day3"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-08-21 03:54" pubdate>
+          August 21, 2022 am
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.3k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          19 mins
+        
+      </span>
+    
+	
+
+  
+
+	
+
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">x86保护模式day3</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="操作系统"><a href="#操作系统" class="headerlink" title="操作系统"></a>操作系统</h1><p>操作系统（实际可以看成一个软件）往往肩负多种任务，如：处理器管理、内存分配、程序加载、进程调度、外围设备的控制（显卡、声卡等）</p>
+<p>程序保存到硬盘上的，然后我们双击程序运行后，首先要读取硬盘，知道该程序保存到了硬盘的什么位置上（比如：该程序保存到了c盘上），然后会把程序加载到内存的空闲地址，载入内存后要重新计算程序的段地址，这就是段的重定位（重定位在前面学习过）</p>
+<p>注意：操作系统下运行用户exe文件时，操作系统就类似于一个加载器来加载用户exe文件</p>
+<p>该节课的任务：写一个加载器，充分理解段的重定位，也就是实模式下的分段内存管理机制</p>
+<p>我们在学习16位汇编时，用的是segment来定义一个段，而在32位汇编中用 SECTION 来定义一个段， SECTION 后面是段的名称，如下：</p>
+<img src="/2022/08/21/22-0821-03/image-20220906161129036.png" srcset="/img/loading.gif" lazyload class="" title="image-20220906161129036">
+
+<p>注意： 在学习16位汇编时，在段的结束都有end，而32位不需要end</p>
+<p>align&#x3D;16 表示含义是处理器要求段在内存中的起始物理地址必须是16字节对齐的，如下：</p>
+<img src="/2022/08/21/22-0821-03/image-20220906161136108.png" srcset="/img/loading.gif" lazyload class="" title="image-20220906161136108">
+
+<h2 id="16字节对齐"><a href="#16字节对齐" class="headerlink" title="16字节对齐"></a>16字节对齐</h2><p>为啥要进行16字节对齐呢 ？？？</p>
+<p>因为16字节对齐后，才能保证偏移地址从0开始</p>
+<p>如下：</p>
+<img src="/2022/08/21/22-0821-03/image-20220906161144869.png" srcset="/img/loading.gif" lazyload class="" title="image-20220906161144869">
+
+<h1 id="SECTION-段名称-start"><a href="#SECTION-段名称-start" class="headerlink" title="SECTION.段名称.start"></a>SECTION.段名称.start</h1><p>SECTION.段名称.start 表达式可以取得该段的汇编地址，比如下面的代码中：</p>
+<img src="/2022/08/21/22-0821-03/image-20220906161509390.png" srcset="/img/loading.gif" lazyload class="" title="image-20220906161509390">
+
+<h1 id="vstart"><a href="#vstart" class="headerlink" title="vstart"></a>vstart</h1><p>vstart的作用：声明的是该段的地址或者说段号，具体如下：</p>
+<img src="/2022/08/21/22-0821-03/image-20220906161528556.png" srcset="/img/loading.gif" lazyload class="" title="image-20220906161528556">
+
+<p>注意：如果段没有写vstart，那么该段的起始汇编地址是相当于整个程序开头来计算的，如下：汇编代码最后定义了一个trail段，并且没有写vstart，那么trail段中program_end标号的地址是相当于整个程序开头计算的，也就是整个程序的大小</p>
+<img src="/2022/08/21/22-0821-03/image-20220906161536535.png" srcset="/img/loading.gif" lazyload class="" title="image-20220906161536535">
+
+<h1 id="用户程序必要信息"><a href="#用户程序必要信息" class="headerlink" title="用户程序必要信息"></a>用户程序必要信息</h1><p>加载器加载用户程序就必须要了解用户程序必要信息（比如windows的PE格式），这些信息不是很多，但是足以让加载器了解如何来加载用户程序，一般来说，这些信息放在用户程序的头部，包含以下内容：</p>
+<ol>
+<li>程序的大小（以字节为单位，加载器会根据程序大小来读取多少个逻辑扇区）</li>
+<li>用户程序的入口点</li>
+<li>段重定位表项数</li>
+<li>段重定位表</li>
+</ol>
+<p>补充，段重定位表的作用：有时候我们会把asm文件编译成lst列表文件，打开在lst文件后，我们可以看到编译后一些指令对应的汇编地址，但实际计算机执行的是bin文件，就是把bin文件加载到内存的空闲区域，这样在实际内存中，我们并不知道具体会把bin文件的内容加载到内存哪里，这与列表文件中对应的汇编地址是完全不同的。所以我们要知道程序中的段实际加载到内存的啥地方，我们就用重定位表来解决问题。但是由于计算机并不知道程序中一共有多少个段，所以我们还需要重新定位表项数</p>
+<p>如下：在asm文件中定义了用户程序的必要信息：</p>
+<img src="/2022/08/21/22-0821-03/image-20220906161600042.png" srcset="/img/loading.gif" lazyload class="" title="image-20220906161600042">
+
+<h1 id="加载器工作流程"><a href="#加载器工作流程" class="headerlink" title="加载器工作流程"></a>加载器工作流程</h1><p>加载器工作流程：</p>
+<ol>
+<li>加载器要加载一个程序并让它开始执行，需要知道内存什么地方是空闲的，就是从哪个物理内存地址开始加载程序</li>
+<li>加载器还要知道这个程序位于硬盘上的什么地方，即程序的逻辑扇区编号</li>
+</ol>
+<h1 id="输入输出设备（I-x2F-O设备）"><a href="#输入输出设备（I-x2F-O设备）" class="headerlink" title="输入输出设备（I&#x2F;O设备）"></a>输入输出设备（I&#x2F;O设备）</h1><p>在屏幕上显示内容，就需要显卡，而对于电脑外放声音，就需要声卡，而显卡、声卡这些就是I&#x2F;O接口，I&#x2F;O接口可以是一个电路板，也可以是一个芯片，I&#x2F;O接口就是一个信号处理器，负责把CPU的信号转换为外围设备能够接受的另一种信号，还会负责把外围设备信号转为CPU能够接受的信号</p>
+<p>但是由于外围设备（键盘、显示器、音响等等）是特别多的，如果我们直接把这些I&#x2F;O接口和CPU进行连接的话，CPU上需要连接很多线，这显然是不合适的，与此同时，如果多个I&#x2F;O接口同时直接与CPU连接，那么每个设备的I&#x2F;O接口都会同时与CPU进行通信，造成冲突</p>
+<p>既然I&#x2F;O不能进行直接和CPU进行连接，那么咋办呢 ？？？</p>
+<ol>
+<li><p>对于CPU上需要连接多条线，可以采用总线来解决</p>
+</li>
+<li><p>而对于I&#x2F;O接口会与CPU通信冲突，可以采用输入输出设备集中器（即南桥芯片）</p>
+<img src="/2022/08/21/22-0821-03/image-20220906161629156.png" srcset="/img/loading.gif" lazyload class="" title="image-20220906161629156"></li>
+</ol>
+<p>当CPU要和某个外围设备通信时，首先南桥芯片会接到通知，然后负责和相对应传输通道进行通信，并且如果CPU如果和USB接口进行通信，南桥芯片还会控制其它的接口不进行通信。实际CPU和外围设备通信就是和USB接口等这些I&#x2F;O接口的通信，也就是和端口通信</p>
+<p>处理器通过端口来和外围设备通信，本质上，端口就是一些寄存器，跟处理器寄存器差不多，不同的是这些叫做端口的寄存器位于I&#x2F;O接口的电路中</p>
+<p>每一个I&#x2F;O接口都可能拥有好几个端口，分别用于不同的目的。连接硬盘的PATA&#x2F;SATA接口就有几个端口，分别是命令端口，向这个端口写入0x20表示从硬盘读数据，写0x30表示写；状态端口，CPU根据这个端口来判断硬盘工作是否正常；参数端口，CPU通过这个端口告诉硬盘读写的扇区数量，以及起始的逻辑扇区号；数据端口，通过这个端口连续读写数据</p>
+<p>端口在不同的计算机系统中有不同的实现方式，在一些计算机系统中，端口号是映射到内存地址空间的，在另外一些里面，端口又是独立编址的，不和内存发生关系</p>
+<p>现在我们的系统既有内存映射又有独立编址</p>
+<p>南桥芯片里集成了2个PATA&#x2F;SATA接口，分别是主硬盘接口和副硬盘接口。主硬盘分配的端口号是 0x1f0 ~ 0x1f7 ，副硬盘 0x170 ~ 0x177</p>
+<p>端口访问指令：</p>
+<div class="code-wrapper"><pre><code class="hljs txt">in al,dx  ;访问8位端口
+in ax,dx  ;访问16位端口
+in al,0xf0
+in ax,0xf0 
+
+out 操作数可以是8位立即数或DX ，源操作数必须是AL或AX
+out 0x37,al
+out 0x37,ax
+out dx,al
+out dx,ax</code></pre></div>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/x86%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/" class="category-chain-item">x86保护模式</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/">#二进制</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/08/21/22-0821-04/" title="x86保护模式day4">
+                        <i class="iconfont icon-anniu_jiantouxiangzuo_o"></i>
+                        <span class="hidden-mobile">x86保护模式day4</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/08/21/22-0821-02/" title="x86保护模式day2">
+                        <span class="hidden-mobile">x86保护模式day2</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-anniu-jiantouxiangyou_o"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键字</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/image.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
