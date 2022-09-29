@@ -1,0 +1,646 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="在保护模式下，通过将内存分成大小不等的段，并用描述符对每个段的用途、类型和长度进行指定，就可以在程序运行时由处理器硬件施加访问保护。比如，当程序试图让处理器去写一个可执行的代码段时，处理器就会阻止这种企图；再比如，当程序试图让处理器访问超过段界限的内存域时，处理器也会引发异常中断。 段保护是处理器提供的基本保护功能，但对于现实的需求来说，仍是不够的。 首先，当一个程序老老实实地访问只属于它自己的段">
+<meta property="og:type" content="article">
+<meta property="og:title" content="x86保护模式day11">
+<meta property="og:url" content="http://example.com/2022/09/23/22-0923-01/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="在保护模式下，通过将内存分成大小不等的段，并用描述符对每个段的用途、类型和长度进行指定，就可以在程序运行时由处理器硬件施加访问保护。比如，当程序试图让处理器去写一个可执行的代码段时，处理器就会阻止这种企图；再比如，当程序试图让处理器访问超过段界限的内存域时，处理器也会引发异常中断。 段保护是处理器提供的基本保护功能，但对于现实的需求来说，仍是不够的。 首先，当一个程序老老实实地访问只属于它自己的段">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/09/23/22-0923-01/image-20220926180128425.png">
+<meta property="og:image" content="http://example.com/2022/09/23/22-0923-01/image-20220926184228202.png">
+<meta property="og:image" content="http://example.com/2022/09/23/22-0923-01/image-20220926210619946.png">
+<meta property="og:image" content="http://example.com/2022/09/23/22-0923-01/image-20220926224029735.png">
+<meta property="og:image" content="http://example.com/2022/09/23/22-0923-01/image-20220926231858720.png">
+<meta property="og:image" content="http://example.com/2022/09/23/22-0923-01/image-20220927090506389.png">
+<meta property="article:published_time" content="2022-09-23T10:34:43.000Z">
+<meta property="article:modified_time" content="2022-09-28T08:02:46.351Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/09/23/22-0923-01/image-20220926180128425.png">
+  
+  
+  
+  <title>x86保护模式day11 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/suofang.css">
+<link rel="stylesheet" href="/css/font.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Solstices&#39;s BLOG</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="x86保护模式day11"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-09-23 18:34" pubdate>
+          September 23, 2022 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          50 mins
+        
+      </span>
+    
+	
+
+  
+
+	
+
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">x86保护模式day11</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>在保护模式下，通过将内存分成大小不等的段，并用描述符对每个段的用途、类型和长度进行指定，就可以在程序运行时由处理器硬件施加访问保护。比如，当程序试图让处理器去写一个可执行的代码段时，处理器就会阻止这种企图；再比如，当程序试图让处理器访问超过段界限的内存域时，处理器也会引发异常中断。</p>
+<p>段保护是处理器提供的基本保护功能，但对于现实的需求来说，仍是不够的。</p>
+<p>首先，当一个程序老老实实地访问只属于它自己的段时，基本的段保护机制是很有效的，但是，一个失控的程序，或者一个恶意的程序，依然可以通过追踪和修改描述符表来达到它们访问任何内存位置的目的。比如说，如果用户程序知道GDT的位置，它可以通过向段寄存器加载操作系统的数据段描述符，或者在GDT中增加一个指向操作系统数据区的描述符，来修改只属于操作系统的私有数据。对于处理器那种和3岁小孩相仿的智力，所有这一切都是合法的。</p>
+<p>其次，32位处理器是为多任务系统而设计的（任务是一个抽象的一般性术语，指由软件完成的一个活动）。所谓多任务系统，是指能够同时执行两个以上程序的系统，即使前面一个系统没有执行完成，其他程序也可以执行。在单处理器（核）的系统中，多个程序并不可能真正的同时执行，但是，处理器可以在多个任务之间周期性地切换和轮转。这样，它们都处于走走停停的状态，快速的处理器加上高效的任务切换，在外界看来，多个任务都在同时运行中。</p>
+<p>多任务系统，对任务之间的隔离和保护，以及任务和操作系统之间的隔离和保护都提出了要求，这可以看做对段保护机制的进一步强化。同时，在多任务系统中，操作系统居于核心软件的位置，为各个任务服务，负责任务的加载、创建和执行环境管理，并执行任务之间的调度，对操作系统的保护显得尤为重要。事实上，对于这种要求，基本的段保护机制已经无能为力了，所以引入了特权级别。</p>
+<h1 id="任务的隔离和特权级保护"><a href="#任务的隔离和特权级保护" class="headerlink" title="任务的隔离和特权级保护"></a>任务的隔离和特权级保护</h1><h2 id="任务"><a href="#任务" class="headerlink" title="任务"></a>任务</h2><p>程序是记录在载体上的指令和数据，总是为了完成某个特定的工作，其正在执行中的一个副本，叫做任务。这句话的意思是说，如果一个程序有多个副本正在内存中运行，那么，它对应这一个任务，每一个副本都是一个任务。</p>
+<h2 id="任务的LDT、TSS"><a href="#任务的LDT、TSS" class="headerlink" title="任务的LDT、TSS"></a>任务的LDT、TSS</h2><p>一直以来，我们把所有的段描述符都放在GDT中，而不管它属于内核还是用户程序。在多任务系统中，为了有效的在任务之间实施隔离，处理器建议每个任务都应该有自己的描述符表——局部描述符表LDT，把自己专属的段放到LDT中。</p>
+<p>和GDT一样，LDT也是用来存放描述符的。不同之处在于，LDT只属于某个任务。或者说，每个任务都有自己的LDT，每个任务私有的段，都应当在LDT中进行描述。另外，LDT的第一个描述符，也就是0号槽位，也是有效的，可以使用的。</p>
+<p>为了追踪全局描述符表（GDT），访问它的内部描述符，处理器使用了GDTR寄存器（GDTR寄存器用于存放GDT的线性基地址和界限），这是可以理解的，正如其名称所暗示的那样，全局描述符表（GDT）是全局性的，为所有任务服务，是它们所共有的，我们只需要一个全局描述符表（GDT）就够了</p>
+<p>和GDT不同，局部描述符表（LDT）的数量则不止一个，具体有多少，视任务的多少而定。为了追踪和访问这些LDT，处理器使用了局部描述符表寄存器（LDTR）。</p>
+<img src="/2022/09/23/22-0923-01/image-20220926180128425.png" srcset="/img/loading.gif" lazyload class="" title="image-20220926180128425">
+
+<p>在一个多任务的系统中，会有很多任务在轮流执行，正在执行的那个任务，称之为当前任务。因为LDTR寄存器只有一个，所以，它只用于指向当前任务的LDT。每当有任务切换时，LDTR的内容被更新，以指向新任务的LDT，和GDTR一样，LDTR包含了32位线性基地址字段和16位段界限字段，以指示当前LDT的位置和大小。</p>
+<p>在一个多任务的环境中，当任务发生切换时，必须保护旧任务的运行状态，或者说是保护现场，保护的内容包括通用寄存器、段寄存器、栈指针寄存器ESP、指令指针寄存器EIP、状态寄存器EFLAGS，等等。否则的话，等下次该任务又恢复执行时，一切都变得茫然而毫无头绪。</p>
+<p>为了保存任务的状态，并在下次重新执行的时恢复它们，每个任务都应当用一个额外的内存区域保存相关信息，这叫做任务状态段（Task State segment，TSS），TSS具有固定的格式，最小尺寸必须是104字节。处理器固件能够识别TSS中的每个元素，并在任务切换的时候读取其中的信息</p>
+<p>和LDT一样，处理器用TR寄存器来指向当前任务的TSS。和GDTR、LDTR一样，TR寄存器在处理器中也是只有一个，当任务发生切换的时候，TR寄存器的内容也会跟着指向新任务的TSS。这个过程是这样的：<u>首先，处理器将当前任务的现场信息保存到由TR寄存器指向的TSS，然后，再使TR寄存器指向新任务的TSS，并从新任务的TSS中恢复现场</u>。</p>
+<blockquote>
+<p>为啥叫TR，而不叫TSSR呢 ？？？</p>
+</blockquote>
+<p>因为TSS是一个任务存在的标志，用于区别一个任务和其他任务，所以这个寄存器叫任务寄存器（Task Register，TR）</p>
+<blockquote>
+<p>TSS的结构如下图：</p>
+</blockquote>
+<img src="/2022/09/23/22-0923-01/image-20220926184228202.png" srcset="/img/loading.gif" lazyload class="" title="image-20220926184228202">
+
+<h2 id="全局空间和局部空间"><a href="#全局空间和局部空间" class="headerlink" title="全局空间和局部空间"></a>全局空间和局部空间</h2><p>在多任务系统中，操作系统肩负着任务的创建，以及在任务之间调度和切换的工作。不过，更为繁重和基础的工作是对处理器、设备及存储器的管理。</p>
+<p>从程序编写者角度看，操作系统是他们可信赖的朋友。首先，他们不必关心自己程序是如何加载到内存并开始运行的，操作系统自然会处理好这些事情；其次，对设备的访问涉及大量的硬件细节，而且极为繁琐，操作系统能够肩负起设备管理的职责，并提供了大量的例程和数据供应用程序调用。使用操作系统提供的这些服务，可以极大的简化程序的编写，并能够在访问设备时消除潜在的竞争和冲突。</p>
+<p>比如说，当中断发生时，不可能由某个任务来进行处理，而只能由操作系统来提供中断处理过程，并采取适当的操作，以进行一些和所有任务都有关系的全局性管理工作，如空闲内存的查找和分配、回收已终止任务的内存空间、设备访问的排队和调度，等等。</p>
+<p>这就是说，每个任务实际上包含两个部分：全局部分和私有部分。</p>
+<ul>
+<li>全局部分：全局部分是所有任务共有的，含有操作系统的软件和库程序，以及可以调用的系统服务和数据。</li>
+<li>私有部分：私有部分则是每个任务各自的数据和代码，与任务所要解决的具体问题有关，彼此并不相同。</li>
+</ul>
+<img src="/2022/09/23/22-0923-01/image-20220926210619946.png" srcset="/img/loading.gif" lazyload class="" title="image-20220926210619946">
+
+<p>任务实际是在内存中运行的，所以，所谓的全局部分和私有部分，其实是地址空间的划分，即全局地址空间和局部地址空间，简称全局空间和局部空间。</p>
+<p>地址空间的访问是依靠分段机制来进行的。具体的说，需要在描述符表中定义各个段的描述符，然后再通过描述符来访问它们。因此，全局地址空间是用全局描述符表（GDT）来指定的，而局部地址空间则是由每个任务私有的局部描述符（LDT）来定义的。</p>
+<p>从程序员的角度来看，任务的全局空间包含了操作系统的段，是由别人编写的，但是他可以调用这些段的代码，或者获取这些段中的数据；任务局部空间的内容是由程序员自己创建的。通常，任务会在自己的局部空间运行，当它需要操作系统提供服务时，转入全局空间执行。</p>
+<p>我们知道，段寄存器（CS、SS、DS、ES、FS、GS）由16位的选择器和不可见的描述符高速缓存器组成。选择器的 位2 是表示指示器TI</p>
+<ul>
+<li>若 TI &#x3D;0，指向GDT，表示当前正在访问的段描述符位于GDT中</li>
+<li>否则指向LDT，表示当前正在访问的描述符位于LDT中。</li>
+</ul>
+<h2 id="虚拟内存管理的一般方法"><a href="#虚拟内存管理的一般方法" class="headerlink" title="虚拟内存管理的一般方法"></a>虚拟内存管理的一般方法</h2><p>选择器的高13位指定描述符的索引号，也就是描述符表中的编号，从0开始。每个段描述符都对应着一个内存段。很显然，在一个任务的全局地址空间上，可以划分出 2的13次方 个段，即8192个段。因为GDT的0号描述符不能用，故实际上是8191个段，但这无关紧要。又因为段内偏移是32位的，段的最大长度为4GB（2的32次方），因此，一个任务的全局地址空间，其总大小为 2的13次方 × 2的32次方 &#x3D; 2的45次方 字节（即32TB）</p>
+<p>同理，局部描述符表LDT可以定义 2的13次方个，即8192个描述符，每个段最大长度也是4GB，故一个任务局部地址空间同样也是32TB。</p>
+<p>这样一来，每个任务的总地址空间即为 32TB+32TB&#x3D;64TB。在一个只有32根地址线的处理器上，无论如何也不可能提供这么巨大的存储空间。但是不要紧张，这只是虚假的，或者说虚拟的空间。操作系统允许程序的编写者使用该地址空间来写程序，即使用虚拟地址或者逻辑地址来访问内存，就像处理器真的拥有这么巨大的地址空间一样。</p>
+<p>上面的一段话可以理解为：编译器不考虑处理器可寻址空间的大小，也不考虑物理内存的大小，它只是负责编译程序。当程序编译时，编译器允许生成非常巨大的程序。但是，当程序超出了物理内存的大小，或者操作系统无法分配这么大的物理空间时，怎么办呢 ？？？</p>
+<p>同一块物理内存，可以让多个任务，或者每个任务的不同段来使用。当执行或访问一个新的段时，如果它不在物理内存中，而且也没有空闲的物理内存来加载它，那么，操作系统将挑出一个暂时用不到的段，把它换出到磁盘中，并把那个腾出来的空间分配给马上要访问的段，并修改段的描述符，使之指向这段内存空间。下一次，当被换出的那个段马上又用到时，再按相同的办法换到物理内存。所有这一切，任务和程序的编写者是不必关心的，这就是虚拟内存管理的一般方法。</p>
+<h2 id="特权级保护概述"><a href="#特权级保护概述" class="headerlink" title="特权级保护概述"></a>特权级保护概述</h2><p>前面引入了LDT、TSS，这只是从任务层面上进一步强化了分段机制，从安全保障的角度来看，只相当于构建了可靠的硬件设施。</p>
+<p>当然，仅有设施是不够的，还需要规章制度，还要有人来执行，处理器也一样。为此，在分段机制的基础上，处理器引入了特权级，并由固件负责实施特权级保护。</p>
+<p>Intel处理器可以识别4个特权级别，0~3，较大的数值意味着较低的特权级别，如下图，这是Intel处理器提供的4级环状保护结构。</p>
+<img src="/2022/09/23/22-0923-01/image-20220926224029735.png" srcset="/img/loading.gif" lazyload class="" title="image-20220926224029735">                                             
+
+<ul>
+<li><p>特权级0</p>
+<p>因为操作系统是为所有程序服务的，可靠性最高，而且必须对软硬件有完全的控制权，所以它的主体部分必须拥有特权级0，并处于整个环形结构的中心。也正是因为这样，操作系统的主体部分通常又被称做内核（Kernel、Core）</p>
+</li>
+<li><p>特权级1、2</p>
+<p>特权级1和2通常赋予哪些可靠性不如内核的系统服务程序，比较典型就是设备驱动程序。当然，在很多比较流行的操作系统中，驱动与内核的特权级相同，都是0。</p>
+</li>
+<li><p>特权级3</p>
+<p>应用程序的可靠性被视为最低的，而且通常不需要直接访问硬件和一些敏感的系统资源，调用设备驱动程序或者操作系统例程就能完成绝大多数工作，故赋予它们最低的特权级3</p>
+</li>
+</ul>
+<h3 id="实施特权级保护"><a href="#实施特权级保护" class="headerlink" title="实施特权级保护"></a>实施特权级保护</h3><ul>
+<li><p>实施特权级保护第一步是为所有可管理的对象赋予一个特权级，以决定谁能访问它们。</p>
+<p>在day7的学习中，我们学习过DPL位，如下：</p>
+<img src="/2022/09/23/22-0923-01/image-20220926231858720.png" srcset="/img/loading.gif" lazyload class="" title="image-20220926231858720">
+
+<p>DPL字段的取值可以为 00、01、10、11，分别对应着特权级 0、1、2、3</p>
+<p>DPL是每个描述符都有的字段，所以又称为描述符特权级</p>
+<p>描述符总是指向它所描述的目标对象，代表着该对象，因此，DPL字段实际上是目标对象的特权级</p>
+<p>比如：对于数据段来说，DPL决定了它们所应当具备的最低特权级别。如果有一个数据段，其描述符的DPL字段为2，那么，只有特权级别为0、1、2的程序才能访问它。当一个特权级别为3的程序也去读写该段时，将会被处理器阻止，并引发异常中断。对任何段的访问都要先把它的描述符加载到段寄存器，所以这种保护手段很容易实现。</p>
+<p>这里注意：32位处理器的段寄存器，实际是由16位的段选择器和描述符高速缓存器组成，而后者是不能直接访问的。正因为我们接触不到描述符高速缓存器，所以为了方便，以后提到段寄存器时，一般指的就是段选择器。</p>
+</li>
+<li><p>在实模式下，段寄存器放的是段地址； 而在保护模式下，段寄存器存放的是段选择子，段地址则位于描述符高速缓存器中。<u>当处理器正在一个<strong>代码段</strong>中取指令和执行指令时，那个代码段的特权级叫做当前特权级（CPL）</u>。正在执行的这个代码段，其选择子位于段寄存器CS中，其最低2位就是当前特权级的数值。</p>
+</li>
+<li><p>一般来说，操作系统都是从BIOS那里接管处理器控制权的，进入保护模式的工作也是由它做的，而且，最重要的是，它还肩负着整个计算机系统的管理工作，所以操作系统必须在0特权级别上，而当操作系统的代码在执行时，当前特权级CPL就是0。</p>
+<p>相反，普通应用程序则工作在特权级别3上。没有人愿意将自己的程序放在特权级3上，但是，只要你在某个操作系统上写的程序，这就由不得你。我们在操作系统上编写应用时，不需要考虑GDT、LDT、分段、描述符这些东西，它们是在程序加载时，由操作系统负责创建的，而我们作为应用程序的编写者，只需要负责程序的具体功能就可以。应用程序的加载和开始执行，也是由操作系统所主导的，而操作系统一定会将应用程序放在特权级3上。当应用程序开始执行时，当前特权级CPL自然就是3。</p>
+<p>这实际上就是把一个任务分成特权级截然不同的两部分，全局部分是特权级0的，而局部空间则是特权级别3的。这种划分是有好处的，全局空间是为所有任务服务的，其重要性不言而喻。为了保证它的安全性，并能够访问所有的硬件资源，应该使它拥有最高的特权级别。当任务在自己的局部空间内执行时，当前特权级 CPL 是 3，当它通过调用系统服务（Windows API），进入操作系统内核，在全局空间执行时，当前特权级 CPL 就变成了 0。总之，很重要的一点是，不能僵化的看待任务和任务的特权级别。</p>
+</li>
+</ul>
+<h3 id="特权指令"><a href="#特权指令" class="headerlink" title="特权指令"></a>特权指令</h3><p>不同特权级别的程序，所担任的职责以及在系统中扮演的角色是不一样的。计算机系统的脆弱性在于一条指令就能改变它的整体运行状态，比如停机指令 hlt 和对控制寄存器 CR0 的写操作，像这样的指令只能由最高特权级别的程序来做。<u>因此，那些只有在当前特权级 CPL 为 0 时才能执行的指令，称为特权指令。</u> </p>
+<p>典型的特权级指令包括：加载全局描述符表的 lgdt （在实模式下也可执行）、加载局部描述符表的指令 lldt、加载任务寄存器的指令 ltr、读写控制寄存器的 mov 指令、停机指令 hlt 等十几条指令。</p>
+<h3 id="I-x2F-O特权级"><a href="#I-x2F-O特权级" class="headerlink" title="I&#x2F;O特权级"></a>I&#x2F;O特权级</h3><p>除了那些特权级敏感的指令外，处理器还允许对各个特权级别所能执行的 I&#x2F;O 操作进行控制。通常，这指的是端口访问的许可权，因为对设备的访问都是通过端口进行的。</p>
+<p>如下图，在处理器的标志寄存器 EFLAGS 中，位13、位12是 IOPL 位，也就是输入&#x2F;输出特权级，它代表着当前任务的 I&#x2F;O 特权级别</p>
+<img src="/2022/09/23/22-0923-01/image-20220927090506389.png" srcset="/img/loading.gif" lazyload class="" title="image-20220927090506389">
+
+
+
+<p>任务是由操作系统加载和创建的，与任务相关的信息都在它在自己的任务状态段（TSS）中，其中就包括一个 EFLAGS 寄存器副本，用于指示与当前任务相关的机器状态，比如：他自己的 I&#x2F;O 特权级 IOPL。在多任务系统中，随着任务的切换，前一个任务的所有状态被保存到它自己的TSS中，新任务的各种状态从其TSS中恢复，包括 EFLAGS 寄存器的值。</p>
+<p>处理器不限制 0 特权级程序的 I&#x2F;O 访问，它总是允许的。但是，处理器可以限制低特权级程序的 I&#x2F;O 访问权限。这是很重要的，操作系统的功能之一是设备管理，它可不希望应用程序拥有私有访问外设的能力。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/09/28/22-0928-01/" title="x86保护模式day12">
+                        <i class="iconfont icon-anniu_jiantouxiangzuo_o"></i>
+                        <span class="hidden-mobile">x86保护模式day12</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/09/19/22-0919-01/" title="x86保护模式day10">
+                        <span class="hidden-mobile">x86保护模式day10</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-anniu-jiantouxiangyou_o"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键字</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/image.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>

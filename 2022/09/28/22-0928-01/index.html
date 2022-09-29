@@ -1,0 +1,627 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="在没有操作系统情况下，可以认为进程就是任务。（任务就是一段在处理器上运行的程序，相当于脱离了操作系统，你写的代码在CPU上运行） 在有了操作系统后，整个程序可以分为用户程序和操作系统内核程序，即任务被分成了两个部分，全局地址空间和局部地址空间，也就说一个是用户态，一个是内核态。 由于内核程序位于0特权级，用户程序位于3特权级，所以一个任务按照特权级划分实际上被分为了两个部分，一个是3特权级的用户程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="x86保护模式day12">
+<meta property="og:url" content="http://example.com/2022/09/28/22-0928-01/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="在没有操作系统情况下，可以认为进程就是任务。（任务就是一段在处理器上运行的程序，相当于脱离了操作系统，你写的代码在CPU上运行） 在有了操作系统后，整个程序可以分为用户程序和操作系统内核程序，即任务被分成了两个部分，全局地址空间和局部地址空间，也就说一个是用户态，一个是内核态。 由于内核程序位于0特权级，用户程序位于3特权级，所以一个任务按照特权级划分实际上被分为了两个部分，一个是3特权级的用户程">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/09/28/22-0928-01/image-20220928164518415.png">
+<meta property="og:image" content="http://example.com/2022/09/28/22-0928-01/image-20220928171810584.png">
+<meta property="og:image" content="http://example.com/2022/09/28/22-0928-01/image-20220928192622598.png">
+<meta property="og:image" content="http://example.com/2022/09/28/22-0928-01/image-20220928210611366.png">
+<meta property="og:image" content="http://example.com/2022/09/28/22-0928-01/image-20220928221440849.png">
+<meta property="og:image" content="http://example.com/2022/09/28/22-0928-01/image-20220927160305259.png">
+<meta property="article:published_time" content="2022-09-28T08:01:12.000Z">
+<meta property="article:modified_time" content="2022-09-29T02:16:09.483Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/09/28/22-0928-01/image-20220928164518415.png">
+  
+  
+  
+  <title>x86保护模式day12 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/suofang.css">
+<link rel="stylesheet" href="/css/font.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Solstices&#39;s BLOG</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="x86保护模式day12"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-09-28 16:01" pubdate>
+          September 28, 2022 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.8k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          24 mins
+        
+      </span>
+    
+	
+
+  
+
+	
+
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">x86保护模式day12</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>在没有操作系统情况下，可以认为进程就是任务。（任务就是一段在处理器上运行的程序，相当于脱离了操作系统，你写的代码在CPU上运行）</p>
+<p>在有了操作系统后，整个程序可以分为用户程序和操作系统内核程序，即任务被分成了两个部分，全局地址空间和局部地址空间，也就说一个是用户态，一个是内核态。</p>
+<p>由于内核程序位于0特权级，用户程序位于3特权级，所以一个任务按照特权级划分实际上被分为了两个部分，一个是3特权级的用户程序，另一个就是0特权级的内核</p>
+<p>任务是处理器执行的，<u>任务在特权级变化时，本质就是处理器当前的特权级变化</u>，比如：用户程序是3特权级，但是我们需要调用一些系统的服务，系统内核的代码是0特权级，这时候就需要从3特权级变成0特权级，这里就涉及到了特权级的变换。</p>
+<p>其中特权级的变化涉及到了栈的问题，因为处理器规定了在不同特权级下要用不同特权级的栈。有4种等级的栈，0、1、2、3特权级的栈。比如：当前的任务在3特权级，即CPL&#x3D;3，就只能用3特权级的栈，当任务的当前特权级切换到0特权级，就只能用0特权级的栈了。</p>
+<p>所有说一个任务最多有4个栈（0、1、2、3特权级的栈），一个TSS代表一个任务（TSS就是任务的身份证），每个任务最多有4个栈。</p>
+<p>在如下任务的结构图中，该任务为3特权级，只有3个栈（0、1、2特权级的栈），不需要3特权级的栈，因为<u>特权级的转移只能由低特权级到高特权级转移</u>，所以3特权级的任务可以转移到0、1、2特权级。</p>
+<img src="/2022/09/28/22-0928-01/image-20220928164518415.png" srcset="/img/loading.gif" lazyload class="" title="image-20220928164518415"> 
+
+
+
+<h1 id="特权转移"><a href="#特权转移" class="headerlink" title="特权转移"></a>特权转移</h1><p>特权转移分为两类：一类是通过依从代码段或门手段实现低特权级向高特权级转移（低—&gt;高），另一类是则相反，是由调用返回指令从高特权级回到低特权级（高—&gt;低，唯一一种特殊情况，是唯一一种让处理器降低特权级的情况）。</p>
+<ul>
+<li><p>对于第一类（低—&gt;高），由于处理器不知道目标特权级（高特权级）对应的栈地址在哪里，所以就需要在某个地方记录下目标（高特权级）栈的地址，当处理器向高特权级转移时，再取出来加载到SS、ESP寄存器来更新栈。</p>
+<p>上面说的记录目标栈地址的地方如下</p>
+<img src="/2022/09/28/22-0928-01/image-20220928171810584.png" srcset="/img/loading.gif" lazyload class="" title="image-20220928171810584">
+
+<p>低特权级向高特权级的转移叫 “向内转移” </p>
+<img src="/2022/09/28/22-0928-01/image-20220928192622598.png" srcset="/img/loading.gif" lazyload class="" title="image-20220928192622598">
+</li>
+<li><p>对于第二类，由高特权级返回到低特权级的情况下，处理器是不需要在TSS中寻找低特权栈的。</p>
+</li>
+</ul>
+<h1 id="CPL、RPL、DPL"><a href="#CPL、RPL、DPL" class="headerlink" title="CPL、RPL、DPL"></a>CPL、RPL、DPL</h1><blockquote>
+<p>RPL、CPL、DPL在前面的学习中都已经接触过了，这里再来复习和总结下</p>
+</blockquote>
+<h2 id="CPL"><a href="#CPL" class="headerlink" title="CPL"></a>CPL</h2><p>CPL是当前进程的权限级别，是当前正在执行的代码所在的段的特权级，存在于cs寄存器的低两位。也就是说，CPL标识了代码能够达到的最高的特权级别。</p>
+<img src="/2022/09/28/22-0928-01/image-20220928210611366.png" srcset="/img/loading.gif" lazyload class="" title="image-20220928210611366">
+
+<h2 id="RPL"><a href="#RPL" class="headerlink" title="RPL"></a>RPL</h2><p>RPL，即请求特权级， “请求” 本身就是一个动词，只有具备能动性的访问者才能作出动作，那么谁是访问者呢 ？？？</p>
+<p>在计算机中具有能动性的就是计算机指令，只有指令才具备访问、请求其它资源的能力，<u>指令访问其它资源的能力等级叫做请求特权级</u>。</p>
+<p>指令都是放在代码段中的，代码段寄存器CS中选择子RPL表示代码请求别人资源能力的等级，CS和EIP指向的指令便是当前处理器中正在运行的代码，所以位于CS寄存器中选择子的低2位的值不仅称之为请求特权级，还称为处理器的当前特权级，即 CPL &#x3D; CS.RPL</p>
+<img src="/2022/09/28/22-0928-01/image-20220928221440849.png" srcset="/img/loading.gif" lazyload class="" title="image-20220928221440849">
+
+<h2 id="DPL"><a href="#DPL" class="headerlink" title="DPL"></a>DPL</h2><p>DPL存储在段描述符中，规定访问该段的权限级别，每个段的DPL固定。当进程访问一个段时，需要进程特权级检查，一般要求DPL &gt;&#x3D; max {CPL, RPL}，即级别至少要相同才能通过检查。</p>
+<p>注意：DPL是描述符中的属性，每个段都有	</p>
+<h2 id="扩展：CPL、RPL、RPL的联系是啥，CPL和RPL总是相同的吗-？？？"><a href="#扩展：CPL、RPL、RPL的联系是啥，CPL和RPL总是相同的吗-？？？" class="headerlink" title="扩展：CPL、RPL、RPL的联系是啥，CPL和RPL总是相同的吗 ？？？"></a>扩展：CPL、RPL、RPL的联系是啥，CPL和RPL总是相同的吗 ？？？</h2><blockquote>
+<p>参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/better0332/article/details/3416749">https://blog.csdn.net/better0332/article/details/3416749</a></p>
+</blockquote>
+<p>打一个比方，中国官员分为6级国家主席1、总理2、省长3、市长4、县长5、乡长6，假设我是当前进程，级别总理（CPL&#x3D;2）,我去聊城市(DPL&#x3D;4)考察(呵呵),我用省长的级别(RPL&#x3D;3 这样也能吓死他们:-))去访问,可以吧，如果我用县长的级别，人家就不理咱了(你看看电视上的微服私访，呵呵)，明白了吧！为什么采用RPL，是考虑到安全的问题，就好像你明明对一个文件用有写权限，为什么用只读打开它呢，还不是为了安全！</p>
+<h1 id="依从代码段（一致性代码段）"><a href="#依从代码段（一致性代码段）" class="headerlink" title="依从代码段（一致性代码段）"></a>依从代码段（一致性代码段）</h1><blockquote>
+<p>内存分为数据段和代码段，栈段则看作特殊的数据段</p>
+</blockquote>
+<p>计算机中的被访问者（受访者）可能是数据（DATA）或者代码（CODE），但是访问者一定是代码，因为只有指令才具有访问资源的能力，访问者也就是代码段中的指令。</p>
+<p>注意：对于受访者为代码段，实际上是指处理器从当前运行的代码段转移到受访者这个目标代码段上去执行，而不是把该目标代码段当作数据一样来访问。</p>
+<p>代码段的特权级检查是很严格的。一般来说，控制转移只允许发生在两个特权级相同的代码段之间。受访者为代码段时，访问者必须和受访者特权级相同，否则CPU不允许访问者访问受访者。</p>
+<p>为了让访问者访问（调用）比自己特权级高的代码段，CPU也提供了相对应的解决方法，即将受访者代码段（高特权级）定义为依从的。</p>
+<p>那么如何将代码段定义为依从的呢 ？？？</p>
+<p>代码段Type字段如下：（在day7中学习过）</p>
+<img src="/2022/09/28/22-0928-01/image-20220927160305259.png" srcset="/img/loading.gif" lazyload class="" title="image-20220927160305259">
+
+<ul>
+<li>如果C&#x3D;0，这样受访者代码段只能供同特权级的访问者访问（调用）</li>
+<li>如果C&#x3D;1，则这样的代码段称为<u>依从的代码段</u>，受访者（高特权级）可以被低特权级的访问者访问</li>
+</ul>
+<p>但是，低特权级的访问者来访问高特权级的依从代码段时（即将CPU的控制权从低特权级的访问者转移到依从代码段上），也是有条件的，要求当前特权级CPL ≤ 依从代码段描述符DPL的特权级，在数值上有如下关系：</p>
+<div class="code-wrapper"><pre><code class="hljs txt">处理器当前特权级CPL ≥ 依从码段描述符的DPL</code></pre></div>
+
+
+
+<br/>
+
+<br/>
+
+<br/>
+
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44309300/article/details/115371605">https://blog.csdn.net/weixin_44309300/article/details/115371605</a></p>
+<br/>
+
+<p>举个例子，如果一个依从的代码段，其描述符的DPL为1，则只有特权级为1、2、3的程序可以调用，而特权级为0的程序则不能。<u>在任何时候，都不允许将控制从较高的特权级转移到较低的特权级</u>。</p>
+<p>依从的代码段不是在它的DPL特权级上运行，而是在调用程序的特权级上运行。就是说，当控制转移到依从的代码段上执行时，不改变当前特权级CPL，段寄存器CS的CPL字段不发生变化，被调用过程的特权级依从于调用者的特权级，这就是为什么它被称为 “依从” 代码段。</p>
+<h5 id="门描述符"><a href="#门描述符" class="headerlink" title="门描述符"></a>门描述符</h5><p>除了依从的代码段，另一种在特权级之间的转移控制方法是使用门。门是另一种形式的描述符，称为门描述符，简称门。</p>
+<p>和段描述符不同，段描述符用于描述内存段，<u>门描述符则用于描述可执行的代码，比如：一段程序、一个过程（例程）或者一个任务</u>。</p>
+<p>实际上，根据不同的用途，门的类型有好几种，如下：</p>
+<ul>
+<li>调用门：不同特权级之间的过程调用可以使用调用门</li>
+<li>中断门&#x2F;陷阱门：中断门&#x2F;陷阱门是作为中断处理过程使用的</li>
+<li>任务门：任务门对应着单个的任务，用来执行任务切换</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/09/23/22-0923-01/" title="x86保护模式day11">
+                        <span class="hidden-mobile">x86保护模式day11</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-anniu-jiantouxiangyou_o"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键字</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/image.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
